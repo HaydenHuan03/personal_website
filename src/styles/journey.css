@@ -1,0 +1,202 @@
+/* ── Container ─────────────────────────────────────────── */
+.orbit-timeline {
+  position: relative;
+  margin-top: 4rem;
+}
+
+/* ── Axis line ─────────────────────────────────────────── */
+.orbit-axis {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #e7e5e4; /* stone-200 */
+  transform: translateX(-50%);
+}
+
+/* ── Row: 3-col grid  [card | node | card] ─────────────── */
+.orbit-row {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  grid-template-areas: 'left node right';
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.orbit-row:last-child {
+  margin-bottom: 0;
+}
+
+.orbit-node        { grid-area: node; }
+
+.is-left  .orbit-card-wrap { grid-area: left;  justify-self: end;   }
+.is-right .orbit-card-wrap { grid-area: right; justify-self: start; }
+
+/* ── Card ──────────────────────────────────────────────── */
+.orbit-card {
+  background: #ffffff;
+  border: 1px solid #e7e5e4; /* stone-200 */
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 380px;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.orbit-card:hover {
+  border-color: #d6d3d1; /* stone-300 */
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.orbit-date {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a8a29e; /* stone-400 */
+  margin-bottom: 0.5rem;
+}
+
+.orbit-title {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1c1917; /* stone-900 */
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
+.orbit-role {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #a8a29e; /* stone-400 */
+  margin-bottom: 0.75rem;
+}
+
+.orbit-desc {
+  font-size: 0.9375rem;
+  font-weight: 300;
+  color: #57534e; /* stone-600 */
+  line-height: 1.75;
+}
+
+/* ── Orbital node ──────────────────────────────────────── */
+.orbit-node {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Stone-50 disc erases the axis line behind the node */
+.orbit-node::before {
+  content: '';
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  background: #fafaf9;
+  border-radius: 50%;
+}
+
+/* Spinning partial-arc ring */
+.node-ring {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: #78716c;    /* stone-500 – solid arc */
+  border-right-color: #d6d3d1; /* stone-300 – faint arc */
+  border-bottom-color: #78716c;
+  border-left-color: transparent;
+  animation: orbit-spin 7s linear infinite;
+}
+
+/* Center dot */
+.node-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #57534e; /* stone-600 */
+  border-radius: 50%;
+  z-index: 2;
+}
+
+/* Satellite that travels the ring */
+.node-sat {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  animation: orbit-spin 7s linear infinite;
+  z-index: 3;
+}
+
+.node-sat span {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: #292524; /* stone-800 */
+  border-radius: 50%;
+  border: 2px solid #fafaf9;
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Scroll-reveal ─────────────────────────────────────── */
+[data-orbit] {
+  opacity: 0;
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+[data-orbit].is-left  { transform: translateX(-24px); }
+[data-orbit].is-right { transform: translateX(24px);  }
+
+[data-orbit].revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Mobile: node left, card right, no alternating ─────── */
+@media (max-width: 767px) {
+  .orbit-axis {
+    left: 30px;
+  }
+
+  .orbit-row {
+    grid-template-columns: 60px 1fr;
+    grid-template-areas: 'node card';
+    gap: 1rem;
+  }
+
+  .is-left  .orbit-card-wrap,
+  .is-right .orbit-card-wrap {
+    grid-area: card;
+    justify-self: start;
+  }
+
+  .orbit-card { max-width: 100%; }
+
+  [data-orbit].is-left,
+  [data-orbit].is-right {
+    transform: translateY(16px);
+  }
+
+  [data-orbit].revealed {
+    transform: translateY(0);
+  }
+}
