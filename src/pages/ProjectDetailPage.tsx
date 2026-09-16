@@ -1,0 +1,118 @@
+import { useEffect } from 'react';
+import { Link, useParams } from 'react-router';
+import { ArrowLeft } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { getProjectBySlug } from '../data/projects';
+import { techIconMap } from '../utils/techIcons';
+
+export default function ProjectDetailPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const project = slug ? getProjectBySlug(slug) : undefined;
+
+  useEffect(() => {
+    if (project) document.title = `${project.title} — Hayden Huan`;
+    return () => {
+      document.title = 'Hayden Huan — Backend Engineer & Infrastructure Developer';
+    };
+  }, [project]);
+
+  if (!project) {
+    return (
+      <>
+        <Navbar />
+        <main className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20 text-center">
+          <h1 className="text-3xl font-heading font-semibold text-stone-900 mb-4">Project not found</h1>
+          <Link to="/" className="text-stone-600 hover:text-stone-900 underline">Return to portfolio</Link>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <main className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
+        <article className="animate-[fadeInUp_0.5s_ease-out]">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors mb-12 text-sm font-medium"
+          >
+            <ArrowLeft size={16} /> Previous Page
+          </Link>
+
+          <div className="mb-12">
+            <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 mb-4 leading-[1.1]">
+              {project.title}
+            </h1>
+            {project.inProgress && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 mb-6 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full border border-amber-200 uppercase tracking-wide">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                In Progress
+              </span>
+            )}
+            <div className="flex flex-wrap gap-2 mb-8">
+              {project.tech.map((t) => {
+                const iconClass = techIconMap[t];
+                return (
+                  <span
+                    key={t}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 text-stone-700 text-sm rounded-md font-medium border border-stone-200"
+                  >
+                    {iconClass && <i className={`${iconClass} text-base leading-none`} />}
+                    {t}
+                  </span>
+                );
+              })}
+            </div>
+            <p className="text-xl text-stone-600 font-light leading-relaxed">{project.description}</p>
+          </div>
+
+          <div className="mb-16">
+            {project.content.map((paragraph) => (
+              <p key={paragraph.slice(0, 40)} className="text-stone-700 leading-relaxed mb-6 font-light text-lg">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+
+          {project.slug === 'finguardmy' && (
+            <div className="mb-16">
+              <h3 className="font-heading font-semibold text-lg text-stone-900 mb-4">System Architecture</h3>
+              <img
+                src="/Architecture.svg"
+                alt="FinGuardMY system architecture diagram"
+                className="w-full rounded-xl border border-stone-200"
+              />
+            </div>
+          )}
+
+          <div className="p-8 bg-stone-100 rounded-xl border border-stone-200">
+            <h3 className="font-heading font-semibold text-lg mb-4 text-stone-900">
+              Key Architectural Highlights
+            </h3>
+            <ul className="space-y-4">
+              {project.highlights.map((highlight) => (
+                <li key={highlight.slice(0, 40)} className="flex gap-4 text-stone-700">
+                  <span className="text-stone-400 mt-1">▹</span>
+                  <span className="leading-relaxed">{highlight}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-16 pt-8 border-t border-stone-200 flex justify-center">
+            <Link
+              to="/"
+              className="px-6 py-3 bg-stone-900 text-stone-50 rounded-md hover:bg-stone-800 transition-colors font-medium text-sm"
+            >
+              Return to Portfolio
+            </Link>
+          </div>
+        </article>
+      </main>
+      <Footer />
+    </>
+  );
+}

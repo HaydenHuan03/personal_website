@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router';
+import HomePage from './pages/HomePage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
 
 function ScrollToHash() {
   const location = useLocation();
@@ -21,7 +23,8 @@ export default function App() {
     <div className="bg-stone-50 text-stone-900 font-sans antialiased selection:bg-stone-300 selection:text-stone-900 min-h-screen">
       <ScrollToHash />
       <Routes>
-        <Route path="/" element={<p className="p-8">Home placeholder</p>} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/projects/:slug" element={<ProjectDetailPage />} />
       </Routes>
     </div>
   );
