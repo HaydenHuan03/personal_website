@@ -29,20 +29,24 @@ export default function SkillsSection() {
     gsap.set(cards, { opacity: 0, y: 40 });
     gsap.set(badges, { opacity: 0, scale: 0.9 });
 
+    const timelines: gsap.core.Timeline[] = [];
+
     const trigger = ScrollTrigger.create({
       trigger: section,
       start: 'top 80%',
       once: true,
       onEnter: () => {
-        gsap.timeline({ defaults: { ease: 'power2.out' } })
+        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
           .to(header, { opacity: 1, y: 0, duration: 0.4 })
           .to(cards, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12 }, '-=0.1')
           .to(badges, { opacity: 1, scale: 1, duration: 0.3, stagger: 0.04 }, '-=0.3');
+        timelines.push(tl);
       },
     });
 
     return () => {
       trigger.kill();
+      timelines.forEach((tl) => tl.kill());
       gsap.set([header, ...cards, ...badges], { clearProps: 'all' });
     };
   }, []);

@@ -31,19 +31,23 @@ export default function LeetCodeSection() {
     gsap.set(header, { opacity: 0, y: 20 });
     gsap.set(cards, { opacity: 0, y: 40 });
 
+    const timelines: gsap.core.Timeline[] = [];
+
     const trigger = ScrollTrigger.create({
       trigger: section,
       start: 'top 80%',
       once: true,
       onEnter: () => {
-        gsap.timeline({ defaults: { ease: 'power2.out' } })
+        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
           .to(header, { opacity: 1, y: 0, duration: 0.4 })
           .to(cards, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12 }, '-=0.1');
+        timelines.push(tl);
       },
     });
 
     return () => {
       trigger.kill();
+      timelines.forEach((tl) => tl.kill());
       gsap.set([header, ...cards], { clearProps: 'all' });
     };
   }, []);

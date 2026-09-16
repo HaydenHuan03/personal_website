@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { Link } from 'react-router';
 import { ArrowRight, Mail, Github, Instagram } from 'lucide-react';
 import PixelTransition from './PixelTransition';
 
@@ -110,13 +111,13 @@ export default function HeroSection() {
         </p>
 
         <div className="flex flex-wrap gap-4">
-          <a
+          <Link
             data-hero-btn
-            href="#projects"
+            to="/#projects"
             className="flex items-center gap-2 px-6 py-3 bg-stone-900 text-stone-50 rounded-md hover:bg-stone-800 transition-colors font-medium text-sm"
           >
             View Projects <ArrowRight size={16} />
-          </a>
+          </Link>
           <a
             data-hero-btn
             href="mailto:teomeehua@gmail.com"

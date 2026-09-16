@@ -70,8 +70,8 @@ export default function ProjectDetailPage() {
           </div>
 
           <div className="mb-16">
-            {project.content.map((paragraph) => (
-              <p key={paragraph.slice(0, 40)} className="text-stone-700 leading-relaxed mb-6 font-light text-lg">
+            {project.content.map((paragraph, index) => (
+              <p key={index} className="text-stone-700 leading-relaxed mb-6 font-light text-lg">
                 {paragraph}
               </p>
             ))}
@@ -93,8 +93,8 @@ export default function ProjectDetailPage() {
               Key Architectural Highlights
             </h3>
             <ul className="space-y-4">
-              {project.highlights.map((highlight) => (
-                <li key={highlight.slice(0, 40)} className="flex gap-4 text-stone-700">
+              {project.highlights.map((highlight, index) => (
+                <li key={index} className="flex gap-4 text-stone-700">
                   <span className="text-stone-400 mt-1">▹</span>
                   <span className="leading-relaxed">{highlight}</span>
                 </li>

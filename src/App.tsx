@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router';
+import { Routes, Route, useLocation, useNavigationType } from 'react-router';
 import HomePage from './pages/HomePage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 
 function ScrollToHash() {
   const location = useLocation();
+  const navigationType = useNavigationType();
   useEffect(() => {
+    if (navigationType === 'POP') {
+      return;
+    }
     if (location.hash) {
       const el = document.getElementById(location.hash.slice(1));
       if (el) {
@@ -14,7 +18,7 @@ function ScrollToHash() {
       }
     }
     window.scrollTo(0, 0);
-  }, [location]);
+  }, [location, navigationType]);
   return null;
 }
 

@@ -30,6 +30,7 @@ async function fetchStats(): Promise<Stats | null> {
         `,
         variables: { username: USERNAME },
       }),
+      signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) return null;
     const json = await res.json();

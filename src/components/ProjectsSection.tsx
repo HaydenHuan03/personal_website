@@ -22,13 +22,15 @@ export default function ProjectsSection() {
     gsap.set(header, { opacity: 0, y: 20 });
     gsap.set(rows, { opacity: 0, x: -32, y: 16 });
 
+    const tweens: gsap.core.Tween[] = [];
+
     const triggers: ScrollTrigger[] = [
       ScrollTrigger.create({
         trigger: header,
         start: 'top 80%',
         once: true,
         onEnter: () => {
-          gsap.to(header, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+          tweens.push(gsap.to(header, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }));
         },
       }),
       ...rows.map((row) =>
@@ -37,7 +39,7 @@ export default function ProjectsSection() {
           start: 'top 85%',
           once: true,
           onEnter: () => {
-            gsap.to(row, { opacity: 1, x: 0, y: 0, duration: 0.55, ease: 'power2.out' });
+            tweens.push(gsap.to(row, { opacity: 1, x: 0, y: 0, duration: 0.55, ease: 'power2.out' }));
           },
         })
       ),
@@ -45,6 +47,7 @@ export default function ProjectsSection() {
 
     return () => {
       triggers.forEach((t) => t.kill());
+      tweens.forEach((tw) => tw.kill());
       gsap.set([header, ...rows], { clearProps: 'all' });
     };
   }, []);
