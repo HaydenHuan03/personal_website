@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { Link } from 'react-router';
 import { ArrowRight, Mail, Github, Instagram } from 'lucide-react';
 import PixelTransition from './PixelTransition';
-import ParticleText from './ParticleText';
+import DecryptedText from './DecryptedText';
 
 const HERO_NAME = 'Hayden Huan Kee Jiun';
 
@@ -50,21 +50,14 @@ export default function HeroSection() {
         <p data-hero-label className="text-stone-500 font-medium tracking-wide text-sm uppercase mb-4">
           Backend Engineer
         </p>
-        <h1 className="font-heading font-semibold tracking-tight text-stone-900 mb-6">
-          <ParticleText
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-semibold tracking-tight text-stone-900 mb-6 leading-[1.1] break-words">
+          <DecryptedText
             text={HERO_NAME}
-            align="left"
-            color="#1c1917"
-            highlightColor="#57534e"
-            glow={false}
-            trigger="mount"
-            fontWeight={600}
-            fontFamily="'Outfit', sans-serif"
-            fontSize="clamp(2.25rem, 5vw, 3.75rem)"
-            scatter={140}
-            gatherDuration={1200}
-            stagger={350}
-            style={{ minHeight: 0, height: 'clamp(6rem, 13vw, 9.5rem)' }}
+            animateOn="view"
+            sequential
+            revealDirection="start"
+            speed={50}
+            encryptedClassName="text-stone-400"
           />
         </h1>
         <p data-hero-bio className="text-lg text-stone-600 leading-relaxed font-light mb-10">
