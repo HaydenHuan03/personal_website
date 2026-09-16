@@ -3,57 +3,16 @@ import { gsap } from 'gsap';
 import { Link } from 'react-router';
 import { ArrowRight, Mail, Github, Instagram } from 'lucide-react';
 import PixelTransition from './PixelTransition';
+import ParticleText from './ParticleText';
 
 const HERO_NAME = 'Hayden Huan Kee Jiun';
 
-function scramble(el: HTMLElement, totalDuration = 900): () => void {
-  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  const TICK = 45;
-  const finalText = el.dataset.text ?? el.textContent ?? '';
-
-  el.innerHTML = '';
-  const items: { span: HTMLSpanElement; final: string }[] = [];
-
-  for (const char of finalText) {
-    if (char === ' ') {
-      el.appendChild(document.createTextNode(' '));
-    } else {
-      const span = document.createElement('span');
-      span.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
-      el.appendChild(span);
-      items.push({ span, final: char });
-    }
-  }
-
-  const intervals = items.map(({ span }) =>
-    setInterval(() => {
-      span.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
-    }, TICK)
-  );
-
-  const step = totalDuration / items.length;
-  const timeouts = items.map(({ span, final }, i) =>
-    setTimeout(() => {
-      clearInterval(intervals[i]);
-      span.textContent = final;
-    }, step * (i + 1))
-  );
-
-  return () => {
-    intervals.forEach(clearInterval);
-    timeouts.forEach(clearTimeout);
-    el.textContent = finalText;
-  };
-}
-
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const nameRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
-    const nameEl = nameRef.current;
-    if (!section || !nameEl) return;
+    if (!section) return;
 
     const label = section.querySelector<HTMLElement>('[data-hero-label]');
     const bio = section.querySelector<HTMLElement>('[data-hero-bio]');
@@ -61,31 +20,23 @@ export default function HeroSection() {
     const image = section.querySelector<HTMLElement>('[data-hero-image]');
     const nav = document.querySelector<HTMLElement>('nav');
 
-    let cancelScramble: (() => void) | undefined;
-
     gsap.set([nav, label, bio, image], { opacity: 0 });
     gsap.set(nav, { y: -20 });
     gsap.set([label, bio], { y: 16 });
     gsap.set(btns, { opacity: 0, y: 16 });
     gsap.set(image, { y: 20 });
-    gsap.set(nameEl, { opacity: 0 });
 
     const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
     tl
       .to(nav, { opacity: 1, y: 0, duration: 0.4 })
       .to(label, { opacity: 1, y: 0, duration: 0.3 }, '-=0.1')
-      .add(() => {
-        gsap.set(nameEl, { opacity: 1 });
-        cancelScramble = scramble(nameEl, 900);
-      })
       .to(bio, { opacity: 1, y: 0, duration: 0.4 }, '+=0.35')
       .to(btns, { opacity: 1, y: 0, duration: 0.3, stagger: 0.08 }, '-=0.2')
       .to(image, { opacity: 1, y: 0, duration: 0.5 }, '<');
 
     return () => {
       tl.kill();
-      cancelScramble?.();
-      gsap.set([nav, label, bio, image, nameEl, ...btns], { clearProps: 'all' });
+      gsap.set([nav, label, bio, image, ...btns], { clearProps: 'all' });
     };
   }, []);
 
@@ -99,12 +50,22 @@ export default function HeroSection() {
         <p data-hero-label className="text-stone-500 font-medium tracking-wide text-sm uppercase mb-4">
           Backend Engineer
         </p>
-        <h1
-          ref={nameRef}
-          data-text={HERO_NAME}
-          className="text-4xl sm:text-5xl lg:text-6xl font-heading font-semibold tracking-tight text-stone-900 mb-6 leading-[1.1] break-words"
-        >
-          {HERO_NAME}
+        <h1 className="font-heading font-semibold tracking-tight text-stone-900 mb-6">
+          <ParticleText
+            text={HERO_NAME}
+            align="left"
+            color="#1c1917"
+            highlightColor="#57534e"
+            glow={false}
+            trigger="mount"
+            fontWeight={600}
+            fontFamily="'Outfit', sans-serif"
+            fontSize="clamp(2.25rem, 5vw, 3.75rem)"
+            scatter={140}
+            gatherDuration={1200}
+            stagger={350}
+            style={{ minHeight: 0, height: 'clamp(6rem, 13vw, 9.5rem)' }}
+          />
         </h1>
         <p data-hero-bio className="text-lg text-stone-600 leading-relaxed font-light mb-10">
           I am a rookie backend developer who enjoys trying new technologies instead of using one tech only. I am passionate about growing my skills and understanding how backend logic connects with reliable infrastructure.
