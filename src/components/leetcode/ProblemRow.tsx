@@ -49,13 +49,6 @@ export default function ProblemRow({ problem, open, onToggle }: Props) {
             {problem.difficulty}
           </span>
         )}
-        <span className="hidden sm:flex gap-1.5 shrink-0">
-          {problem.solutions.map((s) => (
-            <span key={s.language} className="text-xs text-stone-500 bg-stone-100 border border-stone-200 rounded px-1.5 py-0.5">
-              {LANGUAGE_LABELS[s.language]}
-            </span>
-          ))}
-        </span>
         <ChevronDown size={16} className={`shrink-0 text-stone-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
 
