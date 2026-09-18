@@ -1,8 +1,3 @@
-/**
- * Prebuild step: fetch LeetCode solved-problem counts and snapshot them
- * into src/data/leetcode.json. On any failure the existing snapshot is
- * left untouched so the build never breaks on a flaky external API.
- */
 const USERNAME = 'teomeehua';
 const OUT = new URL('../src/data/leetcode.json', import.meta.url).pathname;
 

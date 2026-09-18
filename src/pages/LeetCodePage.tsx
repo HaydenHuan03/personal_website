@@ -62,9 +62,6 @@ export default function LeetCodePage() {
           <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 mb-4 leading-[1.1]">
             LeetCode Solutions
           </h1>
-          <p className="text-xl text-stone-600 font-light leading-relaxed">
-            {PROBLEMS.length} solutions across {TOPICS.length} topics, synced daily from GitHub.
-          </p>
           <div className="flex flex-wrap gap-3 mt-6">
             <a href={PROFILE_URL} target="_blank" rel="noopener noreferrer" className={BUTTON}>
               LeetCode Profile <ExternalLink size={16} />
