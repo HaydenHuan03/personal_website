@@ -1,115 +1,90 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { RotateCcw } from 'lucide-react';
+import { Server, Layers, Share2, Database } from 'lucide-react';
 import SectionHeader from './SectionHeader';
-import SkillsPlayground, { type SkillBadge, type SkillsPlaygroundHandle } from './SkillsPlayground';
 import { techIconMap } from '../utils/techIcons';
-import { prefersReducedMotion } from '../utils/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface Category {
-  id: string;
-  title: string;
-  border: string;
-  dot: string;
-  skills: string[];
-}
-
-const categories: Category[] = [
-  { id: 'backend', title: 'Backend & APIs', border: 'border-amber-300', dot: 'bg-amber-400', skills: ['Java (Spring Boot)', 'Python', 'FastAPI'] },
-  { id: 'infra', title: 'Infrastructure', border: 'border-sky-300', dot: 'bg-sky-400', skills: ['Kubernetes', 'Docker', 'Nginx', 'Caddy'] },
-  { id: 'data', title: 'Data & Events', border: 'border-emerald-300', dot: 'bg-emerald-400', skills: ['Apache Kafka', 'Apache Airflow', 'Apache Spark', 'Valkey'] },
-  { id: 'db', title: 'Databases', border: 'border-violet-300', dot: 'bg-violet-400', skills: ['PostgreSQL', 'MySQL', 'Redis', 'Pinecone'] },
+const categories = [
+  { title: 'Backend & APIs', Icon: Server, skills: ['Java (Spring Boot)', 'Python', 'FastAPI'] },
+  { title: 'Infrastructure', Icon: Layers, skills: ['Kubernetes', 'Docker', 'Nginx', 'Caddy'] },
+  { title: 'Data & Events', Icon: Share2, skills: ['Apache Kafka', 'Apache Airflow', 'Apache Spark', 'Valkey'] },
+  { title: 'Databases', Icon: Database, skills: ['PostgreSQL', 'MySQL', 'Redis', 'Pinecone'] },
 ];
-
-const badges: SkillBadge[] = categories.flatMap((cat) =>
-  cat.skills.map((label) => ({
-    label,
-    categoryId: cat.id,
-    border: cat.border,
-    dot: cat.dot,
-    iconClass: techIconMap[label],
-  }))
-);
-
-const chipBase =
-  'inline-flex items-center gap-2 min-h-11 px-4 rounded-full border text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2';
-const chipIdle = 'border-stone-300 bg-white text-stone-600 hover:border-stone-400 hover:text-stone-900';
-const chipActive = 'border-stone-900 bg-stone-900 text-stone-50';
 
 export default function SkillsSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const playgroundRef = useRef<SkillsPlaygroundHandle>(null);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-    if (prefersReducedMotion()) return;
 
     const header = section.querySelector('[data-section-header]');
-    const controls = section.querySelector('[data-skill-controls]');
-    gsap.set([header, controls], { opacity: 0, y: 20 });
+    const cards = Array.from(section.querySelectorAll<HTMLElement>('[data-skill-card]'));
+    const badges = Array.from(section.querySelectorAll<HTMLElement>('[data-skill-badge]'));
 
-    let tween: gsap.core.Tween | undefined;
+    gsap.set(header, { opacity: 0, y: 20 });
+    gsap.set(cards, { opacity: 0, y: 40 });
+    gsap.set(badges, { opacity: 0, scale: 0.9 });
+
+    const timelines: gsap.core.Timeline[] = [];
+
     const trigger = ScrollTrigger.create({
       trigger: section,
       start: 'top 80%',
       once: true,
       onEnter: () => {
-        tween = gsap.to([header, controls], { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: 'power2.out' });
+        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+          .to(header, { opacity: 1, y: 0, duration: 0.4 })
+          .to(cards, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12 }, '-=0.1')
+          .to(badges, { opacity: 1, scale: 1, duration: 0.3, stagger: 0.04 }, '-=0.3');
+        timelines.push(tl);
       },
     });
 
     return () => {
       trigger.kill();
-      tween?.kill();
-      gsap.set([header, controls], { clearProps: 'all' });
+      timelines.forEach((tl) => tl.kill());
+      gsap.set([header, ...cards, ...badges], { clearProps: 'all' });
     };
   }, []);
 
   return (
     <section ref={sectionRef} id="skills" className="py-24 border-t border-stone-200">
-      <SectionHeader title="Tech Skills" subtitle="Drag them around. Filter by category. Reset when it gets messy." />
+      <SectionHeader title="Tech Skills" subtitle="Core competencies and technologies." />
 
-      <div data-skill-controls className="mt-8 flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          aria-pressed={activeCategory === null}
-          onClick={() => setActiveCategory(null)}
-          className={`${chipBase} ${activeCategory === null ? chipActive : chipIdle}`}
-        >
-          All
-        </button>
-        {categories.map((cat) => {
-          const active = activeCategory === cat.id;
-          return (
-            <button
-              key={cat.id}
-              type="button"
-              aria-pressed={active}
-              onClick={() => setActiveCategory(active ? null : cat.id)}
-              className={`${chipBase} ${active ? chipActive : chipIdle}`}
-            >
-              <span aria-hidden="true" className={`w-2 h-2 rounded-full ${cat.dot}`} />
-              {cat.title}
-            </button>
-          );
-        })}
-        <button
-          type="button"
-          onClick={() => playgroundRef.current?.reset()}
-          className={`${chipBase} ${chipIdle} ml-auto`}
-        >
-          <RotateCcw size={14} aria-hidden="true" />
-          Reset layout
-        </button>
-      </div>
-
-      <div className="mt-6">
-        <SkillsPlayground ref={playgroundRef} badges={badges} activeCategory={activeCategory} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+        {categories.map((cat) => (
+          <div
+            key={cat.title}
+            data-skill-card
+            className="p-8 border border-stone-200 rounded-xl bg-white hover:border-stone-300 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-stone-100 rounded-lg">
+                <cat.Icon size={20} className="text-stone-700" />
+              </div>
+              <h3 className="font-heading font-semibold text-lg">{cat.title}</h3>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {cat.skills.map((skill) => {
+                const iconClass = techIconMap[skill];
+                return (
+                  <span
+                    key={skill}
+                    data-skill-badge
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 text-stone-700 text-sm rounded-md font-medium"
+                  >
+                    {iconClass && <i className={`${iconClass} text-base leading-none`} />}
+                    {skill}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
