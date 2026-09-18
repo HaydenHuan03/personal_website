@@ -57,31 +57,31 @@ export default function LeetCodeSection() {
     <section ref={sectionRef} id="leetcode" className="py-24 border-t border-stone-200">
       <SectionHeader title="LeetCode" subtitle="Problem-solving practice, tracked at each deploy." />
 
-      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 mt-12 items-stretch">
-        <div data-lc-card className="p-8 border border-stone-200 rounded-xl bg-white flex flex-col items-center justify-center gap-2 md:w-56">
-          <span className="text-5xl font-heading font-semibold text-stone-900">{stats.totalSolved ?? '—'}</span>
+      <div className="mt-12 border border-stone-200 rounded-xl bg-white flex flex-col md:flex-row divide-y divide-stone-200 md:divide-y-0 md:divide-x">
+        <div data-lc-card className="p-8 flex flex-col items-center justify-center gap-2 md:w-56 flex-shrink-0">
+          <span className="text-5xl font-heading font-semibold text-stone-900">{stats.totalSolved ?? '-'}</span>
           <span className="text-stone-500 text-sm uppercase tracking-wide">Problems Solved</span>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
-          <div data-lc-card className="p-6 border border-stone-200 rounded-xl bg-white flex flex-col gap-2">
+        <div className="flex-1 grid grid-cols-3 divide-x divide-stone-200">
+          <div data-lc-card className="p-6 flex flex-col gap-2">
             <span className="text-sm font-medium text-emerald-600">Easy</span>
-            <span className="text-2xl font-heading font-semibold text-stone-900">{stats.easySolved ?? '—'}</span>
+            <span className="text-2xl font-heading font-semibold text-stone-900">{stats.easySolved ?? '-'}</span>
           </div>
-          <div data-lc-card className="p-6 border border-stone-200 rounded-xl bg-white flex flex-col gap-2">
+          <div data-lc-card className="p-6 flex flex-col gap-2">
             <span className="text-sm font-medium text-amber-600">Medium</span>
-            <span className="text-2xl font-heading font-semibold text-stone-900">{stats.mediumSolved ?? '—'}</span>
+            <span className="text-2xl font-heading font-semibold text-stone-900">{stats.mediumSolved ?? '-'}</span>
           </div>
-          <div data-lc-card className="p-6 border border-stone-200 rounded-xl bg-white flex flex-col gap-2">
+          <div data-lc-card className="p-6 flex flex-col gap-2">
             <span className="text-sm font-medium text-rose-600">Hard</span>
-            <span className="text-2xl font-heading font-semibold text-stone-900">{stats.hardSolved ?? '—'}</span>
+            <span className="text-2xl font-heading font-semibold text-stone-900">{stats.hardSolved ?? '-'}</span>
           </div>
         </div>
       </div>
 
       {!hasStats && (
         <p className="mt-4 text-sm text-stone-500">
-          Stats temporarily unavailable — check the profile directly below.
+          Stats temporarily unavailable. Check the profile directly below.
         </p>
       )}
 

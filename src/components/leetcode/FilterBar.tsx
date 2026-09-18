@@ -28,7 +28,7 @@ export default function FilterBar({ filters, onChange, topics, total, visible }:
   const active = hasActiveFilters(filters);
 
   return (
-    <div className="sticky top-[88px] z-40 -mx-6 px-6 md:-mx-12 md:px-12 py-4 bg-stone-50/85 backdrop-blur-sm border-b border-stone-200">
+    <div className="sticky top-16 z-40 -mx-6 px-6 md:-mx-12 md:px-12 py-4 bg-stone-50/85 backdrop-blur-sm border-b border-stone-200">
       <div className="flex flex-wrap items-center gap-3">
         <label className="relative flex-1 min-w-[12rem]">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
@@ -38,7 +38,7 @@ export default function FilterBar({ filters, onChange, topics, total, visible }:
             onChange={(e) => onChange({ ...filters, query: e.target.value })}
             placeholder="Search by number or title"
             aria-label="Search problems"
-            className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-stone-300 rounded-md focus:outline-none focus:border-stone-500"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-stone-300 rounded-md focus:outline-none focus:border-stone-500 focus:ring-2 focus:ring-stone-900/20"
           />
         </label>
 

@@ -4,7 +4,7 @@ import '../styles/journey.css';
 
 const experiences = [
   {
-    date: 'August 2025 – Feb 2026',
+    date: 'August 2025 - Feb 2026',
     title: 'Backend Engineer Internship',
     role: 'DevOps & Backend Engineer Intern',
     description:

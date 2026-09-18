@@ -26,31 +26,21 @@ const BUTTON =
 
 export default function LeetCodePage() {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
-  const [openIds, setOpenIds] = useState<ReadonlySet<number>>(new Set());
 
   useEffect(() => {
-    document.title = 'LeetCode Solutions — Hayden Huan';
+    document.title = 'LeetCode Solutions - Hayden Huan';
     return () => {
-      document.title = 'Hayden Huan — Backend Engineer & Infrastructure Developer';
+      document.title = 'Hayden Huan - Backend Engineer & Infrastructure Developer';
     };
   }, []);
 
   const visible = useMemo(() => PROBLEMS.filter((p) => matchesFilters(p, filters)), [filters]);
   const groups = useMemo(() => groupByPrimaryTopic(visible), [visible]);
 
-  function toggleOpen(id: number) {
-    setOpenIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }
-
   return (
     <>
       <Navbar />
-      <main className="max-w-4xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
+      <main id="main-content" className="max-w-4xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
         <Link
           to="/#leetcode"
           className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors mb-12 text-sm font-medium"
@@ -59,7 +49,7 @@ export default function LeetCodePage() {
         </Link>
 
         <header className="mb-10 animate-[fadeInUp_0.5s_ease-out]">
-          <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 mb-4 leading-[1.1]">
+          <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 mb-4 leading-[1.1] text-balance">
             LeetCode Solutions
           </h1>
           <div className="flex flex-wrap gap-3 mt-6">
@@ -106,7 +96,7 @@ export default function LeetCodePage() {
                   </h2>
                   <ul className="border-t border-stone-200">
                     {group.problems.map((p) => (
-                      <ProblemRow key={p.id} problem={p} open={openIds.has(p.id)} onToggle={() => toggleOpen(p.id)} />
+                      <ProblemRow key={p.id} problem={p} />
                     ))}
                   </ul>
                 </section>

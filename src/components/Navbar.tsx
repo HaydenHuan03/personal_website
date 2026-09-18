@@ -5,10 +5,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SECTIONS = ['about', 'skills', 'leetcode', 'projects', 'journey'] as const;
+const SECTIONS = ['about', 'leetcode', 'projects', 'journey'] as const;
 const LABELS: Record<(typeof SECTIONS)[number], string> = {
   about: 'About',
-  skills: 'Skills',
   leetcode: 'LeetCode',
   projects: 'Projects',
   journey: 'Journey',
@@ -53,23 +52,25 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="max-w-5xl mx-auto px-6 md:px-12 py-8 flex justify-center items-center bg-stone-50/80 backdrop-blur-sm sticky top-0 z-50">
-      <div ref={containerRef} className="relative flex gap-6 text-sm font-medium text-stone-600 pb-1">
-        {SECTIONS.map((id) => (
-          <Link
-            key={id}
-            to={`/#${id}`}
-            data-nav-link={id}
-            className="hover:text-stone-900 transition-colors"
-          >
-            {LABELS[id]}
-          </Link>
-        ))}
-        <span
-          ref={indicatorRef}
-          className="absolute bottom-0 left-0 h-[2px] bg-stone-900 rounded-full pointer-events-none"
-          style={{ width: 0, opacity: 0 }}
-        />
+    <nav className="sticky top-0 z-50 bg-stone-50/80 backdrop-blur-sm">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 py-5 flex justify-center items-center">
+        <div ref={containerRef} className="relative flex gap-6 text-sm font-medium text-stone-600 pb-1">
+          {SECTIONS.map((id) => (
+            <Link
+              key={id}
+              to={`/#${id}`}
+              data-nav-link={id}
+              className="hover:text-stone-900 transition-colors"
+            >
+              {LABELS[id]}
+            </Link>
+          ))}
+          <span
+            ref={indicatorRef}
+            className="absolute bottom-0 left-0 h-[2px] bg-stone-900 rounded-full pointer-events-none"
+            style={{ width: 0, opacity: 0 }}
+          />
+        </div>
       </div>
     </nav>
   );

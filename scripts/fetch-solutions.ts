@@ -1,16 +1,11 @@
-/**
- * Prebuild step: pull every solution from the LeetHub repo and snapshot it
- * into src/data/leetcode-solutions.json. Incremental: unchanged files (same
- * blob SHA) and known problems are reused from the previous snapshot. On any
- * fatal failure the existing snapshot is left untouched so the build never
- * breaks on a flaky external API.
- */
-import type { Difficulty, Problem, Solution, SolutionsSnapshot } from '../src/types/leetcode';
+import type { DescriptionMap, Difficulty, Problem, Solution, SolutionsSnapshot } from '../src/types/leetcode';
+import { sanitizeDescription } from './lib/description';
 import { groupBlobs, sortSolutions, type ProblemFiles } from './lib/solutions';
 
 const REPO = 'HaydenHuan03/Leetcode';
 const BRANCH = 'main';
 const OUT = new URL('../src/data/leetcode-solutions.json', import.meta.url).pathname;
+const DESC_OUT = new URL('../src/data/leetcode-descriptions.json', import.meta.url).pathname;
 const CONCURRENCY = 8;
 const TIMEOUT_MS = 10_000;
 
@@ -24,13 +19,14 @@ interface Meta {
   title: string;
   difficulty: Difficulty | null;
   topics: string[];
+  description: string | null;
 }
 
-async function loadCache(): Promise<SolutionsSnapshot | null> {
+async function loadJson<T>(path: string): Promise<T | null> {
   try {
-    const file = Bun.file(OUT);
+    const file = Bun.file(path);
     if (!(await file.exists())) return null;
-    return (await file.json()) as SolutionsSnapshot;
+    return (await file.json()) as T;
   } catch {
     return null;
   }
@@ -84,6 +80,7 @@ async function fetchMeta(slug: string): Promise<Meta | null> {
               difficulty
               topicTags { name }
               categoryTitle
+              content
             }
           }
         `,
@@ -99,6 +96,7 @@ async function fetchMeta(slug: string): Promise<Meta | null> {
           difficulty: string;
           topicTags: { name: string }[];
           categoryTitle?: string | null;
+          content?: string | null;
         } | null;
       };
     };
@@ -108,7 +106,8 @@ async function fetchMeta(slug: string): Promise<Meta | null> {
     // Some problems (e.g. "30 Days of JavaScript") have no tags; fall back to the category.
     const topics = q.topicTags.map((t) => t.name);
     if (topics.length === 0 && q.categoryTitle) topics.push(q.categoryTitle);
-    return { title: q.title, difficulty, topics };
+    const description = q.content ? sanitizeDescription(q.content) : null;
+    return { title: q.title, difficulty, topics, description: description || null };
   } catch {
     return null;
   }
@@ -134,16 +133,32 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promis
   return results;
 }
 
-async function buildProblem(pf: ProblemFiles, cached: Problem | undefined): Promise<Problem | null> {
-  // Reuse cached metadata unless it came from the slug fallback (difficulty null / no topics).
+interface Built {
+  problem: Problem;
+  description: string | null;
+}
+
+async function buildProblem(
+  pf: ProblemFiles,
+  cached: Problem | undefined,
+  cachedDescription: string | undefined
+): Promise<Built | null> {
+  // Reuse cached metadata unless it came from the slug fallback (difficulty null / no topics)
+  // or the description has not been fetched yet.
   let meta: Meta;
-  if (cached && cached.difficulty !== null && cached.topics.length > 0) {
-    meta = { title: cached.title, difficulty: cached.difficulty, topics: cached.topics };
+  if (cached && cached.difficulty !== null && cached.topics.length > 0 && cachedDescription !== undefined) {
+    meta = { title: cached.title, difficulty: cached.difficulty, topics: cached.topics, description: cachedDescription };
   } else {
     const fetched = await fetchMeta(pf.slug);
     if (!fetched) console.warn(`No LeetCode metadata for ${pf.slug}; using slug fallback`);
-    meta = fetched ?? { title: titleFromSlug(pf.slug), difficulty: null, topics: [] };
+    meta = fetched ?? {
+      title: cached?.title ?? titleFromSlug(pf.slug),
+      difficulty: cached?.difficulty ?? null,
+      topics: cached?.topics ?? [],
+      description: cachedDescription ?? null,
+    };
   }
+  const { description, ...problemMeta } = meta;
 
   const solutions: Solution[] = [];
   for (const file of pf.files) {
@@ -164,11 +179,15 @@ async function buildProblem(pf: ProblemFiles, cached: Problem | undefined): Prom
   }
   if (solutions.length === 0) return null;
 
-  return { id: pf.id, slug: pf.slug, ...meta, solutions: sortSolutions(solutions) };
+  return {
+    problem: { id: pf.id, slug: pf.slug, ...problemMeta, solutions: sortSolutions(solutions) },
+    description,
+  };
 }
 
-const cache = await loadCache();
+const cache = await loadJson<SolutionsSnapshot>(OUT);
 const cachedBySlug = new Map((cache?.problems ?? []).map((p) => [p.slug, p]));
+const cachedDescriptions = (await loadJson<DescriptionMap>(DESC_OUT)) ?? {};
 
 const tree = await fetchTree();
 const groups = tree ? groupBlobs(tree.filter((e) => e.type === 'blob')) : [];
@@ -176,8 +195,16 @@ const groups = tree ? groupBlobs(tree.filter((e) => e.type === 'blob')) : [];
 if (groups.length === 0) {
   console.warn('LeetCode solutions fetch failed — keeping existing snapshot');
 } else {
-  const built = await mapLimit(groups, CONCURRENCY, (pf) => buildProblem(pf, cachedBySlug.get(pf.slug)));
-  const problems = built.filter((p): p is Problem => p !== null);
+  const built = await mapLimit(groups, CONCURRENCY, (pf) =>
+    buildProblem(pf, cachedBySlug.get(pf.slug), cachedDescriptions[pf.slug])
+  );
+  const results = built.filter((b): b is Built => b !== null);
+  const problems = results.map((b) => b.problem);
+  const descriptions: DescriptionMap = {};
+  for (const { problem, description } of results) {
+    if (description) descriptions[problem.slug] = description;
+  }
+
   if (cache && JSON.stringify(cache.problems) === JSON.stringify(problems)) {
     // Nothing changed; leave fetchedAt alone so the daily job has nothing to commit.
     console.log(`LeetCode solutions unchanged: ${problems.length} problems`);
@@ -186,5 +213,10 @@ if (groups.length === 0) {
     await Bun.write(OUT, JSON.stringify(snapshot, null, 2) + '\n');
     const reused = problems.filter((p) => cachedBySlug.has(p.slug)).length;
     console.log(`LeetCode solutions updated: ${problems.length} problems (${reused} reused from cache)`);
+  }
+
+  if (JSON.stringify(cachedDescriptions) !== JSON.stringify(descriptions)) {
+    await Bun.write(DESC_OUT, JSON.stringify(descriptions, null, 2) + '\n');
+    console.log(`LeetCode descriptions updated: ${Object.keys(descriptions).length} problems`);
   }
 }

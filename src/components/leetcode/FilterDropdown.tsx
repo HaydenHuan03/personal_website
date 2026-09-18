@@ -5,7 +5,6 @@ export interface DropdownOption {
   value: string;
   label: string;
   count?: number;
-  /** Optional Tailwind class for a small colour dot before the label. */
   dotClass?: string;
 }
 
@@ -18,6 +17,7 @@ interface Props {
 
 export default function FilterDropdown({ label, options, selected, onToggle }: Props) {
   const [open, setOpen] = useState(false);
+  const [alignRight, setAlignRight] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const listId = useId();
 
@@ -35,6 +35,13 @@ export default function FilterDropdown({ label, options, selected, onToggle }: P
       document.removeEventListener('pointerdown', onPointerDown);
       document.removeEventListener('keydown', onKeyDown);
     };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || !rootRef.current) return;
+    const rect = rootRef.current.getBoundingClientRect();
+    const menuWidth = 256; // matches w-64
+    setAlignRight(rect.left + menuWidth > window.innerWidth - 12);
   }, [open]);
 
   const active = selected.size > 0;
@@ -64,7 +71,9 @@ export default function FilterDropdown({ label, options, selected, onToggle }: P
           role="listbox"
           aria-multiselectable="true"
           aria-label={label}
-          className="absolute left-0 mt-2 w-64 max-h-72 overflow-y-auto py-1 bg-white border border-stone-200 rounded-lg shadow-lg z-50"
+          className={`absolute mt-2 w-64 max-w-[calc(100vw-1.5rem)] max-h-72 overflow-y-auto py-1 bg-white border border-stone-200 rounded-lg shadow-lg z-50 ${
+            alignRight ? 'right-0' : 'left-0'
+          }`}
         >
           {options.map((o) => {
             const on = selected.has(o.value);
