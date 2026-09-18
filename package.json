@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "bun scripts/fetch-leetcode.ts && tsc --noEmit && vite build",
+    "build": "bun scripts/fetch-leetcode.ts && bun scripts/fetch-solutions.ts && tsc --noEmit && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

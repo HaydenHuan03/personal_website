@@ -1,0 +1,3081 @@
+{
+  "fetchedAt": "2026-09-18T06:20:12.566Z",
+  "problems": [
+    {
+      "id": 1,
+      "slug": "two-sum",
+      "title": "Two Sum",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0001-two-sum/0001-two-sum.cpp",
+          "sha": "93466f7af86265a20785602bfa9421e1848e7c13",
+          "code": "class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        int arrSize = nums.size();\n\n        for(int i = 0; i < arrSize-1; i++){\n            for (int j = i+1; j < arrSize; j++){\n                if(nums[i] + nums[j] == target)\n                return {i, j};\n            }\n        }\n        return {};\n    }\n};"
+        },
+        {
+          "language": "python",
+          "path": "0001-two-sum/0001-two-sum.py",
+          "sha": "75af43ec56049ffe76c57732cdd9278ba2350d1e",
+          "code": "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        n = len(nums)\n        for i in range(n-1):\n            for j in range(i+1, n):\n                if nums[i] + nums[j] == target:\n                    return [i, j]\n        \n        return []"
+        },
+        {
+          "language": "java",
+          "path": "0001-two-sum/0001-two-sum.java",
+          "sha": "ac95533b622085ab5a1cc0df50aa0fd8661472b1",
+          "code": "class Solution {\n    public int[] twoSum(int[] nums, int target) {\n\n        for(int i=1;i<nums.length;i++){\n            for(int j=i;j<nums.length;j++){\n                if(nums[j]+nums[j-i]==target){\n                    return new int[]{j-i,j};\n                }\n            }\n        }\n        return new int[]{};\n    }\n}"
+        },
+        {
+          "language": "javascript",
+          "path": "0001-two-sum/0001-two-sum.js",
+          "sha": "31ff21a2add9d7c38c6c89a051386f3527fa831f",
+          "code": "/**\n * @param {number[]} nums\n * @param {number} target\n * @return {number[]}\n */\nvar twoSum = function(nums, target) {\n    let map = {}\n\n    for(let i = 0; i < nums.length; i++){\n        let complement = target - nums[i];\n\n        if(map[complement] !== undefined){\n            return [map[complement], i]\n        }\n\n        map[nums[i]] = i;\n    }\n\n    return [];\n};"
+        },
+        {
+          "language": "csharp",
+          "path": "0001-two-sum/0001-two-sum.cs",
+          "sha": "93466f7af86265a20785602bfa9421e1848e7c13",
+          "code": "class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        int arrSize = nums.size();\n\n        for(int i = 0; i < arrSize-1; i++){\n            for (int j = i+1; j < arrSize; j++){\n                if(nums[i] + nums[j] == target)\n                return {i, j};\n            }\n        }\n        return {};\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "longest-substring-without-repeating-characters",
+      "title": "Longest Substring Without Repeating Characters",
+      "difficulty": "Medium",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Sliding Window"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0003-longest-substring-without-repeating-characters/0003-longest-substring-without-repeating-characters.cpp",
+          "sha": "bf4081af6da818242e703016d395260f5b5f7689",
+          "code": "class Solution {\npublic:\n    int lengthOfLongestSubstring(string s) {\n        unordered_set<char> visited;\n        int maxLength = 0;\n        int left = 0;\n\n        for(int right = 0; right < s.size(); right++){\n            if(visited.count(s[right])==0){\n                visited.insert(s[right]);\n                maxLength = max(maxLength, right - left + 1);\n            }else{\n                while(visited.count(s[right])){\n                    visited.erase(s[left]);\n                    left++;\n                }\n                visited.insert(s[right]);\n            }\n        }\n        return maxLength;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "slug": "longest-palindromic-substring",
+      "title": "Longest Palindromic Substring",
+      "difficulty": "Medium",
+      "topics": [
+        "Two Pointers",
+        "String",
+        "Dynamic Programming",
+        "Manacher"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0005-longest-palindromic-substring/0005-longest-palindromic-substring.cpp",
+          "sha": "e1104b6789d8f308203d12beaec8311d2d25c605",
+          "code": "class Solution {\npublic:\n    string expandAroundCenter(string s, int left, int right){\n        while(left >= 0 && right < s.size() && s[left] == s[right]){\n            left--;\n            right++;\n        }\n        return s.substr(left+1, right-left-1);\n    }\n    string longestPalindrome(string s) {\n        if(s.empty()) return \"\";\n\n        string longest = \"\";\n        for(int i = 0; i < s.size(); i++){\n            string odd = expandAroundCenter(s, i , i);\n            if(odd.length() > longest.length()){\n                longest = odd;\n            }\n\n            string even = expandAroundCenter(s, i, i+1);\n            if(even.length() > longest.length()){\n                longest = even;\n            }\n        }\n        return longest;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "slug": "zigzag-conversion",
+      "title": "Zigzag Conversion",
+      "difficulty": "Medium",
+      "topics": [
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0006-zigzag-conversion/0006-zigzag-conversion.cpp",
+          "sha": "ddc99cc87622ae725e93cc54488eb546392e1a57",
+          "code": "class Solution {\npublic:\n    string convert(string s, int numRows) {\n        if(numRows == 1 || s.length() <= numRows) return s;\n\n        vector<string> rows(min(numRows, int(s.length())));\n        int currRow = 0;\n        bool goingDown = false;\n\n        for(char c : s){\n            rows[currRow] += c;\n\n            if(currRow == 0 || currRow == numRows-1){\n                goingDown = !goingDown;\n            }\n\n            currRow += goingDown? 1 : -1;\n        }\n\n        string result;\n        for(string row : rows){\n            result += row;\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "slug": "palindrome-number",
+      "title": "Palindrome Number",
+      "difficulty": "Easy",
+      "topics": [
+        "Math"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0009-palindrome-number/0009-palindrome-number.py",
+          "sha": "51437686f925985b92459fa819311b076c329199",
+          "code": "class Solution:\n    def isPalindrome(self, x: int) -> bool:\n        ##base case\n        if x < 0:\n            return False\n        \n        reverse = 0\n        copy = x\n\n        while x > 0:\n            reverse = (reverse * 10) + (x % 10)\n            x //= 10\n        \n        return reverse == copy"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "slug": "container-with-most-water",
+      "title": "Container With Most Water",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Two Pointers",
+        "Greedy"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0011-container-with-most-water/0011-container-with-most-water.java",
+          "sha": "65bf5bf2b40aa0779bdeed6b994c66b55bd5da55",
+          "code": "class Solution {\n    public int maxArea(int[] height) {\n        int left = 0, right = height.length -1 ;\n        int max_area = 0;\n\n        while(left < right){\n            int h = Math.min(height[left], height[right]);\n            int width = right - left;\n            max_area = Math.max(max_area, h * width);\n\n            if(height[left] < height[right]){\n                left++;\n            }else{\n                right--;\n            }\n        }\n        return max_area;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "slug": "integer-to-roman",
+      "title": "Integer to Roman",
+      "difficulty": "Medium",
+      "topics": [
+        "Hash Table",
+        "Math",
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0012-integer-to-roman/0012-integer-to-roman.cpp",
+          "sha": "d19664d776a0445761f38e7c98c5af0085a1936f",
+          "code": "class Solution {\npublic:\n    string intToRoman(int num) {\n        vector<pair<int, string>> itor ={{1000, \"M\"}, {900, \"CM\"}, {500, \"D\"}, {400, \"CD\"}, {100, \"C\"},\n            {90, \"XC\"},  {50, \"L\"},   {40, \"XL\"}, {10, \"X\"},   {9, \"IX\"},\n            {5, \"V\"},    {4, \"IV\"},   {1, \"I\"}};\n\n        string ans = \"\";\n\n        for(auto const &[value, symbol] : itor){\n            if(num == 0) break;\n\n            while(num >= value){\n                ans += symbol;\n                num -= value;\n            }\n        }\n        return ans;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "slug": "roman-to-integer",
+      "title": "Roman to Integer",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "Math",
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0013-roman-to-integer/0013-roman-to-integer.java",
+          "sha": "8392edaa43870be8510ac05990ee8c5f8fab7b1c",
+          "code": "class Solution {\n    public int romanToInt(String s) {\n        int result = 0;\n        Map<Character, Integer> roman = new HashMap<>();\n\n        roman.put('I', 1);\n        roman.put('V', 5);\n        roman.put('X', 10);\n        roman.put('L', 50);\n        roman.put('C', 100);\n        roman.put('D', 500);\n        roman.put('M', 1000);\n\n        for(int i = 0; i < s.length()-1; i++){\n            if(roman.get(s.charAt(i)) < roman.get(s.charAt(i+1))){\n                result -= roman.get(s.charAt(i));\n            }else{\n                result += roman.get(s.charAt(i));\n            }\n        }\n\n        return result + roman.get(s.charAt(s.length()-1));\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "slug": "3sum",
+      "title": "3Sum",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Two Pointers",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0015-3sum/0015-3sum.cpp",
+          "sha": "1b4a6e8e42712afed851fe336d9c22ca00c8b493",
+          "code": "class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        vector<vector<int>> result;\n        sort(nums.begin(), nums.end());\n\n        for(int i = 0; i < nums.size(); i++){\n            //check if duplicate\n            if(i > 0 && nums[i] == nums[i-1]){\n                continue;\n            }\n\n            int j = i+1;\n            int k = nums.size()-1;\n\n            while(j < k){\n                int total = nums[i] + nums[j] + nums[k];\n\n                if(total > 0){\n                    k--;\n                }else if(total < 0){\n                    j++;\n                }else{\n                    result.push_back({nums[i], nums[j], nums[k]});\n                    j++;\n\n                    while(nums[j] == nums[j-1] && j < k){\n                        j++;\n                    }\n                }\n            }\n        }\n        return result;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0015-3sum/0015-3sum.java",
+          "sha": "917a5702a266f001e483220df7ce643a7fb9637a",
+          "code": "class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        List<List<Integer>> result =  new ArrayList<>();\n        Arrays.sort(nums);\n        int n = nums.length;\n\n        for(int i = 0; i < n - 2; i++){\n            if(i > 0 && nums[i] == nums[i-1]){\n                continue;\n            }\n\n            int j = i+1;\n            int k = n-1;\n\n            while(j < k){\n                int sum = nums[i] + nums[j] + nums[k];\n\n                if(sum < 0){\n                    j = j+1;\n                }\n\n                if (sum > 0){\n                    k = k-1;\n                }\n\n                if (sum == 0){\n                    result.add(Arrays.asList(nums[i], nums[j],nums[k]));\n\n                    j++;\n                    k--;\n\n                    while(j < k && nums[j] == nums[j-1]){\n                        j++;\n                    }\n\n                    while(k > j && nums[k] == nums[k+1]){\n                        k--;\n                    }\n                }\n            }\n        }\n        return result;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "slug": "3sum-closest",
+      "title": "3Sum Closest",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Two Pointers",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0016-3sum-closest/0016-3sum-closest.cpp",
+          "sha": "04f20a5017ea4f49b8f2833e07c5fbec6951d1dc",
+          "code": "class Solution {\npublic:\n    int threeSumClosest(vector<int>& nums, int target) {\n        sort(nums.begin(), nums.end());\n        int closest = INT_MAX / 3;\n\n        for(int i = 0; i < nums.size()-2; i++){\n            int left = i + 1, right = nums.size()-1;\n            while(left < right){\n                int curr = nums[i] + nums[left] + nums[right];\n                if(abs(curr - target) < abs(closest - target)){\n                    closest = curr;\n                }\n\n                if(curr < target){\n                    left++;\n                }else if(curr > target){\n                    right--;\n                }else{\n                    return curr;\n                }\n            }\n        }\n\n        return closest;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "slug": "letter-combinations-of-a-phone-number",
+      "title": "Letter Combinations of a Phone Number",
+      "difficulty": "Medium",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Backtracking"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0017-letter-combinations-of-a-phone-number/0017-letter-combinations-of-a-phone-number.cpp",
+          "sha": "c28555a8ef94f42cb8648d2374bd9baef847867b",
+          "code": "class Solution {\npublic:\n    vector<string> letterCombinations(string digits) {\n        vector<string> res;\n\n        if(digits.empty()){\n            return res;\n        }\n\n        unordered_map<char, string> digitToLetters ={\n            {'2', \"abc\"}, {'3', \"def\"},\n            {'4', \"ghi\"}, {'5', \"jkl\"},\n            {'6', \"mno\"}, {'7', \"pqrs\"},\n            {'8', \"tuv\"}, {'9', \"wxyz\"}\n        };\n\n        backtrack(digits, 0, \"\", res, digitToLetters);\n\n        return res;\n    }\n\n    void backtrack(const string& digits, int idx, string combo, vector<string>& res, const unordered_map<char, string>& digitToLetters){\n        if(idx == digits.length()){\n            res.push_back(combo);\n            return;\n        }\n\n        string letters = digitToLetters.at(digits[idx]);\n        for(char letter:letters){\n            backtrack(digits, idx+1, combo + letter, res, digitToLetters);\n        }\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "slug": "4sum",
+      "title": "4Sum",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Two Pointers",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0018-4sum/0018-4sum.java",
+          "sha": "87a3e6637e37bb802985e659a18198e8d7a4574b",
+          "code": "class Solution {\n    public List<List<Integer>> fourSum(int[] nums, int target) {\n        List<List<Integer>> result = new ArrayList<>();\n        Arrays.sort(nums);\n        int n = nums.length;\n\n        for(int i = 0; i <= n-4; i++){\n            if(i != 0 && nums[i] == nums[i-1]){\n                continue;\n            }\n            for(int j = i+1; j <= n-3; j++){\n                if(j != i+1 && nums[j] == nums[j-1]){\n                    continue;\n                }\n                \n                int left = j+1;\n                int right = n-1;\n\n                while(left < right){\n                    long sum = (long) nums[i] + nums[j] + nums[left] + nums[right];\n\n                    if(sum > target){\n                        right--;\n                    }else if(sum < target){\n                        left++;\n                    }else{\n                        result.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));\n\n                        left++;\n                        right--;\n\n                        while(right > left && nums[right] == nums[right+1]){\n                            right--;\n                        }\n\n                        while(left < right && nums[left] == nums[left-1]){\n                            left++;\n                        }\n                    }\n                }\n            }\n        }\n        return result;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "slug": "valid-parentheses",
+      "title": "Valid Parentheses",
+      "difficulty": "Easy",
+      "topics": [
+        "String",
+        "Stack",
+        "Bracket Sequences"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0020-valid-parentheses/0020-valid-parentheses.py",
+          "sha": "c16fcb4a8dfb3818e7fab5a3173c0ab36e96e90d",
+          "code": "class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []\n        mapping = {\")\" : \"(\", \"}\" : \"{\", \"]\":\"[\"}\n\n        for char in s:\n            if char in mapping.values():\n                stack.append(char)\n            elif char in mapping.keys():\n                if not stack or mapping[char] != stack.pop():\n                    return False\n        \n        return not stack"
+        },
+        {
+          "language": "java",
+          "path": "0020-valid-parentheses/0020-valid-parentheses.java",
+          "sha": "1cc92bab93d27051c42fee00c363a8ef3e78d15b",
+          "code": "class Solution {\n    public boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for(char c : s.toCharArray()){\n            if(c == '(' || c == '{' || c == '['){\n                stack.push(c);\n            }else{\n                if(stack.isEmpty()){\n                    return false;\n                }\n                char top = stack.pop();\n                if(c == ')' && top != '('){\n                    return false;\n                }\n                if(c == '}' && top != '{'){\n                    return false;\n                }\n                if(c == ']' && top != '['){\n                    return false;\n                }\n            }\n        }\n\n        return stack.isEmpty();\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "slug": "merge-two-sorted-lists",
+      "title": "Merge Two Sorted Lists",
+      "difficulty": "Easy",
+      "topics": [
+        "Linked List",
+        "Recursion"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0021-merge-two-sorted-lists/0021-merge-two-sorted-lists.py",
+          "sha": "e9ff3973ee7a8f9b8ab0b639af18d0018d90ce11",
+          "code": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:\n        current = dummy = ListNode()\n\n        while list1 and list2:\n            if list1.val > list2.val:\n                current.next = list2\n                list2 = list2.next\n            else:\n                current.next = list1\n                list1 = list1.next\n        \n            current = current.next\n        \n        if list1:\n            current.next = list1\n        else:\n            current.next = list2\n\n        return dummy.next"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "slug": "generate-parentheses",
+      "title": "Generate Parentheses",
+      "difficulty": "Medium",
+      "topics": [
+        "String",
+        "Dynamic Programming",
+        "Backtracking",
+        "Bracket Sequences"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0022-generate-parentheses/0022-generate-parentheses.cpp",
+          "sha": "c11de0445fb5249853c92f4367c1694a6040b5c8",
+          "code": "class Solution {\npublic:\n    void generate(int openC, int closeC, string curr, vector<string>& res, int n){\n        //Check if all open and close used\n        if(curr.length() == 2 * n){\n            res.push_back(curr);\n            return;\n        }\n        //Check if all open count used\n        if(openC < n){\n            generate(openC + 1, closeC, curr + \"(\", res, n);\n        }\n        //Check if all close count used\n        if(closeC < openC){\n            generate(openC, closeC + 1, curr + \")\", res, n);\n        }\n    }\n\n    vector<string> generateParenthesis(int n) {\n        vector<string> res;\n        generate(0, 0, \"\", res, n);\n        return res;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "slug": "find-the-index-of-the-first-occurrence-in-a-string",
+      "title": "Find the Index of the First Occurrence in a String",
+      "difficulty": "Easy",
+      "topics": [
+        "Two Pointers",
+        "String",
+        "String Matching",
+        "Z Algorithm",
+        "Knuth–Morris–Pratt Algorithm",
+        "Boyer–Moore String-Search Algorithm"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0028-find-the-index-of-the-first-occurrence-in-a-string/0028-find-the-index-of-the-first-occurrence-in-a-string.py",
+          "sha": "6328fecf88b04ace3e0e99af48ffaeb1bb03803e",
+          "code": "class Solution:\n    def strStr(self, haystack: str, needle: str) -> int:\n        #Ensure enough space of haystack to find needle\n        for i in range(len(haystack) - len(needle) + 1):\n            #if fit then finding needle\n            if haystack[i:i+len(needle)] == needle:\n                return i\n        #if not found, return -1\n        return -1"
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "slug": "combination-sum",
+      "title": "Combination Sum",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Backtracking"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0039-combination-sum/0039-combination-sum.cpp",
+          "sha": "17eeb21a536bb761fd9f051a887fc615081464ed",
+          "code": "class Solution {\npublic:\n    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {\n        vector<vector<int>> res;\n        vector<int> combo;\n        calculate(combo, res, 0,0,candidates, target);\n        return res;\n    }\n\n    void calculate(vector<int>& combo, vector<vector<int>>&res, int idx, int total, vector<int>& candidates, int target){\n        if(total == target){\n            res.push_back(combo);\n            return;\n        }\n\n        if(total > target || idx >= candidates.size()){\n            return;\n        }\n\n        combo.push_back(candidates[idx]);\n        calculate(combo, res, idx, total + candidates[idx], candidates, target);\n        combo.pop_back();\n        calculate(combo, res, idx + 1, total, candidates, target);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "slug": "group-anagrams",
+      "title": "Group Anagrams",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "String",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0049-group-anagrams/0049-group-anagrams.cpp",
+          "sha": "1caa0e1b4478ae2771fda3c49847cdf95d003f91",
+          "code": "class Solution {\npublic:\n    vector<vector<string>> groupAnagrams(vector<string>& strs) {\n        unordered_map<string, vector<string>> group;\n\n        for(const string& str : strs){\n            string sortedString = str;\n            sort(sortedString.begin(), sortedString.end());\n\n            group[sortedString].push_back(str);\n        }\n\n        vector<vector<string>> result;\n        for(const auto& pair : group){\n            result.push_back(pair.second);\n        }\n\n        return result;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0049-group-anagrams/0049-group-anagrams.java",
+          "sha": "93c0d57bc7bbed458fb8709557cc5b8fa4fc117f",
+          "code": "class Solution {\n    public List<List<String>> groupAnagrams(String[] strs) {\n        HashMap<String, List<String>> map = new HashMap<>();\n\n        for(String str : strs){\n            char[] chars = str.toCharArray();\n            Arrays.sort(chars);\n            String key = new String(chars);\n\n            map.computeIfAbsent(key, k -> new ArrayList<>()).add(str);\n        }\n\n        return new ArrayList<>(map.values());\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 70,
+      "slug": "climbing-stairs",
+      "title": "Climbing Stairs",
+      "difficulty": "Easy",
+      "topics": [
+        "Math",
+        "Dynamic Programming",
+        "Memoization"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0070-climbing-stairs/0070-climbing-stairs.cpp",
+          "sha": "26e0b3bd8512bca1d04ea47f799bccecafd8b30b",
+          "code": "class Solution {\npublic:\n    int climbStairs(int n) {\n        if(n <= 1) return n;\n\n        vector<int> res(n+1);\n        res[0] = res[1] = 1;\n\n        for(int i = 2; i <= n; i++){\n            res[i] = res[i-1] + res[i-2];\n        }\n\n        return res[n];\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 78,
+      "slug": "subsets",
+      "title": "Subsets",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Backtracking",
+        "Bit Manipulation"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0078-subsets/0078-subsets.cpp",
+          "sha": "6d8a84dc694d268519426afe24309d4d8d78349e",
+          "code": "class Solution {\npublic:\n    vector<vector<int>> subsets(vector<int>& nums) {\n        vector<vector<int>> result;\n        vector<int> subset;\n\n        backtrack(nums, subset, result, 0);\n\n        return result;\n    }\n\n    void backtrack(vector<int>& nums, vector<int>& subset, vector<vector<int>>& result, int idx){\n        if(nums.size() == idx){\n            result.push_back(subset);\n            return;\n        }\n\n        subset.push_back(nums[idx]);\n        backtrack(nums, subset, result, idx+1);\n        subset.pop_back();\n        backtrack(nums, subset, result, idx+1);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "slug": "merge-sorted-array",
+      "title": "Merge Sorted Array",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Two Pointers",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0088-merge-sorted-array/0088-merge-sorted-array.cpp",
+          "sha": "e5de07ce4c516a34a9e31eabf66331d33ceab6e8",
+          "code": "class Solution {\npublic:\n    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {\n        int size = m + n - 1;\n        int midx = m -1;\n        int nidx = n-1;\n\n        while(nidx >= 0){\n            if(midx >= 0 && nums1[midx] > nums2[nidx]){\n                nums1[size] = nums1[midx];\n                midx--;\n            }else{\n                nums1[size] = nums2[nidx];\n                nidx--;\n            }\n            size--;\n        }\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 90,
+      "slug": "subsets-ii",
+      "title": "Subsets II",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Backtracking",
+        "Bit Manipulation"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0090-subsets-ii/0090-subsets-ii.cpp",
+          "sha": "bb28f383ef6ae9e68121158de9edb35a8733614f",
+          "code": "class Solution {\npublic:\n    vector<vector<int>> subsetsWithDup(vector<int>& nums) {\n        vector<vector<int>> result;\n        vector<int> combo;\n\n        sort(nums.begin(), nums.end());\n        backtrack(nums, result, combo, 0);\n\n        return result;\n    }\n\n    void backtrack(vector<int>& nums, vector<vector<int>>& result, vector<int>& combo, int idx){\n        result.push_back(combo);\n\n        for(int i = idx; i < nums.size(); i++){\n            if(i > idx && nums[i] == nums[i-1]) continue;\n\n            combo.push_back(nums[i]);\n            backtrack(nums, result, combo, i+1);\n            combo.pop_back();\n        }\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 94,
+      "slug": "binary-tree-inorder-traversal",
+      "title": "Binary Tree Inorder Traversal",
+      "difficulty": "Easy",
+      "topics": [
+        "Stack",
+        "Tree",
+        "Depth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0094-binary-tree-inorder-traversal/0094-binary-tree-inorder-traversal.cpp",
+          "sha": "8a379fd4a34b2e7ac557e8127738a1564de1f3fa",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    vector<int> inorderTraversal(TreeNode* root) {\n        vector<int> result;\n        inorder(root, result);\n        return result;\n    }\n\n    void inorder(TreeNode *root, vector<int>& result){\n        if(!root) return;\n\n        inorder(root->left, result);\n        result.push_back(root->val);\n        inorder(root->right, result);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 96,
+      "slug": "unique-binary-search-trees",
+      "title": "Unique Binary Search Trees",
+      "difficulty": "Medium",
+      "topics": [
+        "Math",
+        "Dynamic Programming",
+        "Tree",
+        "Binary Search Tree",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0096-unique-binary-search-trees/0096-unique-binary-search-trees.cpp",
+          "sha": "80c188b30f34601876553b6fecffc8953109d5a7",
+          "code": "class Solution {\npublic:\n    int numTrees(int n) {\n        vector<int> dp(n+1, 0);\n        dp[0] = dp[1] = 1;\n\n        for(int i = 2; i <= n; i++){\n            for(int j = 1; j <= i; j++){\n                int left = j - 1;\n                int right = i - j;\n                dp[i] += dp[left] * dp[right];\n            }\n        }\n\n        return dp[n];\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 100,
+      "slug": "same-tree",
+      "title": "Same Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0100-same-tree/0100-same-tree.cpp",
+          "sha": "fa475192dddfdc3f59451efc2b71adc0536026b4",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    bool isSameTree(TreeNode* p, TreeNode* q) {\n        if(!p && !q){\n            return true;\n        }\n\n        if(p==NULL || q==NULL){\n            return false;\n        }\n\n        if(p->val == q->val){\n            return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);\n        }\n\n        return false;\n\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "slug": "symmetric-tree",
+      "title": "Symmetric Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0101-symmetric-tree/0101-symmetric-tree.cpp",
+          "sha": "0f7de81ae0138f2b96cd695b0f12f8b73fc33ce9",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    bool isSymmetric(TreeNode* left, TreeNode* right){\n        if(!left && !right) return true;\n        if(!left || !right) return false;\n        return (left->val == right->val) && isSymmetric(left->left, right->right) && isSymmetric(left->right, right->left);\n    }\n\n    bool isSymmetric(TreeNode* root) {\n        if(root == NULL){\n            return true;\n        }\n        return isSymmetric(root->left, root->right);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "slug": "maximum-depth-of-binary-tree",
+      "title": "Maximum Depth of Binary Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0104-maximum-depth-of-binary-tree/0104-maximum-depth-of-binary-tree.py",
+          "sha": "f0235f46afa637736e6415bba0a3c6feef8fb87b",
+          "code": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def maxDepth(self, root: Optional[TreeNode]) -> int:\n        #base case\n        if not root:\n            return 0\n        \n        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))"
+        }
+      ]
+    },
+    {
+      "id": 108,
+      "slug": "convert-sorted-array-to-binary-search-tree",
+      "title": "Convert Sorted Array to Binary Search Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Divide and Conquer",
+        "Tree",
+        "Binary Search Tree",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0108-convert-sorted-array-to-binary-search-tree/0108-convert-sorted-array-to-binary-search-tree.py",
+          "sha": "15461f73501bb798fd41b8228a07f8f043acd4b4",
+          "code": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:\n        if len(nums) == 0:\n            return None\n        \n        mid = len(nums)//2\n\n        root = TreeNode(nums[mid])\n        root.left = self.sortedArrayToBST(nums[:mid])\n        root.right = self.sortedArrayToBST(nums[mid+1:])\n\n        return root"
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "slug": "balanced-binary-tree",
+      "title": "Balanced Binary Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0110-balanced-binary-tree/0110-balanced-binary-tree.cpp",
+          "sha": "7a21c4369119e5e47d5a41f140471d61c742d5f7",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    bool isBalanced(TreeNode* root) {\n        return dfs(root) != -1;\n    }\nprivate:\n    int dfs(TreeNode* root){\n        if(!root) return 0;\n\n        int left = dfs(root->left);\n        int right = dfs(root->right);\n\n        if(left == -1 || right == -1 || abs(left-right) > 1){\n            return -1;\n        }\n\n        return std::max(left, right) + 1;\n    }\n};"
+        },
+        {
+          "language": "python",
+          "path": "0110-balanced-binary-tree/0110-balanced-binary-tree.py",
+          "sha": "c6acb0540b6281142692b7f412275606beb734ce",
+          "code": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def isBalanced(self, root: Optional[TreeNode]) -> bool:\n        def check_balance(node):\n            if not node:\n                return 0\n        \n            left = check_balance(node.left)\n            right = check_balance(node.right)\n\n            if left == -1 or right == -1 or abs(right - left) > 1:\n                return -1\n        \n            return max(left, right) + 1\n    \n        return check_balance(root) != -1"
+        }
+      ]
+    },
+    {
+      "id": 111,
+      "slug": "minimum-depth-of-binary-tree",
+      "title": "Minimum Depth of Binary Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0111-minimum-depth-of-binary-tree/0111-minimum-depth-of-binary-tree.py",
+          "sha": "4aad4e3a706c9823a99862dd11a9f9a885f332dc",
+          "code": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def minDepth(self, root: Optional[TreeNode]) -> int:\n        if root is None:\n            return 0\n\n        if root.left is None:\n            return self.minDepth(root.right) + 1\n\n        if root.right is None:\n            return self.minDepth(root.left) + 1\n\n        return min(self.minDepth(root.left), self.minDepth(root.right)) + 1"
+        }
+      ]
+    },
+    {
+      "id": 112,
+      "slug": "path-sum",
+      "title": "Path Sum",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0112-path-sum/0112-path-sum.py",
+          "sha": "69dcf69f11fb5cb600b0e96fda07582b970345f7",
+          "code": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:\n        #base case\n        if root is None:\n            return False\n        \n        target = targetSum - root.val\n\n        if target == 0 and root.left is None and root.right is None:\n            return True\n        \n        left = self.hasPathSum(root.left, target) if root.left else False\n        right = self.hasPathSum(root.right, target) if root.right else False\n\n        return left or right"
+        }
+      ]
+    },
+    {
+      "id": 118,
+      "slug": "pascals-triangle",
+      "title": "Pascal's Triangle",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Dynamic Programming"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0118-pascals-triangle/0118-pascals-triangle.cpp",
+          "sha": "bcc2a9243b9db69b3ed238dd235f84bcc3290666",
+          "code": "class Solution {\npublic:\n    vector<vector<int>> generate(int numRows) {\n        vector<vector<int>> pascal(numRows);\n\n        for(int i = 0; i < numRows; i++){\n            pascal[i].resize(i+1, 1);\n\n            for(int j = 1; j < i; j++){\n                pascal[i][j] = pascal[i-1][j-1] + pascal[i-1][j];\n            }\n        }\n\n        return pascal;\n    }\n};"
+        },
+        {
+          "language": "python",
+          "path": "0118-pascals-triangle/0118-pascals-triangle.py",
+          "sha": "f73948d314a0b989996f6ecc0e3dd56f6c2dffe3",
+          "code": "class Solution:\n    def generate(self, numRows: int) -> List[List[int]]:\n        #base case\n        tri = []\n\n        for i in range(numRows):\n            row = [1]*(i+1)\n            for j in range(1, i):\n                row[j] = tri[i-1][j-1] + tri[i-1][j]\n            tri.append(row)\n    \n        return tri"
+        }
+      ]
+    },
+    {
+      "id": 119,
+      "slug": "pascals-triangle-ii",
+      "title": "Pascal's Triangle II",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Dynamic Programming"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0119-pascals-triangle-ii/0119-pascals-triangle-ii.py",
+          "sha": "f261112ca7f62a5c90ec21f7547ea4ed998c49db",
+          "code": "class Solution:\n    def getRow(self, rowIndex: int) -> List[int]:\n        #first row\n        targetRow = [1]\n\n        #compute each row iteratively\n        for i in range(1, rowIndex+1):\n            targetRow = [1] + [targetRow[j] + targetRow[j+1] for j in range(len(targetRow)-1)] + [1]\n        \n        return targetRow"
+        }
+      ]
+    },
+    {
+      "id": 121,
+      "slug": "best-time-to-buy-and-sell-stock",
+      "title": "Best Time to Buy and Sell Stock",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Dynamic Programming"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0121-best-time-to-buy-and-sell-stock/0121-best-time-to-buy-and-sell-stock.java",
+          "sha": "f18a6fb223700f7736ac887f49991225e74807ab",
+          "code": "class Solution {\n    public int maxProfit(int[] prices) {\n        int profit = 0;\n        int buy = prices[0];\n        int n = prices.length;\n\n        for(int i = 1; i < n; i++){\n            if(prices[i] < buy){\n                buy = prices[i];\n            }else if(prices[i] - buy > profit){\n                profit = prices[i] - buy;\n            }\n        }\n\n        return profit;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 125,
+      "slug": "valid-palindrome",
+      "title": "Valid Palindrome",
+      "difficulty": "Easy",
+      "topics": [
+        "Two Pointers",
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0125-valid-palindrome/0125-valid-palindrome.cpp",
+          "sha": "3f6834f49c98d3ee01961ab2b0564a2bd2f065b0",
+          "code": "class Solution {\npublic:\n    bool isPalindrome(string s) {\n        int left = 0, right = s.size()-1;\n\n        while(left < right){\n            //skip non alphabet character\n            while(left<right && !isalnum(s[left])){\n                left++;\n            }\n            while(left<right && !isalnum(s[right])){\n                right--;\n            }\n            //compare character\n            if(tolower(s[left]) != tolower(s[right])){\n                return false;\n            }\n            left++;\n            right--;\n        }\n        return true;\n    }\n};"
+        },
+        {
+          "language": "python",
+          "path": "0125-valid-palindrome/0125-valid-palindrome.py",
+          "sha": "aa1265dc919c53cdc6281c1cbf9e70baabf904ed",
+          "code": "class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        #join all alphabet with no space\n        s = ''.join(c.lower() for c in s if c.isalnum())\n        left = 0 \n        right = len(s) - 1\n\n        while left < right:\n            if s[left] != s[right]:\n                return False\n            left += 1\n            right -= 1\n        \n        return True"
+        },
+        {
+          "language": "java",
+          "path": "0125-valid-palindrome/0125-valid-palindrome.java",
+          "sha": "f01b243c99941a76e5b40330234e575eaab39cee",
+          "code": "class Solution {\n    public boolean isPalindrome(String s) {\n        if(s == null) return true;\n\n        int start = 0, end = s.length()-1;\n        \n        while(start < end){\n            while(start < end && !Character.isLetterOrDigit(s.charAt(start)))\n                start++;\n            \n            while(start < end && !Character.isLetterOrDigit(s.charAt(end)))\n                end--;\n            \n            if(Character.toLowerCase(s.charAt(start)) != Character.toLowerCase(s.charAt(end))){\n                return false;\n            }\n\n            start++;\n            end--;\n        }\n\n        return true;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 131,
+      "slug": "palindrome-partitioning",
+      "title": "Palindrome Partitioning",
+      "difficulty": "Medium",
+      "topics": [
+        "String",
+        "Dynamic Programming",
+        "Backtracking"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0131-palindrome-partitioning/0131-palindrome-partitioning.cpp",
+          "sha": "1cc8ca0e6ca2b77d4f8e2b4490f4633c1d664655",
+          "code": "class Solution {\npublic:\n    vector<vector<string>> partition(string s) {\n        vector<vector<string>> result;\n        vector<string> combo;\n\n        backtrack(s, combo, result, 0);\n\n        return result;\n    }\n\n    bool isPalindrome(string& s, int start, int end){\n        while(start < end){\n            if(s[start] != s[end]){\n                return false;\n            }\n\n            start++;\n            end--;\n        }\n        return true;\n    }\n\n    void backtrack(string& s, vector<string>& combo, vector<vector<string>>& result, int start){\n        if(start >= s.length()){\n            result.push_back(combo);\n            return;\n        }\n\n        for(int end = start; end < s.length(); end++){\n            if(isPalindrome(s, start, end)){\n                combo.push_back(s.substr(start, end-start+1));\n                backtrack(s, combo, result, end+1);\n                combo.pop_back();\n            }\n        }\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 136,
+      "slug": "single-number",
+      "title": "Single Number",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Bit Manipulation"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0136-single-number/0136-single-number.py",
+          "sha": "06839d71862700afc49fc7080719d2b91ff37808",
+          "code": "#using XOR method\n\nfrom typing import List\nclass Solution:\n    def singleNumber(self, nums: List[int]) -> int:\n        xor = 0\n\n        for num in nums:\n            xor = xor ^ num\n        \n        return xor"
+        }
+      ]
+    },
+    {
+      "id": 141,
+      "slug": "linked-list-cycle",
+      "title": "Linked List Cycle",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "Linked List",
+        "Two Pointers",
+        "Floyd's Cycle Finding Algorithm"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0141-linked-list-cycle/0141-linked-list-cycle.cpp",
+          "sha": "e41c3bf5232148705992c4bafab9ac78eee348a3",
+          "code": "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *     int val;\n *     ListNode *next;\n *     ListNode(int x) : val(x), next(NULL) {}\n * };\n */\nclass Solution {\npublic:\n    bool hasCycle(ListNode *head) {\n        ListNode *fast = head;\n        ListNode *slow = head;\n\n        while(fast != NULL && fast->next != NULL){\n            fast = fast->next->next;\n            slow = slow->next;\n\n            if(fast == slow)\n                return true;\n        }\n\n        return false;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 144,
+      "slug": "binary-tree-preorder-traversal",
+      "title": "Binary Tree Preorder Traversal",
+      "difficulty": "Easy",
+      "topics": [
+        "Stack",
+        "Tree",
+        "Depth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0144-binary-tree-preorder-traversal/0144-binary-tree-preorder-traversal.py",
+          "sha": "72ffdcef9d6911be68859027ccbe8de6a0787e6d",
+          "code": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:\n        result = []\n\n        def preorder(node):\n            if not node:\n                return\n            \n            result.append(node.val)\n            preorder(node.left)\n            preorder(node.right)\n        \n        preorder(root)\n\n        return result"
+        }
+      ]
+    },
+    {
+      "id": 145,
+      "slug": "binary-tree-postorder-traversal",
+      "title": "Binary Tree Postorder Traversal",
+      "difficulty": "Easy",
+      "topics": [
+        "Stack",
+        "Tree",
+        "Depth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0145-binary-tree-postorder-traversal/0145-binary-tree-postorder-traversal.py",
+          "sha": "0455484eb6541009c737bcb3a374cc8d97f02cdc",
+          "code": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:\n        result = []\n\n        def postorder(node):\n            if not node:\n                return\n            \n            postorder(node.left)\n            postorder(node.right)\n            result.append(node.val)\n\n        postorder(root)\n\n        return result"
+        }
+      ]
+    },
+    {
+      "id": 169,
+      "slug": "majority-element",
+      "title": "Majority Element",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Divide and Conquer",
+        "Sorting",
+        "Counting",
+        "Boyer–Moore Majority Vote Algorithm"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0169-majority-element/0169-majority-element.py",
+          "sha": "7b1428295fce57ef804d9f837d479df509ecab59",
+          "code": "class Solution:\n    def majorityElement(self, nums: List[int]) -> int:\n        res = None\n        cnt = 0\n\n        for num in nums:\n            if cnt == 0:\n                res = num\n            cnt += 1 if res == num else -1\n        \n        return res"
+        }
+      ]
+    },
+    {
+      "id": 202,
+      "slug": "happy-number",
+      "title": "Happy Number",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "Math",
+        "Two Pointers",
+        "Floyd's Cycle Finding Algorithm"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0202-happy-number/0202-happy-number.cpp",
+          "sha": "70dcf87d6edf976747d6840d30fe3f6c115ec9d5",
+          "code": "class Solution {\npublic:\n    bool isHappy(int n) {\n        unordered_set<int> seen;\n\n        while(n != 1 && !seen.count(n)){\n            seen.insert(n);\n            int sum = 0;\n\n            while(n > 0){\n                int digit = n % 10;\n                sum += digit*digit;\n                n /= 10;\n            }\n            n = sum;\n        }\n        return n == 1;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 203,
+      "slug": "remove-linked-list-elements",
+      "title": "Remove Linked List Elements",
+      "difficulty": "Easy",
+      "topics": [
+        "Linked List",
+        "Recursion"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0203-remove-linked-list-elements/0203-remove-linked-list-elements.cpp",
+          "sha": "8e26f1e92ae0116710374dbca34644e9a7602d62",
+          "code": "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *     int val;\n *     ListNode *next;\n *     ListNode() : val(0), next(nullptr) {}\n *     ListNode(int x) : val(x), next(nullptr) {}\n *     ListNode(int x, ListNode *next) : val(x), next(next) {}\n * };\n */\nclass Solution {\npublic:\n    ListNode* removeElements(ListNode* head, int val) {\n        ListNode* ans = new ListNode(0, head);\n        ListNode* dummy = ans;\n\n        while(dummy != nullptr){\n            while(dummy->next != nullptr && dummy->next->val == val){\n                dummy->next = dummy->next->next;\n            }\n            dummy = dummy->next;\n        }\n\n        ListNode* res = ans->next;\n        delete ans;\n\n        return res;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 205,
+      "slug": "isomorphic-strings",
+      "title": "Isomorphic Strings",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0205-isomorphic-strings/0205-isomorphic-strings.cpp",
+          "sha": "ac15e3ec5c4eff37055cbdd80f0ff2e28c7067f6",
+          "code": "class Solution {\npublic:\n    bool isIsomorphic(string s, string t) {\n        unordered_map<char, int> charIndexS;\n        unordered_map<char, int> charIndexT;\n\n        for(int i = 0; i < s.length(); i++){\n            if(charIndexS.find(s[i]) == charIndexS.end()){\n                charIndexS[s[i]] = i;\n            }\n\n            if(charIndexT.find(t[i]) == charIndexT.end()){\n                charIndexT[t[i]] = i;\n            }\n\n            if(charIndexS[s[i]] != charIndexT[t[i]]){\n                return false;\n            }\n        }\n\n        return true;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 206,
+      "slug": "reverse-linked-list",
+      "title": "Reverse Linked List",
+      "difficulty": "Easy",
+      "topics": [
+        "Linked List",
+        "Recursion"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0206-reverse-linked-list/0206-reverse-linked-list.py",
+          "sha": "6f2fd6cb9870bd1c425443b997651fb3d6eefb45",
+          "code": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        if not head or not head.next:\n            return head\n        \n        new_head = self.reverseList(head.next)\n        head.next.next = head\n        head.next = None\n        return new_head"
+        }
+      ]
+    },
+    {
+      "id": 215,
+      "slug": "kth-largest-element-in-an-array",
+      "title": "Kth Largest Element in an Array",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Divide and Conquer",
+        "Sorting",
+        "Heap (Priority Queue)",
+        "Quickselect"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0215-kth-largest-element-in-an-array/0215-kth-largest-element-in-an-array.cpp",
+          "sha": "d36472ffdc22877aa2a4cd0e7c91a33b91b1e70f",
+          "code": "class Solution {\npublic:\n    int findKthLargest(vector<int>& nums, int k) {\n        priority_queue<int> pq(nums.begin(), nums.end());\n\n        while(--k){\n            pq.pop();\n        }\n        \n        return pq.top();\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 217,
+      "slug": "contains-duplicate",
+      "title": "Contains Duplicate",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0217-contains-duplicate/0217-contains-duplicate.cpp",
+          "sha": "3e20edea88d9c99b7c7ae1f14a3af8dda10928eb",
+          "code": "class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        int n = nums.size();\n\n        for(int i = 1; i < n; i++){\n            if(nums[i] == nums[i-1]){\n                return true;\n            }\n        }\n\n        return false;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0217-contains-duplicate/0217-contains-duplicate.java",
+          "sha": "e672439521ef7c92985f24fd0432d2edbed8265c",
+          "code": "class Solution {\n    public boolean containsDuplicate(int[] nums) {\n        // Solution 1:\n        // Arrays.sort(nums);\n\n        // for(int i = 0; i < nums.length - 1; i++){\n        //     if(nums[i] == nums[i + 1]){\n        //         return true;\n        //     }\n        // }\n\n        // return false;\n\n        //Solution 2:\n        Set<Integer> seen = new HashSet<>();\n\n        for(int num : nums){\n            if(seen.contains(num)) return true;\n            seen.add(num);\n        }\n\n        return false;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 219,
+      "slug": "contains-duplicate-ii",
+      "title": "Contains Duplicate II",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Sliding Window"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0219-contains-duplicate-ii/0219-contains-duplicate-ii.cpp",
+          "sha": "70f448d34a5a9134d4d8d5640d875c277a844aff",
+          "code": "class Solution {\npublic:\n    bool containsNearbyDuplicate(vector<int>& nums, int k) {\n        unordered_map<int, int> num;\n\n        for(int i = 0; i < nums.size(); i++){\n            if(num.find(nums[i]) != num.end() && i - num[nums[i]] <= k){\n                return true;\n            }\n            num[nums[i]] = i;\n        }\n        return false;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 222,
+      "slug": "count-complete-tree-nodes",
+      "title": "Count Complete Tree Nodes",
+      "difficulty": "Medium",
+      "topics": [
+        "Binary Search",
+        "Bit Manipulation",
+        "Tree",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0222-count-complete-tree-nodes/0222-count-complete-tree-nodes.cpp",
+          "sha": "0a4962a600404ebaf99f923323c34c992e452383",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    int countNodes(TreeNode* root) {\n        if(root == NULL){\n            return 0;\n        }\n\n        return countNodes(root->left) + countNodes(root->right) + 1;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 226,
+      "slug": "invert-binary-tree",
+      "title": "Invert Binary Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0226-invert-binary-tree/0226-invert-binary-tree.cpp",
+          "sha": "01b81dd1586e43d152a0bb157011e82f3ba71918",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    TreeNode* invertTree(TreeNode* root) {\n        if(root == NULL){\n            return nullptr;\n        }\n\n        TreeNode* temp = root->left;\n        root->left = root->right;\n        root->right = temp;\n\n        invertTree(root->left);\n        invertTree(root->right);\n\n        return root;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 229,
+      "slug": "majority-element-ii",
+      "title": "Majority Element II",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Sorting",
+        "Counting",
+        "Boyer–Moore Majority Vote Algorithm"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0229-majority-element-ii/0229-majority-element-ii.cpp",
+          "sha": "fa5adea4b5fc95494f02a0ddf738c0ef3355f2ce",
+          "code": "class Solution {\npublic:\n    vector<int> majorityElement(vector<int>& nums) {\n        vector<int> result;\n        unordered_map<int, int>freq;\n        unordered_set<int> seen;\n        int n = nums.size();\n        int count = n/3;\n\n        if(n <= 1){\n            return nums;\n        }\n\n        for(int num : nums){\n            freq[num]++;\n        }\n\n        for(int num : nums){\n            if(freq[num] > count && seen.find(num) == seen.end()){\n                result.push_back(num);\n                seen.insert(num);\n            }\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 238,
+      "slug": "product-of-array-except-self",
+      "title": "Product of Array Except Self",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Prefix Sum"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0238-product-of-array-except-self/0238-product-of-array-except-self.java",
+          "sha": "7ce65a7949786d2458f2848908ae855fc5c1c205",
+          "code": "class Solution {\n    public int[] productExceptSelf(int[] nums) {\n        int n = nums.length;\n        int res[] = new int[n];\n        Arrays.fill(res, 1);\n        int curr = 1;\n\n        //Fill in the res from left first\n        for(int i = 0; i < n; i++){\n            res[i] *= curr;\n            curr *= nums[i];\n        }\n\n        curr = 1;\n\n        //Fill in the res from right then.\n        for(int i = n-1; i >= 0; i--){\n            res[i] *= curr;\n            curr *= nums[i];\n        }\n\n        return res;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 242,
+      "slug": "valid-anagram",
+      "title": "Valid Anagram",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0242-valid-anagram/0242-valid-anagram.cpp",
+          "sha": "20c6ea05793a9cffe455356cb1a145a747d8fa4d",
+          "code": "class Solution {\npublic:\n    bool isAnagram(string s, string t) {\n        sort(s.begin(), s.end());\n        sort(t.begin(), t.end());\n\n        return s==t;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0242-valid-anagram/0242-valid-anagram.java",
+          "sha": "07ddd44d1f9c7c193e25ed38a15e00c8313eec55",
+          "code": "class Solution {\n    public boolean isAnagram(String s, String t) {\n        //Solution 1\n        // if(s.length() != t.length()){\n        //     return false;\n        // }\n\n        // char[] string1 = s.toCharArray();\n        // char[] string2 = t.toCharArray();\n\n        // Arrays.sort(string1);\n        // Arrays.sort(string2);\n\n        // if(Arrays.equals(string1, string2)){\n        //     return true;\n        // }\n\n        // return false;\n\n        //Solution 2\n        if(s.length() != t.length()){\n            return false;\n        }\n\n        int[] count = new int[26];\n\n        for(int i = 0; i < s.length(); i++){\n            count[s.charAt(i) - 'a']++;\n            count[t.charAt(i) - 'a']--;\n        }\n\n        for(int num : count){\n            if(num != 0){\n                return false;\n            }\n        }\n\n        return true;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 257,
+      "slug": "binary-tree-paths",
+      "title": "Binary Tree Paths",
+      "difficulty": "Easy",
+      "topics": [
+        "String",
+        "Backtracking",
+        "Tree",
+        "Depth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0257-binary-tree-paths/0257-binary-tree-paths.cpp",
+          "sha": "925eaabce60a59d614de6ff2bac7b733fded2740",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    vector<string> binaryTreePaths(TreeNode* root) {\n        vector<string> res;\n        if(!root) return res;\n\n        string path=\"\";\n        dfs(root, path, res);\n\n        return res;\n    }\n\n    void dfs(TreeNode* node, string path, vector<string>& res){\n        if(!node) return;\n\n        if (!path.empty()) path += \"->\";\n        path += to_string(node->val);\n\n        if(!node->left && !node->right){\n            res.push_back(path);\n        }\n\n        dfs(node->left, path, res);\n        dfs(node->right, path, res);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 264,
+      "slug": "ugly-number-ii",
+      "title": "Ugly Number II",
+      "difficulty": "Medium",
+      "topics": [
+        "Hash Table",
+        "Math",
+        "Dynamic Programming",
+        "Heap (Priority Queue)"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0264-ugly-number-ii/0264-ugly-number-ii.cpp",
+          "sha": "7ef3d3851d3ccbc600edf7b1768d8f9a5baea067",
+          "code": "class Solution {\npublic:\n    int nthUglyNumber(int n) {\n        std::vector<int> ugly(n);\n        ugly[0] = 1;\n\n        int i2 = 0, i3 = 0, i5 = 0;\n        int next2 = 2, next3 = 3, next5 = 5;\n\n        for(int i = 1; i < n; i++){\n            int nextUgly = std::min({next2, next3, next5});\n            ugly[i] = nextUgly;\n\n            if(nextUgly == next2) next2 = 2 * ugly[++i2];\n            if(nextUgly == next3) next3 = 3 * ugly[++i3];\n            if(nextUgly == next5) next5 = 5 * ugly[++i5];\n        }\n\n        return ugly[n-1];\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 268,
+      "slug": "missing-number",
+      "title": "Missing Number",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Math",
+        "Binary Search",
+        "Bit Manipulation",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0268-missing-number/0268-missing-number.cpp",
+          "sha": "f077de52b50bea42a42f70848d88df0493607d6b",
+          "code": "class Solution {\npublic:\n    int missingNumber(vector<int>& nums) {\n        int n = nums.size();\n        int total = 0, currSum = 0;\n        for(auto i : nums){\n            currSum += i;\n        }\n\n        for(int i = 0; i <= n; i++){\n            total += i;\n        }\n\n        return total-currSum;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 278,
+      "slug": "first-bad-version",
+      "title": "First Bad Version",
+      "difficulty": "Easy",
+      "topics": [
+        "Binary Search",
+        "Interactive"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0278-first-bad-version/0278-first-bad-version.cpp",
+          "sha": "a9f338950e145a4708c8342c711b5eb6412305d3",
+          "code": "// The API isBadVersion is defined for you.\n// bool isBadVersion(int version);\n\nclass Solution {\npublic:\n    int firstBadVersion(int n) {\n      int start = 0, end = n;\n\n      while(start<=end){\n        int mid = start + (end-start)/2;\n\n        if(isBadVersion(mid)){  \n            end = mid-1;\n        }else{\n            start = mid +1;\n        }\n      }  \n\n      return start;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 283,
+      "slug": "move-zeroes",
+      "title": "Move Zeroes",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Two Pointers"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0283-move-zeroes/0283-move-zeroes.cpp",
+          "sha": "b7b542a93ffd21deac20706d18fd34532cb27b46",
+          "code": "class Solution {\npublic:\n    void moveZeroes(vector<int>& nums) {\n        int left = 0;\n        \n        for(int right = 0; right < nums.size(); right++){\n            if(nums[right] != 0){\n                swap(nums[left], nums[right]);\n                left++;\n            }\n        }  \n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 290,
+      "slug": "word-pattern",
+      "title": "Word Pattern",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0290-word-pattern/0290-word-pattern.cpp",
+          "sha": "821cffa57df700ee9a5fd72211c856b117f78ee0",
+          "code": "class Solution {\npublic:\n    bool wordPattern(string pattern, string s) {\n        unordered_map<char, string>charToString;\n        unordered_map<string, char>stringToChar;\n        istringstream ss(s);\n        string word;\n        int i = 0;\n\n        for(;ss>>word; i++){\n            if(i >= pattern.size()) return false;\n\n            char c = pattern[i];\n            if(charToString.count(c) && charToString[c] != word){\n                return false;\n            }\n\n            if(stringToChar.count(word) && stringToChar[word] != c){\n                return false;\n            }\n\n            charToString[c] = word;\n            stringToChar[word] = c;\n        }\n        return i == pattern.size();\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 347,
+      "slug": "top-k-frequent-elements",
+      "title": "Top K Frequent Elements",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Divide and Conquer",
+        "Sorting",
+        "Heap (Priority Queue)",
+        "Bucket Sort",
+        "Counting",
+        "Quickselect"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0347-top-k-frequent-elements/0347-top-k-frequent-elements.cpp",
+          "sha": "30a4c967d8e23877a62eca7c4cdc64da7a9368a7",
+          "code": "class Solution {\npublic:\n    vector<int> topKFrequent(vector<int>& nums, int k) {\n        unordered_map<int, int> freq;\n\n        for(int num : nums){\n            freq[num]++;\n        }\n\n        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;\n\n        for(auto&[num, count] : freq){\n            pq.push({count, num});\n\n            while(pq.size() > k){\n                pq.pop();\n            }\n        }\n\n        vector<int> result;\n        while(!pq.empty()){\n            result.push_back(pq.top().second);\n            pq.pop();\n        }\n\n        return result;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0347-top-k-frequent-elements/0347-top-k-frequent-elements.java",
+          "sha": "7f76eb3bb89f7ef471dc2b021842ab3facbbb58a",
+          "code": "class Solution {\n    public int[] topKFrequent(int[] nums, int k) {\n        HashMap<Integer, Integer> freq = new HashMap<>();\n        int[] result = new int[k];\n\n        for(int n : nums){\n            freq.put(n, freq.getOrDefault(n, 0)+1);\n        }\n\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b)->a[1] - b[1]);\n\n        for(Map.Entry<Integer, Integer> e : freq.entrySet()){\n            int key = e.getKey();\n            int value = e.getValue();\n            pq.add(new int[]{key, value});\n            if(pq.size() > k){\n                pq.poll();\n            }\n        }\n\n        for(int i = 0; i < k; i++){\n            int[] pair = pq.poll();\n            result[i] = pair[0];\n        }\n\n        return result;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 349,
+      "slug": "intersection-of-two-arrays",
+      "title": "Intersection of Two Arrays",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Two Pointers",
+        "Binary Search",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0349-intersection-of-two-arrays/0349-intersection-of-two-arrays.cpp",
+          "sha": "d78199f1015e2bcb4113641689b00d90e7ea849b",
+          "code": "class Solution {\npublic:\n    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {\n        unordered_set<int>nums(nums1.begin(), nums1.end());\n        vector<int> res;\n\n        for(int i = 0; i < nums2.size(); i++){\n            if(nums.find(nums2[i]) != nums.end()){\n                res.push_back(nums2[i]);\n                nums.erase(nums2[i]);\n            }\n        }\n\n        return res;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 350,
+      "slug": "intersection-of-two-arrays-ii",
+      "title": "Intersection of Two Arrays II",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Two Pointers",
+        "Binary Search",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0350-intersection-of-two-arrays-ii/0350-intersection-of-two-arrays-ii.cpp",
+          "sha": "8f0ac4c6a24c3ec9ce5770795d2534ed5ba6e200",
+          "code": "class Solution {\npublic:\n    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {\n        unordered_map<int, int> freq;\n        vector<int> res;\n\n        for(int num : nums1){\n            freq[num]++;\n        }\n\n        for(int num : nums2){\n            if(freq[num] > 0){\n                res.push_back(num);\n                freq[num]--;\n            }\n        }\n\n        return res;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 367,
+      "slug": "valid-perfect-square",
+      "title": "Valid Perfect Square",
+      "difficulty": "Easy",
+      "topics": [
+        "Math",
+        "Binary Search"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0367-valid-perfect-square/0367-valid-perfect-square.cpp",
+          "sha": "aa4c8f84e24d5f4df8d73ccc400cdd0d97b39d88",
+          "code": "class Solution {\npublic:\n    bool isPerfectSquare(int num) {\n        int left = 0, right = num;\n\n        while(left <= right){\n            int mid = left + (right-left)/2;\n\n            if(mid == sqrt(num)){\n                return true;\n            }else if(mid < sqrt(num)){\n                left = mid + 1;\n            }else{\n                right = mid - 1;\n            }\n        }\n\n        return false;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 374,
+      "slug": "guess-number-higher-or-lower",
+      "title": "Guess Number Higher or Lower",
+      "difficulty": "Easy",
+      "topics": [
+        "Binary Search",
+        "Interactive"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0374-guess-number-higher-or-lower/0374-guess-number-higher-or-lower.cpp",
+          "sha": "19f6f05d47809ad23a4047753ba89fbaeb47c697",
+          "code": "/** \n * Forward declaration of guess API.\n * @param  num   your guess\n * @return \t     -1 if num is higher than the picked number\n *\t\t\t      1 if num is lower than the picked number\n *               otherwise return 0\n * int guess(int num);\n */\n\nclass Solution {\npublic:\n    int guessNumber(int n) {\n        int start = 1, end = n;\n\n        while(start <= end){\n            int mid = start + (end-start)/2;\n\n            if(guess(mid) == -1){\n                end = mid-1;\n            }else if(guess(mid) == 1){\n                start = mid+1;\n            }else{\n                return mid;\n            }\n        }\n        return -1;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 383,
+      "slug": "ransom-note",
+      "title": "Ransom Note",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0383-ransom-note/0383-ransom-note.cpp",
+          "sha": "37d9060a75efc0c7b9bb31f58d86cc2108e49d2b",
+          "code": "class Solution {\npublic:\n    bool canConstruct(string ransomNote, string magazine) {\n        unordered_map<char, int> freq;\n\n        for(char c : magazine){\n            freq[c]++;\n        }\n\n        for(char c : ransomNote){\n            if(freq[c] > 0){\n                freq[c]--;\n            }else{\n                return false;\n            }\n        }\n\n        return true;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 387,
+      "slug": "first-unique-character-in-a-string",
+      "title": "First Unique Character in a String",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Queue",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0387-first-unique-character-in-a-string/0387-first-unique-character-in-a-string.cpp",
+          "sha": "1cabc5a9bf1ca3b37867cc5cac7328ff7f2d1c79",
+          "code": "class Solution {\npublic:\n    int firstUniqChar(string s) {\n        unordered_map<char, int> freq;\n\n        for(char c : s){\n            freq[c]++;\n        }\n\n        for(int i = 0; i < s.length(); i++){\n            if(freq[s[i]] == 1){\n                return i;\n            }\n        }\n\n        return -1;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 389,
+      "slug": "find-the-difference",
+      "title": "Find the Difference",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Bit Manipulation",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0389-find-the-difference/0389-find-the-difference.cpp",
+          "sha": "67b3bae2eb794d580d8480ca581069ee82fbbe58",
+          "code": "class Solution {\npublic:\n    char findTheDifference(string s, string t) {\n        char result = 0;\n\n        for(char c : s){\n            result ^= c;\n        }\n\n        for(char c : t){\n            result ^= c;\n        }\n\n        return result;\n    }\n};"
+        },
+        {
+          "language": "python",
+          "path": "0389-find-the-difference/0389-find-the-difference.py",
+          "sha": "ace0515a1f2731e68ac2cda0d401bc4ff752a812",
+          "code": "class Solution:\n    def findTheDifference(self, s: str, t: str) -> str:\n        result = 0\n\n        for char in s+t:\n            result ^= ord(char)\n        \n        return chr(result)"
+        }
+      ]
+    },
+    {
+      "id": 392,
+      "slug": "is-subsequence",
+      "title": "Is Subsequence",
+      "difficulty": "Easy",
+      "topics": [
+        "Two Pointers",
+        "String",
+        "Dynamic Programming"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0392-is-subsequence/0392-is-subsequence.cpp",
+          "sha": "f7c5cc5156c6fc63e8db31e1846cae1672235514",
+          "code": "class Solution {\npublic:\n    bool isSubsequence(string s, string t) {\n        int s1 = 0;\n\n        for(int i = 0; i < t.length(); i++){\n            if(s1 < s.length() && s[s1] == t[i]){\n                s1++;\n            }\n        }\n\n        return s1 == s.length();\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 409,
+      "slug": "longest-palindrome",
+      "title": "Longest Palindrome",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Greedy"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0409-longest-palindrome/0409-longest-palindrome.java",
+          "sha": "058e08d3b50c6857eb39d19df3f9e1c4e190abb4",
+          "code": "class Solution {\n    public int longestPalindrome(String s) {\n        Map<Character, Integer> frequency = new HashMap<>();\n\n        for(char c : s.toCharArray()){\n            frequency.put(c, frequency.getOrDefault(c, 0)+1);\n        }\n\n        int length = 0;\n        boolean leftOver = false;\n\n        for(int cnt : frequency.values()){\n            length += (cnt / 2) * 2;\n            if (cnt % 2 == 1){\n                leftOver = true;\n            }\n        }\n\n        if (leftOver){\n            length += 1;\n        }\n        \n        return length;\n\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 448,
+      "slug": "find-all-numbers-disappeared-in-an-array",
+      "title": "Find All Numbers Disappeared in an Array",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0448-find-all-numbers-disappeared-in-an-array/0448-find-all-numbers-disappeared-in-an-array.cpp",
+          "sha": "95e77f7d3e178a719d0c8d4aa502567d04de09c5",
+          "code": "class Solution {\npublic:\n    vector<int> findDisappearedNumbers(vector<int>& nums) {\n        unordered_set<int> num(nums.begin(), nums.end());\n        vector<int> ans;\n        int size = nums.size();\n\n        for(int i = 1; i <= size; i++){\n            if(num.find(i) == num.end()){\n                ans.push_back(i);\n            }\n        }\n\n        return ans;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 506,
+      "slug": "relative-ranks",
+      "title": "Relative Ranks",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Sorting",
+        "Heap (Priority Queue)"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0506-relative-ranks/0506-relative-ranks.cpp",
+          "sha": "a2893780cb486306291f0258b8a5d3c38a8f09fc",
+          "code": "class Solution {\npublic:\n    vector<string> findRelativeRanks(vector<int>& score) {\n        int n = score.size();\n\n        vector<pair<int, int>> scores;\n        for(int i = 0; i < n; i++){\n            scores.push_back({score[i], i});\n        }\n\n        sort(scores.begin(), scores.end(), greater<pair<int, int>>());\n\n        vector<string> result(n);\n\n        for(int i = 0; i < n; i++){\n            int rank = scores[i].second;\n\n            if(i == 0){\n                result[rank] = \"Gold Medal\";\n            }else if(i == 1){\n                result[rank] = \"Silver Medal\";\n            }else if(i == 2){\n                result[rank] = \"Bronze Medal\";\n            }else{\n                result[rank] = to_string(i+1);\n            }\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 513,
+      "slug": "find-bottom-left-tree-value",
+      "title": "Find Bottom Left Tree Value",
+      "difficulty": "Medium",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0513-find-bottom-left-tree-value/0513-find-bottom-left-tree-value.cpp",
+          "sha": "721bbf4fb713cb59de1d8e066b87c8fbab3d6a80",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    int findBottomLeftValue(TreeNode* root) {\n        if(!root) return -1;\n\n        queue<TreeNode*> q;\n        q.push(root);\n        int result = root->val;\n\n        while(!q.empty()){\n            TreeNode* node = q.front();\n            q.pop();\n\n            if(node->right) q.push(node->right);\n            if(node->left) q.push(node->left);\n\n            result = node->val;\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 515,
+      "slug": "find-largest-value-in-each-tree-row",
+      "title": "Find Largest Value in Each Tree Row",
+      "difficulty": "Medium",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0515-find-largest-value-in-each-tree-row/0515-find-largest-value-in-each-tree-row.cpp",
+          "sha": "3f37fb312b61ba636e02b3866c3c4cc47cba7548",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    vector<int> largestValues(TreeNode* root) {\n        vector<int> result;\n        if(!root) return result;\n\n        queue<TreeNode*> q;\n        q.push(root);\n\n        while(!q.empty()){\n            int maxVal = INT_MIN;\n            int size = q.size();\n\n            for(int i = 0; i < size; i++){\n                TreeNode* node = q.front();\n                q.pop();\n\n                maxVal = max(maxVal, node->val);\n                if(node->left) q.push(node->left);\n                if(node->right) q.push(node->right);\n            }\n\n            result.push_back(maxVal);\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 530,
+      "slug": "minimum-absolute-difference-in-bst",
+      "title": "Minimum Absolute Difference in BST",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Search Tree",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0530-minimum-absolute-difference-in-bst/0530-minimum-absolute-difference-in-bst.cpp",
+          "sha": "8ac011e47ab88c90616edde2ad69aa75c8d2c286",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    int getMinimumDifference(TreeNode* root) {\n        int minDiff = INT_MAX;\n        int prev = -1;\n        inorderTraversal(root, prev, minDiff);\n        return minDiff;\n    }\n\n    void inorderTraversal(TreeNode* root, int& prev, int& minDiff){\n        if(!root) return;\n\n        inorderTraversal(root->left, prev, minDiff);\n\n        if(prev != -1){\n            minDiff = min(minDiff, root->val - prev);\n        }\n\n        prev = root->val;\n\n        inorderTraversal(root->right, prev, minDiff);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 532,
+      "slug": "k-diff-pairs-in-an-array",
+      "title": "K-diff Pairs in an Array",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Two Pointers",
+        "Binary Search",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0532-k-diff-pairs-in-an-array/0532-k-diff-pairs-in-an-array.cpp",
+          "sha": "597b3e6d77afed38b6184e39b1da256124dbe715",
+          "code": "class Solution {\npublic:\n    int findPairs(vector<int>& nums, int k) {\n        if(k < 0) return 0;\n\n        unordered_map<int, int> count;\n        int result = 0;\n\n        for(int num : nums){\n            count[num]++;\n        }\n\n        for(auto& entry:count){\n            int num = entry.first;\n\n            //num - (num + k) = k\n            //So, if find (num + k) inside the map, it will be a unique pair\n            if(k > 0 && count.find(num + k)!= count.end()){\n                result++;\n            }\n\n            //This situation is when only have 2 same value of num then k will be zero\n            //So, if the freq of the num now, it will be counted as a unique pair also\n            if(k == 0 && entry.second > 1){\n                result++;\n            }\n        }\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 541,
+      "slug": "reverse-string-ii",
+      "title": "Reverse String II",
+      "difficulty": "Easy",
+      "topics": [
+        "Two Pointers",
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0541-reverse-string-ii/0541-reverse-string-ii.cpp",
+          "sha": "18941fad870cb4b137d18ba2236e1b8e6e41859c",
+          "code": "class Solution {\npublic:\n    string reverseStr(string s, int k) {\n        for(int i = 0; i < s.size(); i += 2 * k){\n            if(i+k <= s.size()){\n                reverse(s.begin()+i, s.begin()+i+k);\n            }else{\n                reverse(s.begin()+i, s.end());\n            }\n        }\n\n        return s;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 543,
+      "slug": "diameter-of-binary-tree",
+      "title": "Diameter of Binary Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Binary Tree",
+        "DP on Trees"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0543-diameter-of-binary-tree/0543-diameter-of-binary-tree.cpp",
+          "sha": "0fbf0199780431e408a41fa3365ffa34e8769c35",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\n    int res = 0;\npublic:\n    int diameterOfBinaryTree(TreeNode* root) {\n        dfs(root);\n        return res;\n    }\nprivate:\n    int dfs(TreeNode* root){\n        if(!root) return 0;\n\n        int l = dfs(root->left);\n        int r = dfs(root->right);\n\n        res = std::max(res, l+r);\n\n        return 1+std::max(l, r);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 594,
+      "slug": "longest-harmonious-subsequence",
+      "title": "Longest Harmonious Subsequence",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Sliding Window",
+        "Sorting",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0594-longest-harmonious-subsequence/0594-longest-harmonious-subsequence.cpp",
+          "sha": "49c7fe93003d1c7d275ae38ecdcbdf9ede2adecb",
+          "code": "class Solution {\npublic:\n    int findLHS(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        int left = 0, right = 1;\n        int maxLength = 0;\n        while(right < nums.size()){\n            int diff = nums[right] - nums[left];\n\n            if(diff == 1){\n                maxLength = max(maxLength, right - left + 1);\n                right++;\n            }else if(diff <= 1){\n                right++;\n            }else{\n                left++;\n            }\n        }\n\n        return maxLength;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 605,
+      "slug": "can-place-flowers",
+      "title": "Can Place Flowers",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Greedy"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0605-can-place-flowers/0605-can-place-flowers.cpp",
+          "sha": "167e187b5463f628ff8ed7b79529a9d15c473a56",
+          "code": "class Solution {\npublic:\n    bool canPlaceFlowers(vector<int>& flowerbed, int n) {\n        for(int i = 0; i < flowerbed.size(); i++){\n            bool left = i == 0 || flowerbed[i-1] == 0;\n            bool right = i == flowerbed.size()-1 || flowerbed[i+1] == 0;\n\n            if(left && right && flowerbed[i] == 0){\n                flowerbed[i] = 1;\n                n--;\n            }\n        }\n        return n<=0;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 617,
+      "slug": "merge-two-binary-trees",
+      "title": "Merge Two Binary Trees",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0617-merge-two-binary-trees/0617-merge-two-binary-trees.cpp",
+          "sha": "665c60d0b54207e332f1a0f50ee13c17f80fa327",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {\n        if(!root1) return root2;\n        if(!root2) return root1;\n\n        root1->val += root2->val;\n\n        root1->left = mergeTrees(root1->left, root2->left);\n        root1->right = mergeTrees(root1->right, root2->right);\n\n        return root1;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 643,
+      "slug": "maximum-average-subarray-i",
+      "title": "Maximum Average Subarray I",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Sliding Window"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0643-maximum-average-subarray-i/0643-maximum-average-subarray-i.cpp",
+          "sha": "6f05258bbd1da098f4c6c0b6b041ab0086295cc9",
+          "code": "class Solution {\npublic:\n    double findMaxAverage(vector<int>& nums, int k) {\n        double maxAverage = 0.0;\n        double total = 0;\n\n        for(int i = 0; i < k; i++){\n           total += nums[i];\n        }\n\n        maxAverage = total;\n        for(int i = k; i<nums.size(); i++){\n            total += nums[i];\n            total -= nums[i-k];\n            maxAverage = max(maxAverage, total);\n        }\n\n        return maxAverage / k;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 724,
+      "slug": "find-pivot-index",
+      "title": "Find Pivot Index",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Prefix Sum"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0724-find-pivot-index/0724-find-pivot-index.cpp",
+          "sha": "6f2473fb289ca1128b875ed3fa9ffbfd2910c0e9",
+          "code": "class Solution {\npublic:\n    int pivotIndex(vector<int>& nums) {\n        int total = 0, leftsum = 0;\n\n        for(int num : nums){\n            total += num;\n        }\n\n        for(int i = 0; i < nums.size(); i++){\n            if(leftsum * 2 + nums[i] == total){\n                return i;\n            }\n            leftsum += nums[i];\n        }\n\n        return -1;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 735,
+      "slug": "asteroid-collision",
+      "title": "Asteroid Collision",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Stack",
+        "Simulation"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0735-asteroid-collision/0735-asteroid-collision.cpp",
+          "sha": "f5da98a84a2e6586aa8ef225b99c81c4d9e1afc6",
+          "code": "class Solution {\npublic:\n    vector<int> asteroidCollision(vector<int>& asteroids) {\n        vector<int> ans;\n\n        for(int i = 0; i < asteroids.size(); i++){\n            if(asteroids[i] > 0){\n                ans.push_back(asteroids[i]);\n            }else{\n                while(!ans.empty() && ans.back() > 0 && ans.back() < abs(asteroids[i])){\n                    ans.pop_back();\n                }\n                if(!ans.empty() && ans.back() == abs(asteroids[i])){\n                    ans.pop_back();\n                }\n                else if(ans.empty() || ans.back() < 0){\n                    ans.push_back(asteroids[i]);\n                }\n            }\n        }\n\n        return ans;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 745,
+      "slug": "find-smallest-letter-greater-than-target",
+      "title": "Find Smallest Letter Greater Than Target",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Binary Search"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0745-find-smallest-letter-greater-than-target/0745-find-smallest-letter-greater-than-target.cpp",
+          "sha": "e41908702a71e57d74832058b7c8d811233ec49f",
+          "code": "class Solution {\npublic:\n    char nextGreatestLetter(vector<char>& letters, char target) {\n        int left = 0, right = letters.size()-1, pos = -1;\n\n        while(left<=right){\n            int mid = left + (right-left) /2;\n\n            if(letters[mid] > target){\n                pos = mid;\n                right = mid - 1;\n            }else{\n                left = mid + 1;\n            }\n        }\n\n        return pos == -1? letters[0] : letters[pos];\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 774,
+      "slug": "maximum-depth-of-n-ary-tree",
+      "title": "Maximum Depth of N-ary Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0774-maximum-depth-of-n-ary-tree/0774-maximum-depth-of-n-ary-tree.cpp",
+          "sha": "9304d08d4fa9bee8f204439f4ec15a25847b5624",
+          "code": "/*\n// Definition for a Node.\nclass Node {\npublic:\n    int val;\n    vector<Node*> children;\n\n    Node() {}\n\n    Node(int _val) {\n        val = _val;\n    }\n\n    Node(int _val, vector<Node*> _children) {\n        val = _val;\n        children = _children;\n    }\n};\n*/\n\nclass Solution {\npublic:\n    int maxDepth(Node* root) {\n        if(!root) return 0;\n\n        int depth = 0;\n\n        for(auto child : root->children){\n            depth = max(depth, maxDepth(child));\n        }\n\n        return 1+depth;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 775,
+      "slug": "n-ary-tree-preorder-traversal",
+      "title": "N-ary Tree Preorder Traversal",
+      "difficulty": "Easy",
+      "topics": [
+        "Stack",
+        "Tree",
+        "Depth-First Search"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0775-n-ary-tree-preorder-traversal/0775-n-ary-tree-preorder-traversal.cpp",
+          "sha": "13b0b3e4a09718047a7d5ed57da5c0d6f18ae55d",
+          "code": "/*\n// Definition for a Node.\nclass Node {\npublic:\n    int val;\n    vector<Node*> children;\n\n    Node() {}\n\n    Node(int _val) {\n        val = _val;\n    }\n\n    Node(int _val, vector<Node*> _children) {\n        val = _val;\n        children = _children;\n    }\n};\n*/\n\nclass Solution {\npublic:\n    vector<int> preorder(Node* root) {\n        vector<int> result;\n        traverse(root, result);\n        return result;\n    }\n\n    void traverse(Node* node, vector<int>& result){\n        if(!node) return;\n\n        result.push_back(node->val);\n\n        for(Node* child : node->children){\n            traverse(child, result);\n        }\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 776,
+      "slug": "n-ary-tree-postorder-traversal",
+      "title": "N-ary Tree Postorder Traversal",
+      "difficulty": "Easy",
+      "topics": [
+        "Stack",
+        "Tree",
+        "Depth-First Search"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0776-n-ary-tree-postorder-traversal/0776-n-ary-tree-postorder-traversal.cpp",
+          "sha": "03eacd8be3195f5ad18592d7b5194a3c6a58f9d1",
+          "code": "/*\n// Definition for a Node.\nclass Node {\npublic:\n    int val;\n    vector<Node*> children;\n\n    Node() {}\n\n    Node(int _val) {\n        val = _val;\n    }\n\n    Node(int _val, vector<Node*> _children) {\n        val = _val;\n        children = _children;\n    }\n};\n*/\n\nclass Solution {\npublic:\n    vector<int> postorder(Node* root) {\n        vector<int> result;\n        traverse(root, result);\n        return result;\n    }\n\n    void traverse(Node* node, vector<int>& result){\n        if(!node) return;\n\n        for(Node* child : node->children){\n            traverse(child, result);\n        }\n\n        result.push_back(node->val);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 783,
+      "slug": "search-in-a-binary-search-tree",
+      "title": "Search in a Binary Search Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Binary Search Tree",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0783-search-in-a-binary-search-tree/0783-search-in-a-binary-search-tree.cpp",
+          "sha": "f1450731aa1bdf010cbbd38e50d05a42edb3237c",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    TreeNode* searchBST(TreeNode* root, int val) {\n        if(!root || root->val == val) return root;\n\n        if(val < root->val){\n            return searchBST(root->left, val);\n        }else{\n            return searchBST(root->right,val);\n        }\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 792,
+      "slug": "binary-search",
+      "title": "Binary Search",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Binary Search"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "0792-binary-search/0792-binary-search.cpp",
+          "sha": "0a12afa8ec3b2c83fdaaa23a25cd347925fe9183",
+          "code": "class Solution {\npublic:\n    int search(vector<int>& nums, int target) {\n        int left = 0, right = nums.size()-1;\n\n        while(left <= right){\n            int mid = left + (right-left)/2;\n\n            if(nums[mid] == target){\n                return mid;\n            }else if(nums[mid] < target){\n                left = mid + 1;\n            }else{\n                right = mid - 1;\n            }\n        }\n\n        return -1;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 952,
+      "slug": "word-subsets",
+      "title": "Word Subsets",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "0952-word-subsets/0952-word-subsets.py",
+          "sha": "28d8f37e8267d4522083e9e2e62827d32a76e8c2",
+          "code": "class Solution:\n    def wordSubsets(self,A, B) -> List[str]:\n        #count the word that appear in the passed parameter\n        def count(word):\n            ans = [0] * 26\n            for letter in word:\n                ans[ord(letter) - ord('a')] += 1\n            return ans\n\n        #get the frequency of letter that appear in B (words2)\n        bmax = [0] * 26\n        for b in B:\n            for i, c in enumerate(count(b)):\n                bmax[i] = max(bmax[i], c)\n        \n        ans = []\n        #compute the frequency of letter that appear in word a then compare with bmax\n        for a in A:\n            if all(x >= y for x,y in zip(count(a), bmax)):\n                ans.append(a)\n        \n        return ans"
+        }
+      ]
+    },
+    {
+      "id": 1005,
+      "slug": "univalued-binary-tree",
+      "title": "Univalued Binary Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1005-univalued-binary-tree/1005-univalued-binary-tree.cpp",
+          "sha": "d4d411b57bf0d932a7375793b6f7a5ca39858172",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    bool isUnivalTree(TreeNode* root) {\n        if(!root) return true;\n\n        int val = root->val;\n        queue<TreeNode*> q;\n        q.push(root);\n\n        while(!q.empty()){\n            TreeNode* node = q.front();\n            q.pop();\n\n            if(node->val != val) return false;\n\n            if(node->left) q.push(node->left);\n            if(node->right) q.push(node->right);\n        }\n\n        return true;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1013,
+      "slug": "fibonacci-number",
+      "title": "Fibonacci Number",
+      "difficulty": "Easy",
+      "topics": [
+        "Math",
+        "Dynamic Programming",
+        "Recursion",
+        "Memoization"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1013-fibonacci-number/1013-fibonacci-number.cpp",
+          "sha": "43d1a9887fe2e74a8895211bb07477c1c48b86c5",
+          "code": "class Solution {\npublic:\n    int fib(int n) {\n        if(n <= 1){\n            return n;\n        }\n\n        int prev1 = 0, prev2= 1, curr=0;\n\n        for(int i = 2; i <= n; i++){\n            curr = prev1 + prev2;\n            prev1 = prev2;\n            prev2 = curr;\n        }\n\n        return curr;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1030,
+      "slug": "smallest-string-starting-from-leaf",
+      "title": "Smallest String Starting From Leaf",
+      "difficulty": "Medium",
+      "topics": [
+        "String",
+        "Backtracking",
+        "Tree",
+        "Depth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1030-smallest-string-starting-from-leaf/1030-smallest-string-starting-from-leaf.cpp",
+          "sha": "dcdc5631f78214401a6eef427aa196635d7cb3a4",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    string smallest;\n\n    void dfs(TreeNode* node, string path){\n        if(!node) return;\n\n        path = char('a' + node->val) + path;\n\n        if(!node->left && !node->right){\n            if(smallest.empty() || path < smallest){\n                smallest = path;\n            }\n        }\n\n        dfs(node->left, path);\n        dfs(node->right, path);\n    }\n\n    string smallestFromLeaf(TreeNode* root) {\n        if(!root) return \"\";\n        dfs(root, \"\");\n        return smallest;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1035,
+      "slug": "cousins-in-binary-tree",
+      "title": "Cousins in Binary Tree",
+      "difficulty": "Easy",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1035-cousins-in-binary-tree/1035-cousins-in-binary-tree.cpp",
+          "sha": "dd61989e625993eac5bfeda6e3ff027f28b23a52",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\n\nTreeNode* parentX = nullptr;\nTreeNode* parentY = nullptr;\nint depthX = -1;\nint depthY = -1;\n\nclass Solution {\npublic:\n    bool isCousins(TreeNode* root, int x, int y) {\n        if(!root) return false;\n\n        dfs(root, nullptr,0, x, y);\n\n        return (depthX==depthY) && (parentX != parentY);\n    }\n    \n    void dfs(TreeNode* node, TreeNode* parent, int depth, int x, int y){\n        if(!node) return;\n\n        if(node->val == x){\n            parentX = parent;\n            depthX = depth;\n        }\n\n        if(node->val == y){\n            parentY = parent;\n            depthY = depth;\n        }\n\n        dfs(node->left, node, depth+1, x, y);\n        dfs(node->right, node, depth+1, x, y);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1086,
+      "slug": "divisor-game",
+      "title": "Divisor Game",
+      "difficulty": "Easy",
+      "topics": [
+        "Math",
+        "Dynamic Programming",
+        "Brainteaser",
+        "Game Theory",
+        "Impartial Game"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1086-divisor-game/1086-divisor-game.cpp",
+          "sha": "4ecc566d49fccf35b3c5ce7a336c76b2573e4644",
+          "code": "class Solution {\npublic:\n    bool divisorGame(int n) {\n        return n%2 == 0;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1116,
+      "slug": "maximum-level-sum-of-a-binary-tree",
+      "title": "Maximum Level Sum of a Binary Tree",
+      "difficulty": "Medium",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1116-maximum-level-sum-of-a-binary-tree/1116-maximum-level-sum-of-a-binary-tree.cpp",
+          "sha": "ea1e54dd9de1e237181fef58f821daedc3b9f9e5",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    int maxLevelSum(TreeNode* root) {\n        if(!root) return 0;\n\n        int max = INT_MIN;\n        int maxLevel = 1;\n        int level = 0;\n\n        queue<TreeNode*> q;\n        q.push(root);\n\n        while(!q.empty()){\n            int size = q.size();\n            int levelSum = 0;\n            level++;\n\n            for(int i = 0; i < size; i++){\n                TreeNode* node = q.front();\n                q.pop();\n                \n                levelSum += node->val;\n\n                if(node->left) q.push(node->left);\n                if(node->right) q.push(node->right);\n            }\n            \n            if(levelSum > max){\n                max = levelSum;\n                maxLevel = level;\n            }\n        }\n\n        return maxLevel;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1127,
+      "slug": "last-stone-weight",
+      "title": "Last Stone Weight",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Heap (Priority Queue)"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1127-last-stone-weight/1127-last-stone-weight.cpp",
+          "sha": "94ef732159996328c94b61593318c95aabd056c3",
+          "code": "class Solution {\npublic:\n    int lastStoneWeight(vector<int>& stones) {\n        priority_queue<int>pq(stones.begin(), stones.end());\n        \n        while(pq.size() > 1){\n            int x = pq.top();\n            pq.pop();\n            int y = pq.top();\n            pq.pop();\n\n            if(x!=y){\n                pq.push(x-y);\n            }\n        }\n        return pq.empty()? 0:pq.top();\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1146,
+      "slug": "greatest-common-divisor-of-strings",
+      "title": "Greatest Common Divisor of Strings",
+      "difficulty": "Easy",
+      "topics": [
+        "Math",
+        "String",
+        "Euclidean Algorithm",
+        "Greatest Common Divisor"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1146-greatest-common-divisor-of-strings/1146-greatest-common-divisor-of-strings.cpp",
+          "sha": "8cbccad42d0f06147fafafa6ca3708184a339a57",
+          "code": "class Solution {\npublic:\n    string gcdOfStrings(string str1, string str2) {\n        if (str1 + str2 != str2 + str1){\n            return \"\";\n        }\n\n        int gcdLength = gcd(str1.size(), str2.size());\n        return str1.substr(0, gcdLength);\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1392,
+      "slug": "find-the-difference-of-two-arrays",
+      "title": "Find the Difference of Two Arrays",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1392-find-the-difference-of-two-arrays/1392-find-the-difference-of-two-arrays.cpp",
+          "sha": "d1ebdc5dfe7d0221d707f77d0db2cabcff3c1c0b",
+          "code": "class Solution {\npublic:\n    vector<vector<int>> findDifference(vector<int>& nums1, vector<int>& nums2) {\n        unordered_set<int> res1(nums1.begin(), nums1.end());\n        unordered_set<int> res2(nums2.begin(), nums2.end());\n\n        vector<int> uniqueNum1, uniqueNum2;\n\n        for(int num : res1){\n            if(res2.find(num) == res2.end()){\n                uniqueNum1.push_back(num);\n            }\n        }\n\n        for(int num : res2){\n            if(res1.find(num) == res1.end()){\n                uniqueNum2.push_back(num);\n            }\n        }\n\n        return {uniqueNum1, uniqueNum2};\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1502,
+      "slug": "construct-k-palindrome-strings",
+      "title": "Construct K Palindrome Strings",
+      "difficulty": "Medium",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Greedy",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "1502-construct-k-palindrome-strings/1502-construct-k-palindrome-strings.py",
+          "sha": "3fe47ff51ab1f1d28f719eaf0d07894dcc28a7e3",
+          "code": "class Solution:\n    def canConstruct(self, s: str, k: int) -> bool:\n        #base case\n        if len(s) < k:\n            return False\n        if len(s) == k:\n            return True\n\n        frequency = [0] * 26\n        odd_count = 0        \n\n        for char in s:\n            frequency[ord(char) - ord('a')] += 1\n\n        for count in frequency:\n            if count % 2 == 1:\n                odd_count += 1\n        \n        return odd_count <= k"
+        }
+      ]
+    },
+    {
+      "id": 1524,
+      "slug": "string-matching-in-an-array",
+      "title": "String Matching in an Array",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "String",
+        "String Matching"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "1524-string-matching-in-an-array/1524-string-matching-in-an-array.py",
+          "sha": "c0ba838de1832ff2ca1e93b4c90464eced2e355b",
+          "code": "class Solution:\n    def stringMatching(self, words):\n        matching_words = []\n\n        # Iterate through each word in the input list.\n        for current_word_index in range(len(words)):\n            # Compare the current word with all other words.\n            for other_word_index in range(len(words)):\n                # Skip comparing the word with itself.\n                if current_word_index == other_word_index:\n                    continue\n                if words[current_word_index] in words[other_word_index]:\n                    # Add it to the result list if true.\n                    matching_words.append(words[current_word_index])\n                    break  # No need to check further for this word.\n        return matching_words"
+        }
+      ]
+    },
+    {
+      "id": 1528,
+      "slug": "kids-with-the-greatest-number-of-candies",
+      "title": "Kids With the Greatest Number of Candies",
+      "difficulty": "Easy",
+      "topics": [
+        "Array"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1528-kids-with-the-greatest-number-of-candies/1528-kids-with-the-greatest-number-of-candies.cpp",
+          "sha": "c369a7ab913d53e513359ae8e98c55ecd8cbe4cb",
+          "code": "class Solution {\npublic:\n    vector<bool> kidsWithCandies(vector<int>& candies, int extraCandies) {\n        int n = candies.size();\n        int max = *max_element(candies.begin(), candies.end());\n        vector<bool> result;\n\n        for(int j = 0; j < n; j++){\n            result.push_back(candies[j] + extraCandies >= max);\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1549,
+      "slug": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit",
+      "title": "Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Queue",
+        "Sliding Window",
+        "Heap (Priority Queue)",
+        "Ordered Set",
+        "Monotonic Queue"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1549-longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/1549-longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit.cpp",
+          "sha": "b9b8de203f5bdbc492e231095cc5ea26c08862fc",
+          "code": "class Solution {\npublic:\n    int longestSubarray(vector<int>& nums, int limit) {\n        deque<int>minDeque, maxDeque;\n        int left = 0;\n        int result = 0;\n\n        for(int right = 0; right < nums.size(); right++){\n            //check if maxDeque empty or not and the check needs to replace the last element of maxDeque\n            while(!maxDeque.empty() && nums[right] > nums[maxDeque.back()])\n                maxDeque.pop_back();\n            maxDeque.push_back(right);\n\n            //check if minDeque empty or not and the check needs to replace the last element of minDeque\n            while(!minDeque.empty() && nums[right] < nums[minDeque.back()])\n                minDeque.pop_back();\n            minDeque.push_back(right);\n\n            while(!maxDeque.empty() && !minDeque.empty() && nums[maxDeque.front()] - nums[minDeque.front()] > limit){\n                left = min(maxDeque.front(), minDeque.front()) + 1;\n            \n                while(!maxDeque.empty() && maxDeque.front() < left)\n                    maxDeque.pop_front();\n            \n                while(!minDeque.empty() && minDeque.front() < left)\n                    minDeque.pop_front();\n            }\n\n            result = max(result, right-left+1);\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1574,
+      "slug": "maximum-product-of-two-elements-in-an-array",
+      "title": "Maximum Product of Two Elements in an Array",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Sorting",
+        "Heap (Priority Queue)"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1574-maximum-product-of-two-elements-in-an-array/1574-maximum-product-of-two-elements-in-an-array.cpp",
+          "sha": "2566bcebf34942cc7185c6b42f5453e68eb3f776",
+          "code": "class Solution {\npublic:\n    int maxProduct(vector<int>& nums) {\n        priority_queue<int> pq(nums.begin(), nums.end());\n        int first = pq.top() - 1;\n        pq.pop();\n        int sec = pq.top() - 1;\n        pq.pop();\n\n        return first*sec;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1646,
+      "slug": "kth-missing-positive-number",
+      "title": "Kth Missing Positive Number",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Binary Search"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1646-kth-missing-positive-number/1646-kth-missing-positive-number.cpp",
+          "sha": "04a2c4590c1d0844783793f343089272b8f7ce59",
+          "code": "class Solution {\npublic:\n    int findKthPositive(vector<int>& arr, int k) {\n        int left = 0;\n        int right = arr.size() - 1;\n\n        while(left <= right){\n            int mid = (left + right) / 2;\n            int missing = arr[mid] - (mid + 1);\n\n            if(missing < k){\n                left = mid+1;\n            }else{\n                right = mid - 1;\n            }\n        }\n\n        return k+right+1;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1755,
+      "slug": "defuse-the-bomb",
+      "title": "Defuse the Bomb",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Sliding Window"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1755-defuse-the-bomb/1755-defuse-the-bomb.cpp",
+          "sha": "d08d461006ce27b88d49709058023dfc86f777c8",
+          "code": "class Solution {\npublic:\n    vector<int> decrypt(vector<int>& code, int k) {\n        vector<int> result(code.size(),0);\n\n        if(k==0){\n            return result;\n        }\n\n        for(int i = 0; i < result.size(); i++){\n            if(k > 0){\n                for(int j = i+1; j < i+k+1; j++){\n                    result[i] += code[j % code.size()];\n                }\n            }else{\n                for(int j = i-abs(k); j < i ; j++){\n                    result[i] += code[(j + code.size()) % code.size()];\n                }\n            }\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1798,
+      "slug": "max-number-of-k-sum-pairs",
+      "title": "Max Number of K-Sum Pairs",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Two Pointers",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1798-max-number-of-k-sum-pairs/1798-max-number-of-k-sum-pairs.cpp",
+          "sha": "42ae85390bc30990bc6592ab6545cd503d31f440",
+          "code": "class Solution {\npublic:\n    int maxOperations(vector<int>& nums, int k) {\n        sort(nums.begin(), nums.end());\n        int count = 0;\n        int right = nums.size()-1;\n        int left = 0;\n\n        while(left < right){\n            int total = nums[left] + nums[right];\n\n            if(total == k){\n                count += 1;\n                left++;\n                right--;\n            }\n\n            if(total < k ){\n                left++;\n            }\n\n            if(total > k){\n                right--;\n            }\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1833,
+      "slug": "find-the-highest-altitude",
+      "title": "Find the Highest Altitude",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Prefix Sum"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1833-find-the-highest-altitude/1833-find-the-highest-altitude.cpp",
+          "sha": "a19a9de8541be71c2471831b00bc2ca89a246a46",
+          "code": "class Solution {\npublic:\n    int largestAltitude(vector<int>& gain) {\n        int max = 0, curr = 0;\n\n        for(int g : gain){\n            curr += g;\n            max = std::max(max, curr);\n        }\n\n        return max;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 1894,
+      "slug": "merge-strings-alternately",
+      "title": "Merge Strings Alternately",
+      "difficulty": "Easy",
+      "topics": [
+        "Two Pointers",
+        "String"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1894-merge-strings-alternately/1894-merge-strings-alternately.cpp",
+          "sha": "0f067f0aa31a22807ab6f8569b0a3d0c8f0e3bb3",
+          "code": "class Solution {\npublic:\n    string mergeAlternately(string word1, string word2) {\n        string merged = \"\";\n        int i = 0, j = 0;\n        \n        while(i < word1.size() && j < word2.size()){\n            merged += word1[i++];\n            merged += word2[j++];\n        }\n\n        merged += word1.substr(i) + word2.substr(j);\n\n        return merged;\n    }\n};"
+        },
+        {
+          "language": "python",
+          "path": "1894-merge-strings-alternately/1894-merge-strings-alternately.py",
+          "sha": "fc614c5a423668cda137212d487183817e23828a",
+          "code": "class Solution:\n    def mergeAlternately(self, word1: str, word2: str) -> str:\n        result = []\n        min_length = min(len(word1), len(word2))\n\n        for i in range(min_length):\n            result.append(word1[i])\n            result.append(word2[i])\n        \n        result.append(word1[min_length:])\n        result.append(word2[min_length:])\n\n        return \"\".join(result)"
+        }
+      ]
+    },
+    {
+      "id": 1987,
+      "slug": "substrings-of-size-three-with-distinct-characters",
+      "title": "Substrings of Size Three with Distinct Characters",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Sliding Window",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "1987-substrings-of-size-three-with-distinct-characters/1987-substrings-of-size-three-with-distinct-characters.cpp",
+          "sha": "0f3b38a6e5b6f0625302adb9cc79bcc33133627f",
+          "code": "class Solution {\npublic:\n    int countGoodSubstrings(string s) {\n        if(s.length() < 3){\n            return 0;\n        }\n\n        int count = 0;\n\n        for(int i = 0; i <= s.length()-3; i++){\n            unordered_map<char, int>freq;\n\n            freq[s[i]]++;\n            freq[s[i+1]]++;\n            freq[s[i+2]]++;\n\n            if(freq.size() == 3){\n                count++;\n            }\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2053,
+      "slug": "check-if-all-characters-have-equal-number-of-occurrences",
+      "title": "Check if All Characters Have Equal Number of Occurrences",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2053-check-if-all-characters-have-equal-number-of-occurrences/2053-check-if-all-characters-have-equal-number-of-occurrences.cpp",
+          "sha": "090c89ea07472f43bf966ef8c3ba952777183a11",
+          "code": "class Solution {\npublic:\n    bool areOccurrencesEqual(string s) {\n        unordered_map<char, int>freq;\n\n        for(char c : s){\n            freq[c]++;\n        }\n\n        auto it = freq.begin();\n        int firstVal = it->second;\n\n        for(const auto &pair : freq){\n            if(pair.second != firstVal){\n                return false;\n            }\n        }\n\n        return true;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2059,
+      "slug": "unique-length-3-palindromic-subsequences",
+      "title": "Unique Length-3 Palindromic Subsequences",
+      "difficulty": "Medium",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Bit Manipulation",
+        "Prefix Sum"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "2059-unique-length-3-palindromic-subsequences/2059-unique-length-3-palindromic-subsequences.py",
+          "sha": "2d5cb6336cd6ff076c5d9681cda8a1b92cc72f26",
+          "code": "class Solution:\n    def countPalindromicSubsequence(self, s: str) -> int:\n        letters = set(s)\n        ans = 0\n\n        for letter in letters:\n            i,j = s.index(letter), s.rindex(letter)\n            between = set()\n\n            for k in range(i+1, j):\n                between.add(s[k])\n            \n            ans += len(between)\n        \n        return ans"
+        }
+      ]
+    },
+    {
+      "id": 2107,
+      "slug": "find-unique-binary-string",
+      "title": "Find Unique Binary String",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "String",
+        "Backtracking"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2107-find-unique-binary-string/2107-find-unique-binary-string.cpp",
+          "sha": "7ab3d7ebea7749722511d4696a1bf62310d78bfe",
+          "code": "class Solution {\npublic:\n    string findDifferentBinaryString(vector<string>& nums) {\n        string result = \"\";\n\n        for(int i = 0; i < nums.size(); i++){\n            result += nums[i][i] == '0' ? '1' : '0';\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2112,
+      "slug": "minimum-difference-between-highest-and-lowest-of-k-scores",
+      "title": "Minimum Difference Between Highest and Lowest of K Scores",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Sliding Window",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2112-minimum-difference-between-highest-and-lowest-of-k-scores/2112-minimum-difference-between-highest-and-lowest-of-k-scores.cpp",
+          "sha": "4af65b14fa48676d0e554a30f5edefca044bb82f",
+          "code": "class Solution {\npublic:\n    int minimumDifference(vector<int>& nums, int k) {\n        int n = nums.size();\n        if(k <= 1 || n <= 1){\n            return 0;\n        }\n\n        sort(nums.begin(), nums.end());\n        int minNum = INT_MAX;\n\n        for(int i = 0; i <= n - k; i++){\n            int diff = nums[i+k-1] - nums[i];\n            minNum = min(minNum, diff);\n        }\n\n        return minNum;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2116,
+      "slug": "count-number-of-pairs-with-absolute-difference-k",
+      "title": "Count Number of Pairs With Absolute Difference K",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2116-count-number-of-pairs-with-absolute-difference-k/2116-count-number-of-pairs-with-absolute-difference-k.cpp",
+          "sha": "4d7a1807baeabe7564b5ad46805e351f39abef40",
+          "code": "class Solution {\npublic:\n    int countKDifference(vector<int>& nums, int k) {\n        unordered_map<int, int>freq;\n        int count = 0;\n\n        for(int num : nums){\n            count += freq[num-k] + freq[num+k];\n            freq[num]++;\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2117,
+      "slug": "find-original-array-from-doubled-array",
+      "title": "Find Original Array From Doubled Array",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Greedy",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2117-find-original-array-from-doubled-array/2117-find-original-array-from-doubled-array.cpp",
+          "sha": "6f43f99bb9a56a49bf1e8bc43edac2624d697a64",
+          "code": "class Solution {\npublic:\n    vector<int> findOriginalArray(vector<int>& changed) {\n        vector<int> result;\n        int n = changed.size();\n\n        if(n % 2 != 0){\n            return {};\n        }\n\n        sort(changed.begin(), changed.end());\n\n        unordered_map<int, int>freq;\n\n        for(int num : changed){\n            freq[num]++;\n        }\n\n        for(int num : changed){\n            if(freq[num] == 0) continue;\n\n            if(freq[num * 2] > 0){\n                result.push_back(num);\n\n                freq[num]--;\n                freq[num*2]--;\n            }else{\n                return{};\n            }\n        }\n\n        if(result.size() == n/2){\n            return result;\n        }\n\n        return {};\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2122,
+      "slug": "count-special-quadruplets",
+      "title": "Count Special Quadruplets",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Enumeration"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2122-count-special-quadruplets/2122-count-special-quadruplets.cpp",
+          "sha": "6ba6d16630a88fdbe7be97f44489c3787e2ca7e8",
+          "code": "class Solution {\npublic:\n    int countQuadruplets(vector<int>& nums) {\n        int count = 0;\n        unordered_map<int, int>res;\n\n        for(int b = 1; b <= nums.size()-2; b++){\n            for(int a = 0; a < b; a++){\n                res[nums[b] + nums[a]]++;\n            }\n\n            for(int d = b+2; d < nums.size(); d++){\n                for(int c = b+1; c < d; c++){\n                    if(res.find(nums[d]-nums[c]) != res.end()){\n                        count += res[nums[d] - nums[c]];\n                    }\n                }\n            }\n\n            res.clear();\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2190,
+      "slug": "count-common-words-with-one-occurrence",
+      "title": "Count Common Words With One Occurrence",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "String",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2190-count-common-words-with-one-occurrence/2190-count-common-words-with-one-occurrence.cpp",
+          "sha": "087147f2298382cd601be2e442922c0963419ac6",
+          "code": "class Solution {\npublic:\n    int countWords(vector<string>& words1, vector<string>& words2) {\n        int count = 0;\n\n        unordered_map<string, int> set1;\n        unordered_map<string, int> set2;\n\n        for(auto word : words1){\n            set1[word]++;\n        }\n\n        for(auto word : words2){\n            set2[word]++;\n        }\n\n        for(auto [key, val] : set1){\n            if(val == 1 && set2[key] == 1){\n                count++;\n            }\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2210,
+      "slug": "find-target-indices-after-sorting-array",
+      "title": "Find Target Indices After Sorting Array",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Binary Search",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2210-find-target-indices-after-sorting-array/2210-find-target-indices-after-sorting-array.cpp",
+          "sha": "ba3f74747200d43d21ae23b503a33afb402274b7",
+          "code": "class Solution {\npublic:\n    vector<int> targetIndices(vector<int>& nums, int target) {\n        sort(nums.begin(), nums.end());\n        vector<int> result;\n\n        int left = 0, right = nums.size()-1, firstOccurence = -1;\n\n        while(left <= right){\n            int mid = (left + right) / 2;\n\n            if(nums[mid] < target){\n                left = mid + 1;\n            }else if(nums[mid] > target){\n                right = mid - 1;\n            }else{\n                firstOccurence = mid;\n                right = mid - 1;\n            }\n        }\n\n        if(firstOccurence == -1){\n            return result;\n        }\n\n        for(int i = firstOccurence; i < nums.size() && nums[i] == target; i++){\n            result.push_back(i);\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2254,
+      "slug": "check-if-every-row-and-column-contains-all-numbers",
+      "title": "Check if Every Row and Column Contains All Numbers",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Matrix"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2254-check-if-every-row-and-column-contains-all-numbers/2254-check-if-every-row-and-column-contains-all-numbers.cpp",
+          "sha": "3e34dfd9fa50415f88c9968b57c5ea21561edc40",
+          "code": "class Solution {\npublic:\n    bool checkValid(vector<vector<int>>& matrix) {\n        int size = matrix.size();\n\n        for(int i = 0; i < size; i++){\n            unordered_set<int>rowSet, colSet;\n\n            for(int j = 0; j < size; j++){\n                if(rowSet.count(matrix[i][j]) || colSet.count(matrix[j][i])){\n                    return false;\n                }\n\n                rowSet.insert(matrix[i][j]);\n                colSet.insert(matrix[j][i]);\n            }\n        }\n        return true;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2292,
+      "slug": "counting-words-with-a-given-prefix",
+      "title": "Counting Words With a Given Prefix",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "String",
+        "String Matching"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "2292-counting-words-with-a-given-prefix/2292-counting-words-with-a-given-prefix.py",
+          "sha": "d4d6c052593a6872fc4315e0dca4e7c2430835ff",
+          "code": "class Solution:\n    def prefixCount(self, words: List[str], pref: str) -> int:\n        count = 0\n        for i in range(len(words)):\n            if (words[i].startswith(pref)):\n                count += 1\n        \n        return count"
+        }
+      ]
+    },
+    {
+      "id": 2308,
+      "slug": "divide-array-into-equal-pairs",
+      "title": "Divide Array Into Equal Pairs",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Bit Manipulation",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2308-divide-array-into-equal-pairs/2308-divide-array-into-equal-pairs.cpp",
+          "sha": "869897c77e0a301f4ec401caa2efb06d6ecc1fdc",
+          "code": "class Solution {\npublic:\n    bool divideArray(vector<int>& nums) {\n        unordered_map<int, int>freq;\n\n        for(int i : nums){\n            freq[i]++;\n        }\n\n        for(const auto& [key, value] : freq){\n            if(value % 2 != 0){\n                return false;\n            }\n        }\n\n        return true;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2331,
+      "slug": "intersection-of-multiple-arrays",
+      "title": "Intersection of Multiple Arrays",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Sorting",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2331-intersection-of-multiple-arrays/2331-intersection-of-multiple-arrays.cpp",
+          "sha": "d56f1a156a845f05f6392e45ca00eb5fc6266440",
+          "code": "class Solution {\npublic:\n    vector<int> intersection(vector<vector<int>>& nums) {\n        int size = nums.size();\n        unordered_map<int, int>freq;\n        vector<int> res;\n\n        for(size_t i = 0; i < nums.size(); i++){\n            for(size_t j = 0; j < nums[i].size(); j++){\n                freq[nums[i][j]]++;\n            }\n        }\n\n        for(const auto [key, value] : freq){\n            if(value == size){\n                res.push_back(key);\n            }\n        }\n\n        sort(res.begin(), res.end());\n\n        return res;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2358,
+      "slug": "number-of-ways-to-split-array",
+      "title": "Number of Ways to Split Array",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Prefix Sum"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "2358-number-of-ways-to-split-array/2358-number-of-ways-to-split-array.py",
+          "sha": "57bfb541c79f82c288e0140283adb57c1e4ca34b",
+          "code": "class Solution:\n    def waysToSplitArray(self, nums: List[int]) -> int:\n        total = sum(nums)\n        left_sum = 0\n        cnt = 0\n\n        for i in range(len(nums)-1):\n            left_sum += nums[i]\n            right_sum = total - left_sum\n\n            if left_sum >= right_sum:\n                cnt += 1\n        \n        return cnt"
+        }
+      ]
+    },
+    {
+      "id": 2372,
+      "slug": "rearrange-characters-to-make-target-string",
+      "title": "Rearrange Characters to Make Target String",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2372-rearrange-characters-to-make-target-string/2372-rearrange-characters-to-make-target-string.cpp",
+          "sha": "cbec7b36a54ddcfb958c8d00f0b6c2ca727ee974",
+          "code": "class Solution {\npublic:\n    int rearrangeCharacters(string s, string target) {\n        unordered_map<char, int>freq_s, freq;\n\n        for(char c : s){\n            freq_s[c]++;\n        }\n\n        for(char t : target){\n            freq[t]++;\n        }\n\n        int minCopies = INT_MAX;\n        for(const auto& pair : freq){\n            char letter = pair.first;\n            int required = pair.second;\n\n            if(freq_s[letter] == 0) return 0;\n\n            minCopies = min(minCopies, freq_s[letter]/required);\n        }\n        return minCopies;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2394,
+      "slug": "count-subarrays-with-score-less-than-k",
+      "title": "Count Subarrays With Score Less Than K",
+      "difficulty": "Hard",
+      "topics": [
+        "Array",
+        "Binary Search",
+        "Sliding Window",
+        "Prefix Sum"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2394-count-subarrays-with-score-less-than-k/2394-count-subarrays-with-score-less-than-k.cpp",
+          "sha": "7afc2abba104d2c621852aa7678cbea5a7792ecd",
+          "code": "class Solution {\npublic:\n    long long countSubarrays(vector<int>& nums, long long k) {\n        int start = 0;\n        long long sum = 0;\n        long long count = 0;\n\n        for(int end = 0; end < nums.size(); end++){\n            sum += nums[end];\n\n            while(sum * (end-start+1) >= k){\n                sum -= nums[start];\n                start++;\n            }\n\n            count += end-start+1;\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2421,
+      "slug": "maximum-number-of-pairs-in-array",
+      "title": "Maximum Number of Pairs in Array",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2421-maximum-number-of-pairs-in-array/2421-maximum-number-of-pairs-in-array.cpp",
+          "sha": "58fe67df5658c787a38b9e98f5a20442178bc046",
+          "code": "class Solution {\npublic:\n    vector<int> numberOfPairs(vector<int>& nums) {\n        int count = 0;\n        unordered_map<int, int>freq;\n\n        for(int num : nums){\n            freq[num]++;\n\n            if(freq[num] % 2 == 0){\n                count++;\n            }\n        }\n\n        int left = nums.size() - (count * 2);\n\n        return {count, left};\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2427,
+      "slug": "first-letter-to-appear-twice",
+      "title": "First Letter to Appear Twice",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Bit Manipulation",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2427-first-letter-to-appear-twice/2427-first-letter-to-appear-twice.cpp",
+          "sha": "75463233d8883b0fca765b5e0e04e21eb66bf390",
+          "code": "class Solution {\npublic:\n    char repeatedCharacter(string s) {\n        unordered_map<char, int> first;\n\n        for(char c : s){\n            first[c]++;\n\n            if(first[c] == 2){\n                return c;\n            }\n        }\n\n        return ' ';\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2470,
+      "slug": "removing-stars-from-a-string",
+      "title": "Removing Stars From a String",
+      "difficulty": "Medium",
+      "topics": [
+        "String",
+        "Stack",
+        "Simulation"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2470-removing-stars-from-a-string/2470-removing-stars-from-a-string.cpp",
+          "sha": "ac514b97245e01f4b1240dbdb72b97c9faa8a30c",
+          "code": "class Solution {\npublic:\n    string removeStars(string s) {\n        string letter = \"\";\n        int i = 0;\n\n        while(i < s.size()){\n            if(s[i] == '*'){\n                letter.pop_back();\n            }else{\n                letter += s[i];\n            }\n            i++;\n        }      \n        return letter;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2493,
+      "slug": "reverse-odd-levels-of-binary-tree",
+      "title": "Reverse Odd Levels of Binary Tree",
+      "difficulty": "Medium",
+      "topics": [
+        "Tree",
+        "Depth-First Search",
+        "Breadth-First Search",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2493-reverse-odd-levels-of-binary-tree/2493-reverse-odd-levels-of-binary-tree.cpp",
+          "sha": "c5c7609e311aa0226d4dab5420ac14d65069a77a",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    TreeNode* reverseOddLevels(TreeNode* root) {\n        if(!root) return nullptr;\n\n        queue<TreeNode*> q;\n        q.push(root);\n        int level = 0;\n\n        while(!q.empty()){\n            int size = q.size();\n            vector<TreeNode*> nodes;\n\n            for(int i = 0; i < size; i++){\n                TreeNode* node = q.front();\n                q.pop();\n                nodes.push_back(node);\n\n                if(node->left) q.push(node->left);\n                if(node->right) q.push(node->right);\n            }\n\n            if(level % 2 == 1){\n                int left = 0, right = nodes.size() - 1;\n                while(left < right){\n                    swap(nodes[left]->val, nodes[right]->val);\n                    left++;\n                    right--;\n                }\n            }\n            level++;\n        }\n        return root;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2561,
+      "slug": "number-of-distinct-averages",
+      "title": "Number of Distinct Averages",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Two Pointers",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2561-number-of-distinct-averages/2561-number-of-distinct-averages.cpp",
+          "sha": "0ae4808775ca5682053e46dac1d8810f0294191d",
+          "code": "class Solution {\npublic:\n    int distinctAverages(vector<int>& nums) {\n        unordered_set<double> res;\n\n        sort(nums.begin(), nums.end());\n\n        while(!nums.empty()){\n            int min = nums.front();\n            int max = nums.back();\n            res.insert((max + min)/2.0);\n\n            nums.erase(nums.begin());\n            nums.pop_back();\n        }\n\n        return res.size();\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2567,
+      "slug": "closest-nodes-queries-in-a-binary-search-tree",
+      "title": "Closest Nodes Queries in a Binary Search Tree",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Binary Search",
+        "Tree",
+        "Depth-First Search",
+        "Binary Search Tree",
+        "Binary Tree"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2567-closest-nodes-queries-in-a-binary-search-tree/2567-closest-nodes-queries-in-a-binary-search-tree.cpp",
+          "sha": "838f770c0ccd1f12cc054831f0eedd409a706ec1",
+          "code": "/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n *     TreeNode() : val(0), left(nullptr), right(nullptr) {}\n *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}\n * };\n */\nclass Solution {\npublic:\n    vector<int> sortedval;\n\n    void inorder(TreeNode* node){\n        if(!node) return;\n\n        inorder(node->left);\n        sortedval.push_back(node->val);\n        inorder(node->right);\n    }\n\n    vector<vector<int>> closestNodes(TreeNode* root, vector<int>& queries) {\n        inorder(root);\n\n        vector<vector<int>> ans;\n\n        for(int q : queries){\n            //lower_bound used to get the val just after the target.\n            auto it = lower_bound(sortedval.begin(), sortedval.end(), q);\n\n            int mini = (it == sortedval.begin()) ? -1 : *(prev(it));\n            if( it!=sortedval.end()&& *it == q ) mini = q;\n            int max = (it==sortedval.end())? -1 : *it;\n\n            ans.push_back({mini, max});\n        }\n        return ans;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2585,
+      "slug": "delete-greatest-value-in-each-row",
+      "title": "Delete Greatest Value in Each Row",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Sorting",
+        "Heap (Priority Queue)",
+        "Matrix",
+        "Simulation"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2585-delete-greatest-value-in-each-row/2585-delete-greatest-value-in-each-row.cpp",
+          "sha": "1597e02fce6a393a217d1c6dc5d98ced9a4bd93a",
+          "code": "class Solution {\npublic:\n    int deleteGreatestValue(vector<vector<int>>& grid) {\n        int m = grid.size();\n        int n = grid[0].size();\n\n        for(int i = 0; i < m; i++){\n            sort(grid[i].begin(), grid[i].end());\n        }\n        \n        int result = 0;\n\n        for(int i = n-1; i >= 0; i--){\n            int maxVal = 0;\n            for(int j = 0; j < m; j++){\n                maxVal = max(maxVal, grid[j][i]);\n            }\n            result += maxVal;\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2614,
+      "slug": "maximum-count-of-positive-integer-and-negative-integer",
+      "title": "Maximum Count of Positive Integer and Negative Integer",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Binary Search",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2614-maximum-count-of-positive-integer-and-negative-integer/2614-maximum-count-of-positive-integer-and-negative-integer.cpp",
+          "sha": "cafc4bad9beced678d287ae34f1b767c6de1f45e",
+          "code": "class Solution {\npublic:\n    int maximumCount(vector<int>& nums) {\n        int neg_count = binarySearch(nums, 0);\n        int pos_count = nums.size()-binarySearch(nums, 1);\n\n        return max(neg_count, pos_count);\n    }\n\n    int binarySearch(vector<int>& nums, int target){\n        int left = 0, right = nums.size()-1, result = nums.size();\n\n        while(left<=right){\n            int mid = (left + right) / 2;\n            if(nums[mid] < target){\n                left = mid+1;\n            }else{\n                result = mid;\n                right = mid-1;\n            }\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2634,
+      "slug": "minimum-common-value",
+      "title": "Minimum Common Value",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Two Pointers",
+        "Binary Search"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2634-minimum-common-value/2634-minimum-common-value.cpp",
+          "sha": "3369a86e9c0d90eb5fab4706dbf8105477fda7ef",
+          "code": "class Solution {\npublic:\n    int getCommon(vector<int>& nums1, vector<int>& nums2) {\n        int i = 0, j = 0;\n        int common = -1;\n\n        while(i < nums1.size() && j < nums2.size()){\n            if(nums1[i] == nums2[j]){\n                common = nums1[i];\n                break;\n            }else if(nums1[i] < nums2[j]){\n                i++;\n            }else{\n                j++;\n            }\n        }\n\n        return common;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2691,
+      "slug": "count-vowel-strings-in-ranges",
+      "title": "Count Vowel Strings in Ranges",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "String",
+        "Prefix Sum"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "2691-count-vowel-strings-in-ranges/2691-count-vowel-strings-in-ranges.py",
+          "sha": "8d62cbe64e9c35106bb11baddbd49dad4da4aeef",
+          "code": "class Solution:\n    def vowelStrings(self, words: List[str], queries: List[List[int]]) -> List[int]:\n        #get the list length\n        n = len(words)\n        #create a vowel dictionary\n        vowel = {'a', 'e', 'i', 'o', 'u'}\n        #create a prefix\n        Prefix = [0] * (n+1)\n\n        #for loop\n        for i in range(n):\n            Prefix[i+1] = Prefix[i]\n            if words[i][0] in vowel and words[i][-1] in vowel:\n                Prefix[i+1] += 1\n        \n        ANS = []\n        for query in queries:\n            ANS.append(Prefix[query[1]+1]- Prefix[query[0]])\n        \n        return ANS"
+        }
+      ]
+    },
+    {
+      "id": 2732,
+      "slug": "counter",
+      "title": "Counter",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2732-counter/2732-counter.js",
+          "sha": "ef80f10476d733740ac79999de1f8c1f9faacc92",
+          "code": "/**\n * @param {number} n\n * @return {Function} counter\n */\nvar createCounter = function(n) {\n    \n    return function() {\n        return n++;\n    };\n};\n\n/** \n * const counter = createCounter(10)\n * counter() // 10\n * counter() // 11\n * counter() // 12\n */"
+        }
+      ]
+    },
+    {
+      "id": 2741,
+      "slug": "function-composition",
+      "title": "Function Composition",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2741-function-composition/2741-function-composition.js",
+          "sha": "e4ff62b32b27abc5676d227776f2fc3820978e30",
+          "code": "/**\n * @param {Function[]} functions\n * @return {Function}\n */\nvar compose = function(functions) {\n    return function(x) {\n        return functions.reduceRight((acc, fn) => fn(acc), x)\n    }\n};\n\n/**\n * const fn = compose([x => x + 1, x => 2 * x])\n * fn(4) // 9\n */"
+        }
+      ]
+    },
+    {
+      "id": 2746,
+      "slug": "filter-elements-from-array",
+      "title": "Filter Elements from Array",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2746-filter-elements-from-array/2746-filter-elements-from-array.js",
+          "sha": "6d58fc878b5d59cd37a09655d0611ca10ed2c591",
+          "code": "/**\n * @param {number[]} arr\n * @param {Function} fn\n * @return {number[]}\n */\nvar filter = function(arr, fn) {\n    return arr.filter(fn);\n};"
+        }
+      ]
+    },
+    {
+      "id": 2747,
+      "slug": "apply-transform-over-each-element-in-array",
+      "title": "Apply Transform Over Each Element in Array",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2747-apply-transform-over-each-element-in-array/2747-apply-transform-over-each-element-in-array.js",
+          "sha": "9d75311a398ed3e2482d3d236fd315866e30d9fa",
+          "code": "/**\n * @param {number[]} arr\n * @param {Function} fn\n * @return {number[]}\n */\nvar map = function(arr, fn) {\n    return arr.map(fn);\n};"
+        }
+      ]
+    },
+    {
+      "id": 2761,
+      "slug": "array-reduce-transformation",
+      "title": "Array Reduce Transformation",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2761-array-reduce-transformation/2761-array-reduce-transformation.js",
+          "sha": "b22726a1edc838bf487426d6b1510f176ef4961a",
+          "code": "/**\n * @param {number[]} nums\n * @param {Function} fn\n * @param {number} init\n * @return {number}\n */\nvar reduce = function(nums, fn, init) {\n    return nums.reduce(fn, init);\n};"
+        }
+      ]
+    },
+    {
+      "id": 2789,
+      "slug": "counter-ii",
+      "title": "Counter II",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2789-counter-ii/2789-counter-ii.js",
+          "sha": "7c570a062bb39d9b119bd3e17e14d2e7053ec744",
+          "code": "/**\n * @param {integer} init\n * @return { increment: Function, decrement: Function, reset: Function }\n */\nvar createCounter = function(init) {\n    let curr = init;\n    return{\n        increment: function(){\n           return ++curr\n        },\n\n        decrement: function(){\n            return --curr\n        },\n\n        reset: function(){\n            curr = init\n            return curr\n        }\n    }\n};\n\n/**\n * const counter = createCounter(5)\n * counter.increment(); // 6\n * counter.reset(); // 5\n * counter.decrement(); // 4\n */"
+        }
+      ]
+    },
+    {
+      "id": 2796,
+      "slug": "allow-one-function-call",
+      "title": "Allow One Function Call",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2796-allow-one-function-call/2796-allow-one-function-call.js",
+          "sha": "ab09d71d8d36fc32e9898a634964535bbb039077",
+          "code": "/**\n * @param {Function} fn\n * @return {Function}\n */\nvar once = function(fn) {\n    let hasBeenCalled = false;\n    let result;\n\n    return function(...args){\n        if(!hasBeenCalled){\n            result = fn(...args);\n            hasBeenCalled = true;\n            return result;\n        }else{\n            return undefined;\n        }\n    }\n};\n\n/**\n * let fn = (a,b,c) => (a + b + c)\n * let onceFn = once(fn)\n *\n * onceFn(1,2,3); // 6\n * onceFn(2,3,6); // returns undefined without calling fn\n */"
+        }
+      ]
+    },
+    {
+      "id": 2809,
+      "slug": "create-hello-world-function",
+      "title": "Create Hello World Function",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2809-create-hello-world-function/2809-create-hello-world-function.js",
+          "sha": "6988eeb21bfd021ac0cfdf08a079c67469d907d6",
+          "code": "/**\n * @return {Function}\n */\nvar createHelloWorld = function() {\n    let greeting = \"Hello World\"\n    return function(...args) {\n        return greeting\n    }\n};\n\n/**\n * const f = createHelloWorld();\n * f(); // \"Hello World\"\n */"
+        }
+      ]
+    },
+    {
+      "id": 2820,
+      "slug": "return-length-of-arguments-passed",
+      "title": "Return Length of Arguments Passed",
+      "difficulty": "Easy",
+      "topics": [],
+      "solutions": [
+        {
+          "language": "javascript",
+          "path": "2820-return-length-of-arguments-passed/2820-return-length-of-arguments-passed.js",
+          "sha": "0b13ad3430880808a8cd855cb1ee7a30a096f181",
+          "code": "/**\n * @param {...(null|boolean|number|string|Array|Object)} args\n * @return {number}\n */\nvar argumentsLength = function(...args) {\n    return args.length;\n};\n\n/**\n * argumentsLength(1, 2, 3); // 3\n */"
+        }
+      ]
+    },
+    {
+      "id": 2856,
+      "slug": "count-complete-subarrays-in-an-array",
+      "title": "Count Complete Subarrays in an Array",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Sliding Window"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2856-count-complete-subarrays-in-an-array/2856-count-complete-subarrays-in-an-array.cpp",
+          "sha": "a54a886b17c0e2ed4b3af4622380e9f1f18fb2f7",
+          "code": "class Solution {\npublic:\n    int countCompleteSubarrays(vector<int>& nums) {\n        int n = nums.size();\n        int count = 0;\n        unordered_set<int> distinct(nums.begin(), nums.end());\n        int distinctSize = distinct.size();\n\n        for(int i = 0; i < n; i++){\n            unordered_set<int> current;\n            for(int j = i; j < n; j++){\n                current.insert(nums[j]);\n\n                if(current.size() == distinctSize){\n                    count++;\n                }\n            }\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 2917,
+      "slug": "count-pairs-whose-sum-is-less-than-target",
+      "title": "Count Pairs Whose Sum is Less than Target",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Two Pointers",
+        "Binary Search",
+        "Sorting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "2917-count-pairs-whose-sum-is-less-than-target/2917-count-pairs-whose-sum-is-less-than-target.cpp",
+          "sha": "388851d5ed8f8f176ebac1030adea52ae3d9167b",
+          "code": "class Solution {\npublic:\n    int countPairs(vector<int>& nums, int target) {\n        sort(nums.begin(), nums.end());\n        int left = 0, right = nums.size()-1, count = 0;\n\n        while(left<=right){\n            if(nums[right] + nums[left] < target){\n                count += (right-left);\n                left++;\n            }else{\n                right--;\n            }\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 3081,
+      "slug": "minimum-array-length-after-pair-removals",
+      "title": "Minimum Array Length After Pair Removals",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Hash Table",
+        "Two Pointers",
+        "Binary Search",
+        "Greedy",
+        "Counting"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "3081-minimum-array-length-after-pair-removals/3081-minimum-array-length-after-pair-removals.cpp",
+          "sha": "570f3295048c5a08f9e6b456fc730c3fc12b4752",
+          "code": "class Solution {\npublic:\n    int minLengthAfterRemovals(vector<int>& nums) {\n        int n = nums.size();\n        int mid = n / 2;\n        int i = 0, j = mid;\n        int pairs = 0;\n\n        while(i < mid && j < n){\n            if(nums[i] < nums[j]){\n                pairs++;\n                i++;\n            }\n            j++;\n        }\n\n        return n-2*pairs;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 3226,
+      "slug": "minimum-number-game",
+      "title": "Minimum Number Game",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Sorting",
+        "Heap (Priority Queue)",
+        "Simulation"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "3226-minimum-number-game/3226-minimum-number-game.cpp",
+          "sha": "0ca649fc9afc1559dea1332cd36dfebc2c7da44a",
+          "code": "class Solution {\npublic:\n    vector<int> numberGame(vector<int>& nums) {\n        priority_queue<int, vector<int>, greater<int>> pq(nums.begin(), nums.end());\n        vector<int> result;\n\n        while(pq.size() > 1){\n            int first = pq.top();\n            pq.pop();\n            int sec = pq.top();\n            pq.pop();\n\n            result.push_back(sec);\n            result.push_back(first);\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 3309,
+      "slug": "count-prefix-and-suffix-pairs-i",
+      "title": "Count Prefix and Suffix Pairs I",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "String",
+        "Trie",
+        "Rolling Hash",
+        "String Matching",
+        "Hash Function"
+      ],
+      "solutions": [
+        {
+          "language": "python",
+          "path": "3309-count-prefix-and-suffix-pairs-i/3309-count-prefix-and-suffix-pairs-i.py",
+          "sha": "1992c2083d745ab3e980ff9a827746b329dc7f73",
+          "code": "class Solution:\n    def countPrefixSuffixPairs(self, words: List[str]) -> int:\n        n = len(words)\n        cnt = 0\n\n        for i in range(n):\n            for j in range(i+1, n):\n                str1 = words[i]\n                str2 = words[j]\n\n                #str1 cannot have a longer length than str2\n                if len(str1) > len(str2):\n                    continue\n                \n                if str2.startswith(str1) and str2.endswith(str1):\n                    cnt += 1\n        \n        return cnt"
+        }
+      ]
+    },
+    {
+      "id": 3349,
+      "slug": "maximum-length-substring-with-two-occurrences",
+      "title": "Maximum Length Substring With Two Occurrences",
+      "difficulty": "Easy",
+      "topics": [
+        "Hash Table",
+        "String",
+        "Sliding Window"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "3349-maximum-length-substring-with-two-occurrences/3349-maximum-length-substring-with-two-occurrences.cpp",
+          "sha": "7d3f6eeff03e4d99d4c0fdf7b58b845c3eead7c4",
+          "code": "class Solution {\npublic:\n    int maximumLengthSubstring(string s) {\n        int maxCount = 0;\n        int left = 0;\n        unordered_map<char, int>freq;\n\n        for(int right = 0; right < s.length(); right++){\n            freq[s[right]]++;\n\n            while(freq[s[right]] > 2){\n               freq[s[left]]--;\n               left++;\n            }\n\n            maxCount = max(maxCount, right-left+1);\n        }\n\n        return maxCount;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 3447,
+      "slug": "clear-digits",
+      "title": "Clear Digits",
+      "difficulty": "Easy",
+      "topics": [
+        "String",
+        "Stack",
+        "Simulation"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "3447-clear-digits/3447-clear-digits.cpp",
+          "sha": "4114231db5f36057f8a9fda1227372139ba367d7",
+          "code": "class Solution {\npublic:\n    string clearDigits(string s) {\n        string result;\n        stack<char> st;\n\n        for(char c : s){\n            if(isdigit(c)){\n                if(!st.empty() && !isdigit(st.top())){\n                    st.pop();\n                }\n            }else{\n                st.push(c);\n            }\n        }\n\n        while(!st.empty()){\n            result = st.top() + result;\n            st.pop();\n        }\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 3543,
+      "slug": "count-substrings-that-satisfy-k-constraint-i",
+      "title": "Count Substrings That Satisfy K-Constraint I",
+      "difficulty": "Easy",
+      "topics": [
+        "String",
+        "Sliding Window"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "3543-count-substrings-that-satisfy-k-constraint-i/3543-count-substrings-that-satisfy-k-constraint-i.cpp",
+          "sha": "ea31eee99323085cfd4afe56e87f1f3242f5700b",
+          "code": "class Solution {\npublic:\n    int countKConstraintSubstrings(string s, int k) {\n        int left = 0, count0 = 0, count1 = 0, result = 0;\n\n        for(int right = 0; right < s.length(); right++){\n            if(s[right] == '0') count0++;\n            else count1++;\n\n            while(count0 > k && count1 > k){\n                if(s[left] == '0' ) count0--;\n                else count1--;\n                left++;\n            }\n\n            result += (right-left+1);\n        }\n\n        return result;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 3685,
+      "slug": "count-subarrays-of-length-three-with-a-condition",
+      "title": "Count Subarrays of Length Three With a Condition",
+      "difficulty": "Easy",
+      "topics": [
+        "Array"
+      ],
+      "solutions": [
+        {
+          "language": "cpp",
+          "path": "3685-count-subarrays-of-length-three-with-a-condition/3685-count-subarrays-of-length-three-with-a-condition.cpp",
+          "sha": "2fdca3366f0232002ef2158b53cb86e96bcb63ff",
+          "code": "class Solution {\npublic:\n    int countSubarrays(vector<int>& nums) {\n        int count = 0;\n\n        for(int i = 0; i < nums.size() - 2; i++){\n            int result = nums[i] + nums[i+2];\n\n            if(nums[i+1] == result * 2){\n                count += 1;\n            }\n        }\n\n        return count;\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 3870,
+      "slug": "count-commas-in-range",
+      "title": "Count Commas in Range",
+      "difficulty": "Easy",
+      "topics": [
+        "Math"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "3870-count-commas-in-range/3870-count-commas-in-range.java",
+          "sha": "83043c070d091008d73ab1af9b8167e1c6d59931",
+          "code": "class Solution {\n    public int countCommas(int n) {\n        int digits = String.valueOf(n).length();\n        int total = 0;\n        int count = 0;\n        int commas = 0;\n\n        for(int i = 1; i <= digits; i++){\n            int low = (int) Math.pow(10, i-1);\n            int high = (int) Math.pow(10, i) -1;\n\n            if(n >= high){\n                count = high-low+1;\n            }else{\n                count = n-low+1;\n            }\n\n            commas = (i-1)/3;\n            total += commas * count;\n        }\n\n        return total;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 3903,
+      "slug": "smallest-stable-index-i",
+      "title": "Smallest Stable Index I",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Prefix Sum"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "3903-smallest-stable-index-i/3903-smallest-stable-index-i.java",
+          "sha": "a3a322cdc9555f08bea0c6bebd81f6eeec51abe8",
+          "code": "class Solution {\n    public int firstStableIndex(int[] nums, int k) {\n        int n = nums.length;\n        int[] suf = new int[100];\n        suf[n-1] = nums[n-1];\n        int max = 0;\n\n        for(int i = n-2; i >=0; i--)\n            suf[i] = Math.min(suf[i+1], nums[i]);\n        \n        for(int i = 0; i < n; i++){\n            max = Math.max(max, nums[i]);\n            if(max - suf[i] <= k){\n                return i;\n            }\n        }\n\n        return -1;\n    }\n}"
+        }
+      ]
+    }
+  ]
+}
