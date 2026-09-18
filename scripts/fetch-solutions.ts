@@ -83,6 +83,7 @@ async function fetchMeta(slug: string): Promise<Meta | null> {
               title
               difficulty
               topicTags { name }
+              categoryTitle
             }
           }
         `,
@@ -92,12 +93,22 @@ async function fetchMeta(slug: string): Promise<Meta | null> {
     });
     if (!res.ok) return null;
     const json = (await res.json()) as {
-      data?: { question?: { title: string; difficulty: string; topicTags: { name: string }[] } | null };
+      data?: {
+        question?: {
+          title: string;
+          difficulty: string;
+          topicTags: { name: string }[];
+          categoryTitle?: string | null;
+        } | null;
+      };
     };
     const q = json.data?.question;
     if (!q) return null;
     const difficulty = (['Easy', 'Medium', 'Hard'] as const).find((d) => d === q.difficulty) ?? null;
-    return { title: q.title, difficulty, topics: q.topicTags.map((t) => t.name) };
+    // Some problems (e.g. "30 Days of JavaScript") have no tags; fall back to the category.
+    const topics = q.topicTags.map((t) => t.name);
+    if (topics.length === 0 && q.categoryTitle) topics.push(q.categoryTitle);
+    return { title: q.title, difficulty, topics };
   } catch {
     return null;
   }
@@ -124,9 +135,9 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promis
 }
 
 async function buildProblem(pf: ProblemFiles, cached: Problem | undefined): Promise<Problem | null> {
-  // Reuse cached metadata unless it came from the slug fallback (difficulty null).
+  // Reuse cached metadata unless it came from the slug fallback (difficulty null / no topics).
   let meta: Meta;
-  if (cached && cached.difficulty !== null) {
+  if (cached && cached.difficulty !== null && cached.topics.length > 0) {
     meta = { title: cached.title, difficulty: cached.difficulty, topics: cached.topics };
   } else {
     const fetched = await fetchMeta(pf.slug);

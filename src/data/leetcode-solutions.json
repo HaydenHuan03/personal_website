@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T06:20:12.566Z",
+  "fetchedAt": "2026-09-18T06:24:25.196Z",
   "problems": [
     {
       "id": 1,
@@ -2736,7 +2736,9 @@
       "slug": "counter",
       "title": "Counter",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
@@ -2751,7 +2753,9 @@
       "slug": "function-composition",
       "title": "Function Composition",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
@@ -2766,7 +2770,9 @@
       "slug": "filter-elements-from-array",
       "title": "Filter Elements from Array",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
@@ -2781,7 +2787,9 @@
       "slug": "apply-transform-over-each-element-in-array",
       "title": "Apply Transform Over Each Element in Array",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
@@ -2796,7 +2804,9 @@
       "slug": "array-reduce-transformation",
       "title": "Array Reduce Transformation",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
@@ -2811,7 +2821,9 @@
       "slug": "counter-ii",
       "title": "Counter II",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
@@ -2826,7 +2838,9 @@
       "slug": "allow-one-function-call",
       "title": "Allow One Function Call",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
@@ -2841,7 +2855,9 @@
       "slug": "create-hello-world-function",
       "title": "Create Hello World Function",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
@@ -2856,7 +2872,9 @@
       "slug": "return-length-of-arguments-passed",
       "title": "Return Length of Arguments Passed",
       "difficulty": "Easy",
-      "topics": [],
+      "topics": [
+        "JavaScript"
+      ],
       "solutions": [
         {
           "language": "javascript",
