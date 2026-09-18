@@ -1,7 +1,9 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigationType } from 'react-router';
 import HomePage from './pages/HomePage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
+
+const LeetCodePage = lazy(() => import('./pages/LeetCodePage'));
 
 function ScrollToHash() {
   const location = useLocation();
@@ -29,6 +31,14 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+        <Route
+          path="/leetcode"
+          element={
+            <Suspense fallback={<main className="max-w-4xl mx-auto px-6 md:px-12 min-h-screen" />}>
+              <LeetCodePage />
+            </Suspense>
+          }
+        />
       </Routes>
     </div>
   );

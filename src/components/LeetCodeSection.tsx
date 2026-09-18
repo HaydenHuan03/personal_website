@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ExternalLink } from 'lucide-react';
+import { Link } from 'react-router';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 import SectionHeader from './SectionHeader';
 import statsJson from '../data/leetcode.json';
 
@@ -84,14 +85,22 @@ export default function LeetCodeSection() {
         </p>
       )}
 
-      <a
-        href={`https://leetcode.com/u/${LEETCODE_USERNAME}/`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 mt-8 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
-      >
-        View Profile <ExternalLink size={16} />
-      </a>
+      <div className="flex flex-wrap gap-3 mt-8">
+        <Link
+          to="/leetcode"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 text-stone-50 rounded-md hover:bg-stone-800 transition-colors font-medium text-sm"
+        >
+          Browse Solutions <ArrowRight size={16} />
+        </Link>
+        <a
+          href={`https://leetcode.com/u/${LEETCODE_USERNAME}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
+        >
+          View Profile <ExternalLink size={16} />
+        </a>
+      </div>
     </section>
   );
 }
