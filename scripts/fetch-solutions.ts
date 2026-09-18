@@ -178,8 +178,13 @@ if (groups.length === 0) {
 } else {
   const built = await mapLimit(groups, CONCURRENCY, (pf) => buildProblem(pf, cachedBySlug.get(pf.slug)));
   const problems = built.filter((p): p is Problem => p !== null);
-  const snapshot: SolutionsSnapshot = { fetchedAt: new Date().toISOString(), problems };
-  await Bun.write(OUT, JSON.stringify(snapshot, null, 2) + '\n');
-  const reused = problems.filter((p) => cachedBySlug.has(p.slug)).length;
-  console.log(`LeetCode solutions updated: ${problems.length} problems (${reused} reused from cache)`);
+  if (cache && JSON.stringify(cache.problems) === JSON.stringify(problems)) {
+    // Nothing changed; leave fetchedAt alone so the daily job has nothing to commit.
+    console.log(`LeetCode solutions unchanged: ${problems.length} problems`);
+  } else {
+    const snapshot: SolutionsSnapshot = { fetchedAt: new Date().toISOString(), problems };
+    await Bun.write(OUT, JSON.stringify(snapshot, null, 2) + '\n');
+    const reused = problems.filter((p) => cachedBySlug.has(p.slug)).length;
+    console.log(`LeetCode solutions updated: ${problems.length} problems (${reused} reused from cache)`);
+  }
 }
