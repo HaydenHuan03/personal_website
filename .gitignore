@@ -5,3 +5,5 @@ dist
 docs/superpowers
 CLAUDE.md
 SKILL.md
+.agents
+.claude/skills
