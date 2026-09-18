@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -16,6 +16,22 @@ const LABELS: Record<(typeof SECTIONS)[number], string> = {
 export default function Navbar() {
   const containerRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLSpanElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(document.documentElement.scrollTop > 8);
+        ticking = false;
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const indicator = indicatorRef.current;
@@ -52,7 +68,11 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-50 bg-stone-50/80 backdrop-blur-sm">
+    <nav
+      className={`sticky top-0 z-50 bg-stone-50/80 backdrop-blur-sm transition-shadow duration-300 ${
+        scrolled ? 'shadow-[0_1px_0_0_rgba(28,25,23,0.08)]' : ''
+      }`}
+    >
       <div className="max-w-5xl mx-auto px-6 md:px-12 py-5 flex justify-center items-center">
         <div ref={containerRef} className="relative flex gap-6 text-sm font-medium text-stone-600 pb-1">
           {SECTIONS.map((id) => (

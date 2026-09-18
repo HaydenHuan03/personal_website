@@ -6,6 +6,7 @@ import { ArrowRight, FileText, Mail, Github, Instagram } from 'lucide-react';
 import PixelTransition from './PixelTransition';
 import DecryptedText from './DecryptedText';
 import { prefersReducedMotion } from '../utils/motion';
+import { useMagnetic } from '../hooks/useMagnetic';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,6 +14,9 @@ const HERO_NAME = 'Hayden Huan Kee Jiun';
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const projectsBtn = useMagnetic<HTMLAnchorElement>(0.3);
+  const contactBtn = useMagnetic<HTMLAnchorElement>(0.3);
+  const resumeBtn = useMagnetic<HTMLAnchorElement>(0.3);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -86,24 +90,33 @@ export default function HeroSection() {
         <div className="flex flex-wrap gap-4">
           <Link
             data-hero-btn
+            ref={projectsBtn.ref}
+            onMouseMove={projectsBtn.onMouseMove}
+            onMouseLeave={projectsBtn.onMouseLeave}
             to="/#projects"
-            className="flex items-center gap-2 px-6 py-3 bg-stone-900 text-stone-50 rounded-md hover:bg-stone-800 transition-colors font-medium text-sm"
+            className="magnetic flex items-center gap-2 px-6 py-3 bg-stone-900 text-stone-50 rounded-md hover:bg-stone-800 transition-colors font-medium text-sm"
           >
             View Projects <ArrowRight size={16} />
           </Link>
           <a
             data-hero-btn
+            ref={contactBtn.ref}
+            onMouseMove={contactBtn.onMouseMove}
+            onMouseLeave={contactBtn.onMouseLeave}
             href="mailto:teomeehua@gmail.com"
-            className="flex items-center gap-2 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
+            className="magnetic flex items-center gap-2 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
           >
             <Mail size={16} /> Contact Me
           </a>
           <a
             data-hero-btn
+            ref={resumeBtn.ref}
+            onMouseMove={resumeBtn.onMouseMove}
+            onMouseLeave={resumeBtn.onMouseLeave}
             href="https://docs.google.com/document/d/1bSoNi0MSzojWipmAgBUMJmb8V38dLV8IbYYKth9xvhk/edit?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
+            className="magnetic flex items-center gap-2 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
           >
             <FileText size={16} /> Resume
           </a>

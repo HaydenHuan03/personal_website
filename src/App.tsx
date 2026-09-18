@@ -34,6 +34,7 @@ export default function App() {
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
+      <div className="grain-overlay" aria-hidden="true" />
       <ScrollToHash />
       <Routes>
         <Route path="/" element={<HomePage />} />
