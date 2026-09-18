@@ -167,7 +167,7 @@ export default function SkillsPlayground({ badges, activeCategory, ref }: Props)
     <ul
       ref={canvasRef}
       aria-label="Tech skills"
-      className="relative flex flex-wrap gap-3 p-6 min-h-[320px] md:min-h-[420px] rounded-2xl border border-dashed border-stone-300 bg-stone-50/60 overflow-hidden list-none m-0"
+      className="relative flex flex-wrap content-start items-start gap-3 p-6 min-h-[320px] md:min-h-[420px] rounded-2xl border border-dashed border-stone-300 bg-stone-50/60 overflow-hidden list-none m-0"
     >
       {badges.map((b) => (
         <li
