@@ -60,7 +60,7 @@ export default function ProblemDetail({ problem, descriptionHtml }: Props) {
         </div>
       </header>
 
-      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-12 lg:items-start">
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-12 lg:items-start">
         <section className="mb-12 lg:mb-0">
           <h2 className="text-2xl font-heading font-semibold text-stone-900 mb-4">Problem</h2>
           {descriptionHtml ? (
@@ -107,7 +107,7 @@ export default function ProblemDetail({ problem, descriptionHtml }: Props) {
                 {copied ? 'Copied' : 'Copy'}
               </button>
             </div>
-            <div className="overflow-auto lg:max-h-[calc(100vh-14rem)]">
+            <div className="overflow-auto lg:max-h-[calc(100vh-8rem)]">
               <CodeBlock code={solution.code} language={solution.language} />
             </div>
           </div>

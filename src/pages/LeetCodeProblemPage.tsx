@@ -40,7 +40,7 @@ export default function LeetCodeProblemPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="max-w-6xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
+      <main id="main-content" className="max-w-[90rem] mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
         <Link
           to="/leetcode"
           className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors mb-12 text-sm font-medium"
