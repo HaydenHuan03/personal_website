@@ -1,14 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SECTIONS = ['about', 'skills', 'leetcode', 'projects', 'journey'] as const;
+const SECTIONS = ['about', 'leetcode', 'projects', 'journey'] as const;
 const LABELS: Record<(typeof SECTIONS)[number], string> = {
   about: 'About',
-  skills: 'Skills',
   leetcode: 'LeetCode',
   projects: 'Projects',
   journey: 'Journey',
@@ -17,6 +16,22 @@ const LABELS: Record<(typeof SECTIONS)[number], string> = {
 export default function Navbar() {
   const containerRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLSpanElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(document.documentElement.scrollTop > 8);
+        ticking = false;
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const indicator = indicatorRef.current;
@@ -53,23 +68,29 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="max-w-5xl mx-auto px-6 md:px-12 py-8 flex justify-center items-center bg-stone-50/80 backdrop-blur-sm sticky top-0 z-50">
-      <div ref={containerRef} className="relative flex gap-6 text-sm font-medium text-stone-600 pb-1">
-        {SECTIONS.map((id) => (
-          <Link
-            key={id}
-            to={`/#${id}`}
-            data-nav-link={id}
-            className="hover:text-stone-900 transition-colors"
-          >
-            {LABELS[id]}
-          </Link>
-        ))}
-        <span
-          ref={indicatorRef}
-          className="absolute bottom-0 left-0 h-[2px] bg-stone-900 rounded-full pointer-events-none"
-          style={{ width: 0, opacity: 0 }}
-        />
+    <nav
+      className={`sticky top-0 z-50 bg-stone-50/80 backdrop-blur-sm transition-shadow duration-300 ${
+        scrolled ? 'shadow-[0_1px_0_0_rgba(28,25,23,0.08)]' : ''
+      }`}
+    >
+      <div className="max-w-5xl mx-auto px-6 md:px-12 py-5 flex justify-center items-center">
+        <div ref={containerRef} className="relative flex gap-6 text-sm font-medium text-stone-600 pb-1">
+          {SECTIONS.map((id) => (
+            <Link
+              key={id}
+              to={`/#${id}`}
+              data-nav-link={id}
+              className="hover:text-stone-900 transition-colors"
+            >
+              {LABELS[id]}
+            </Link>
+          ))}
+          <span
+            ref={indicatorRef}
+            className="absolute bottom-0 left-0 h-[2px] bg-stone-900 rounded-full pointer-events-none"
+            style={{ width: 0, opacity: 0 }}
+          />
+        </div>
       </div>
     </nav>
   );

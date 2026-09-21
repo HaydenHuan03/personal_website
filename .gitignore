@@ -3,3 +3,7 @@ dist
 *.local
 .DS_Store
 docs/superpowers
+CLAUDE.md
+SKILL.md
+.agents
+.claude/skills
