@@ -139,8 +139,8 @@ export default function HeroSection() {
       <div data-hero-image className="relative w-full max-w-[380px] mx-auto lg:mx-0 lg:w-[380px]">
         <div data-hero-parallax className="relative">
           <PixelTransition
-            firstImage="/Profile.webp"
-            secondImage="/pointingFlower.jpeg"
+            firstImage="/Profile.jpg"
+            secondImage="/shinchan.webp"
             gridSize={14}
             pixelColor="#1c1917"
             animationStepDuration={800}
