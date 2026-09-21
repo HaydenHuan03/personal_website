@@ -55,7 +55,6 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-sm">
           <p className="font-light">© {year} Hayden Huan Kee Jiun. All rights reserved.</p>
-          <p className="font-light text-stone-500">Built with React, Tailwind, and GSAP.</p>
         </div>
       </div>
     </footer>
