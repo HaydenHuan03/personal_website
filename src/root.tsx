@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
-import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLocation, useNavigationType } from 'react-router';
+import { Links, Meta, Outlet, Scripts, useLocation, useNavigationType } from 'react-router';
 import './styles/global.css';
 
 function ScrollToHash() {
@@ -60,7 +60,6 @@ export function Layout({ children }: { children: ReactNode }) {
       </head>
       <body className="bg-stone-50 text-stone-900 font-sans antialiased selection:bg-stone-300 selection:text-stone-900 min-h-screen">
         {children}
-        <ScrollRestoration />
         <Scripts />
       </body>
     </html>
