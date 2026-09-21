@@ -28,7 +28,13 @@ async function fetchStats(): Promise<Stats | null> {
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) return null;
-    const json = await res.json();
+    const json = (await res.json()) as {
+      data?: {
+        matchedUser?: {
+          submitStatsGlobal?: { acSubmissionNum?: { difficulty: string; count: number }[] };
+        };
+      };
+    };
     const counts: { difficulty: string; count: number }[] | undefined =
       json?.data?.matchedUser?.submitStatsGlobal?.acSubmissionNum;
     if (!counts) return null;

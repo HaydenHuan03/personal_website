@@ -137,10 +137,6 @@ export default function HeroSection() {
       </div>
 
       <div data-hero-image className="relative w-full max-w-[380px] mx-auto lg:mx-0 lg:w-[380px]">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 translate-x-3 translate-y-3 -rotate-3 rounded-2xl border border-stone-300 bg-stone-100"
-        />
         <div data-hero-parallax className="relative">
           <PixelTransition
             firstImage="/Profile.webp"

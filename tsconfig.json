@@ -16,7 +16,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["vite/client", "bun"]
+    "types": ["vite/client", "bun"],
+    "rootDirs": [".", "./.react-router/types"]
   },
-  "include": ["src", "scripts", "vite.config.ts"]
+  "include": ["src", "scripts", "vite.config.ts", ".react-router/types/**/*", "workers", "worker-configuration.d.ts"]
 }
