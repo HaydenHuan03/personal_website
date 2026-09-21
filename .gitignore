@@ -1,7 +1,11 @@
 node_modules
 dist
+build
 *.local
 .DS_Store
+.wrangler
+.react-router
+worker-configuration.d.ts
 docs/superpowers
 CLAUDE.md
 SKILL.md
