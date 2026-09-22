@@ -4,6 +4,9 @@ import { ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import WorldMap from '../components/gallery/WorldMap';
+import HoverCard from '../components/gallery/HoverCard';
+import { preloadLandmark } from '../components/gallery/LandmarkCanvas';
+import { useHoverCapable } from '../hooks/useHoverCapable';
 import { GALLERY } from '../data/gallery';
 import { findCountry } from '../utils/gallery';
 
@@ -14,6 +17,8 @@ export default function GalleryPage() {
   const selected = findCountry(GALLERY, searchParams.get('country')) ?? null;
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hoverCapable = useHoverCapable();
 
   useEffect(() => {
     document.title = 'Gallery - Hayden Huan';
@@ -36,7 +41,10 @@ export default function GalleryPage() {
   }, [setSearchParams]);
 
   const hovered = useMemo(() => findCountry(GALLERY, hoveredId) ?? null, [hoveredId]);
-  void hovered; // consumed by HoverCard in a later task
+
+  useEffect(() => {
+    if (hovered) preloadLandmark(hovered.landmark.model);
+  }, [hovered]);
 
   return (
     <>
@@ -63,7 +71,7 @@ export default function GalleryPage() {
           <p className="text-sm text-stone-500 mb-6">Nothing here yet.</p>
         )}
 
-        <div className="relative">
+        <div ref={containerRef} className="relative">
           <WorldMap
             ref={svgRef}
             visitedIds={VISITED_IDS}
@@ -73,6 +81,9 @@ export default function GalleryPage() {
             onSelect={select}
             dimmed={selected !== null}
           />
+          {hoverCapable && hovered && !selected && svgRef.current && containerRef.current && (
+            <HoverCard country={hovered} svg={svgRef.current} containerEl={containerRef.current} />
+          )}
         </div>
 
         {selected && (
