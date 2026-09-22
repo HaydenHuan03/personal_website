@@ -30,18 +30,18 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
       viewBox={WORLD_MAP.viewBox.join(' ')}
       role="group"
       aria-label="World map of visited countries"
-      className={`w-full h-auto select-none transition-opacity duration-500 ${
-        dimmed ? 'opacity-50' : 'opacity-100'
-      }`}
+      className="w-full h-auto select-none"
+      style={{ overflow: 'visible' }}
       onMouseLeave={() => onHover(null)}
     >
-      <g className="fill-stone-300/70 stroke-stone-50" strokeWidth={0.5}>
+      <g data-layer="rest" className="fill-stone-300/70 stroke-stone-50" strokeWidth={0.5}>
         {WORLD_MAP.countries.map((c) => (visitedIds.has(c.id) ? null : <path key={c.id} d={c.d} />))}
       </g>
       <g strokeWidth={0.75} strokeLinejoin="round">
         {WORLD_MAP.countries.map((c) => {
           if (!visitedIds.has(c.id)) return null;
-          const active = c.id === hoveredId || c.id === selectedId;
+          const isSelected = c.id === selectedId;
+          const active = c.id === hoveredId || isSelected;
           const [cx, cy] = c.centroid;
           return (
             <g
@@ -58,10 +58,13 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
               onKeyDown={(e) => onKeyDown(e, c.id)}
             >
               <path
-                d={c.d}
+                // The finer outline is only worth its bytes once the country
+                // is shown on its own, enlarged.
+                d={isSelected && c.detailD ? c.detailD : c.d}
                 className={`transition-colors duration-200 ${
                   active ? 'fill-accent-strong stroke-accent-strong' : 'fill-accent stroke-accent-strong'
                 }`}
+                vectorEffect="non-scaling-stroke"
               />
               {!dimmed && (
                 <>

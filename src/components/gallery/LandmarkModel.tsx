@@ -1,17 +1,17 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useLayoutEffect, useMemo } from 'react';
 import { useGLTF } from '@react-three/drei';
-import { Box3, Group, Mesh, MeshStandardMaterial, Vector3 } from 'three';
+import { Box3, Mesh, MeshStandardMaterial, Vector3 } from 'three';
 
 export const DRACO_PATH = '/draco/';
 
 interface LandmarkModelProps {
   model: string;
-  autoRotate: boolean;
 }
 
-export default function LandmarkModel({ model, autoRotate }: LandmarkModelProps) {
-  const group = useRef<Group>(null);
+/** Fixed three-quarter view: the building stands still on its country. */
+const REST_ROTATION_Y = 0.6;
+
+export default function LandmarkModel({ model }: LandmarkModelProps) {
   const { scene } = useGLTF(model, DRACO_PATH);
   const cloned = useMemo(() => scene.clone(true), [scene]);
 
@@ -31,12 +31,8 @@ export default function LandmarkModel({ model, autoRotate }: LandmarkModelProps)
     cloned.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
   }, [cloned]);
 
-  useFrame((_, delta) => {
-    if (autoRotate && group.current) group.current.rotation.y += delta * 0.4;
-  });
-
   return (
-    <group ref={group}>
+    <group rotation-y={REST_ROTATION_Y}>
       <primitive object={cloned} />
     </group>
   );

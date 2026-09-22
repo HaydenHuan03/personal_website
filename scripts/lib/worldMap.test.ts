@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import topology from 'world-atlas/countries-110m.json';
+import detail from 'world-atlas/countries-50m.json';
 import type { Topology } from 'topojson-specification';
 import { buildWorldMap } from './worldMap';
 
@@ -32,5 +33,40 @@ describe('buildWorldMap', () => {
 
   test('skips features without an id', () => {
     expect(snapshot.countries.every((c) => c.id !== '' && c.id !== 'undefined')).toBe(true);
+  });
+
+  test('omits detail outlines when none are requested', () => {
+    expect(snapshot.countries.every((c) => c.detailD === undefined)).toBe(true);
+  });
+});
+
+describe('buildWorldMap with detail geometry', () => {
+  const detailed = buildWorldMap(topology as unknown as Topology, {
+    detailTopology: detail as unknown as Topology,
+    detailIds: ['158'],
+  });
+
+  test('emits a detail outline only for the requested ids', () => {
+    const tw = detailed.countries.find((c) => c.id === '158');
+    expect(tw?.detailD).toBeTruthy();
+    expect(detailed.countries.filter((c) => c.detailD).length).toBe(1);
+  });
+
+  test('the detail outline is richer than the base outline', () => {
+    const tw = detailed.countries.find((c) => c.id === '158')!;
+    expect(tw.detailD!.length).toBeGreaterThan(tw.d.length);
+  });
+
+  test('the detail outline sits in the same projected space', () => {
+    const tw = detailed.countries.find((c) => c.id === '158')!;
+    const xs = [...tw.detailD!.matchAll(/[ML](-?[\d.]+),(-?[\d.]+)/g)].map((m) => Number(m[1]));
+    const [x0, , x1] = tw.bbox;
+    // Generous tolerance: the finer topology also carries outlying islands the
+    // 110m outline drops (Taiwan's Penghu and Kinmen sit ~5 units west of the
+    // main island), so the detail outline legitimately overhangs the base bbox.
+    for (const x of xs) {
+      expect(x).toBeGreaterThan(x0 - 15);
+      expect(x).toBeLessThan(x1 + 15);
+    }
   });
 });
