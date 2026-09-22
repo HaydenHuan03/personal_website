@@ -10,11 +10,10 @@ export interface WorldMapProps {
   hoveredId: string | null;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
-  dimmed?: boolean;
 }
 
 const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
-  { visitedIds, selectedId, hoveredId, onHover, onSelect, dimmed = false },
+  { visitedIds, selectedId, hoveredId, onHover, onSelect },
   ref
 ) {
   const onKeyDown = (e: KeyboardEvent<SVGGElement>, id: string) => {
@@ -34,14 +33,13 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
       style={{ overflow: 'visible' }}
       onMouseLeave={() => onHover(null)}
     >
-      <g data-layer="rest" className="fill-stone-300/70 stroke-stone-50" strokeWidth={0.5}>
+      <g className="fill-stone-300/70 stroke-stone-50" strokeWidth={0.5}>
         {WORLD_MAP.countries.map((c) => (visitedIds.has(c.id) ? null : <path key={c.id} d={c.d} />))}
       </g>
       <g strokeWidth={0.75} strokeLinejoin="round">
         {WORLD_MAP.countries.map((c) => {
           if (!visitedIds.has(c.id)) return null;
-          const isSelected = c.id === selectedId;
-          const active = c.id === hoveredId || isSelected;
+          const active = c.id === hoveredId || c.id === selectedId;
           const [cx, cy] = c.centroid;
           return (
             <g
@@ -58,16 +56,13 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
               onKeyDown={(e) => onKeyDown(e, c.id)}
             >
               <path
-                // The finer outline is only worth its bytes once the country
-                // is shown on its own, enlarged.
-                d={isSelected && c.detailD ? c.detailD : c.d}
+                d={c.d}
                 className={`transition-colors duration-200 ${
                   active ? 'fill-accent-strong stroke-accent-strong' : 'fill-accent stroke-accent-strong'
                 }`}
                 vectorEffect="non-scaling-stroke"
               />
-              {!dimmed && (
-                <>
+              <>
                   <circle
                     cx={cx}
                     cy={cy}
@@ -84,8 +79,7 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
                     className="fill-accent-strong transition-all duration-200"
                     stroke="none"
                   />
-                </>
-              )}
+              </>
               <circle cx={cx} cy={cy} r={12} fill="transparent" stroke="none" />
             </g>
           );

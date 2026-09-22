@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import WorldMap from '../components/gallery/WorldMap';
+import WorldMap, { WORLD_MAP } from '../components/gallery/WorldMap';
 import LandmarkMarker from '../components/gallery/LandmarkMarker';
 import CountryGallery from '../components/gallery/CountryGallery';
+import CountryStage from '../components/gallery/CountryStage';
 import { preloadLandmark } from '../components/gallery/LandmarkCanvas';
 import { useHoverCapable } from '../hooks/useHoverCapable';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-import { useMapStage } from '../hooks/useMapStage';
 import { GALLERY } from '../data/gallery';
 import { findCountry } from '../utils/gallery';
 
@@ -20,8 +19,7 @@ export default function GalleryPage() {
   const selected = findCountry(GALLERY, searchParams.get('country')) ?? null;
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const hoverCapable = useHoverCapable();
-  const reducedMotion = useReducedMotion();
-  const { svgRef, planeRef, tiltRef } = useMapStage(selected?.id ?? null, reducedMotion);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     document.title = 'Gallery - Hayden Huan';
@@ -44,13 +42,25 @@ export default function GalleryPage() {
   }, [setSearchParams]);
 
   const hovered = useMemo(() => findCountry(GALLERY, hoveredId) ?? null, [hoveredId]);
-  // The landmark stands on the country being hovered, and stays standing on
-  // the selected one while the map lies down and zooms into it.
-  const marked = selected ?? hovered;
 
   useEffect(() => {
-    if (marked) preloadLandmark(marked.landmark.model);
-  }, [marked]);
+    if (hovered) preloadLandmark(hovered.landmark.model);
+  }, [hovered]);
+
+  const selectedShape = useMemo(() => {
+    if (!selected) return null;
+    const entry = WORLD_MAP.countries.find((c) => c.id === selected.id);
+    if (!entry) return null;
+    // The finer outline is what makes the country readable at slab scale.
+    const detailed = entry.detailD !== undefined;
+    return {
+      d: detailed ? entry.detailD! : entry.d,
+      centroid: (detailed ? (entry.detailCentroid ?? entry.centroid) : entry.centroid) as [
+        number,
+        number,
+      ],
+    };
+  }, [selected]);
 
   return (
     <>
@@ -77,28 +87,33 @@ export default function GalleryPage() {
           <p className="text-sm text-stone-500 mb-6">Nothing here yet.</p>
         )}
 
-        {/* The stage gives the map plane its vanishing point; the plane is what
-            lies down on select, carrying the landmark standing on it. */}
-        <div style={{ perspective: '1400px', perspectiveOrigin: '50% 35%' }}>
-          <div
-            ref={planeRef}
-            className="relative origin-top"
-            style={{ transformStyle: 'preserve-3d' }}
-          >
+        {/* Selecting a country swaps the flat map for a 3D scene where the
+            country lies on the ground plane and its landmark stands up off it
+            at a true right angle - a CSS-tilted map with a billboard in front
+            of it only ever fakes that relationship. */}
+        {selected && selectedShape ? (
+          <CountryStage
+            key={selected.id}
+            d={selectedShape.d}
+            centroid={selectedShape.centroid}
+            model={selected.landmark.model}
+            className="animate-[fadeInUp_0.5s_ease-out]"
+          />
+        ) : (
+          <div className="relative">
             <WorldMap
               ref={svgRef}
               visitedIds={VISITED_IDS}
-              selectedId={selected?.id ?? null}
+              selectedId={null}
               hoveredId={hoveredId}
               onHover={setHoveredId}
               onSelect={select}
-              dimmed={selected !== null}
             />
-            {marked && (hoverCapable || selected) && (
-              <LandmarkMarker key={marked.id} country={marked} svgRef={svgRef} tiltRef={tiltRef} />
+            {hovered && hoverCapable && (
+              <LandmarkMarker key={hovered.id} country={hovered} svgRef={svgRef} />
             )}
           </div>
-        </div>
+        )}
 
         {selected && <CountryGallery key={selected.id} country={selected} onBack={back} />}
       </main>
