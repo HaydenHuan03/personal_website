@@ -85,6 +85,9 @@ export default function Navbar() {
               {LABELS[id]}
             </Link>
           ))}
+          <Link to="/gallery" className="hover:text-stone-900 transition-colors">
+            Gallery
+          </Link>
           <span
             ref={indicatorRef}
             className="absolute bottom-0 left-0 h-[2px] bg-stone-900 rounded-full pointer-events-none"

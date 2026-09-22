@@ -5,5 +5,6 @@ export default [
   route('projects/:slug', 'pages/ProjectDetailPage.tsx'),
   route('leetcode', 'pages/LeetCodePage.tsx'),
   route('leetcode/:slug', 'pages/LeetCodeProblemPage.tsx'),
+  route('gallery', 'pages/GalleryPage.tsx'),
   route('*', 'pages/NotFoundPage.tsx'),
 ] satisfies RouteConfig;
