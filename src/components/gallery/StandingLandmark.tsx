@@ -22,7 +22,6 @@ export default function StandingLandmark({ model, height = 1.9 }: StandingLandma
   useLayoutEffect(() => {
     cloned.traverse((o) => {
       if (o instanceof Mesh) {
-        o.castShadow = true;
         o.material = new MeshStandardMaterial({
           color: '#e7e5e4',
           roughness: 0.75,

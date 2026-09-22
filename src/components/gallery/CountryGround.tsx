@@ -54,7 +54,7 @@ export default function CountryGround({ d, centroid, size = 2.4 }: CountryGround
 
   return (
     // Lay the slab down: its extrusion depth becomes thickness in Y.
-    <mesh geometry={geometry} rotation-x={-Math.PI / 2} receiveShadow castShadow>
+    <mesh geometry={geometry} rotation-x={-Math.PI / 2}>
       <meshStandardMaterial color="#3f7d78" roughness={0.9} metalness={0} />
     </mesh>
   );
