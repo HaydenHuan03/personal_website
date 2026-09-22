@@ -36,11 +36,11 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
       role="group"
       aria-label="World map of visited countries"
       className={`w-full h-auto select-none transition-opacity duration-500 ${
-        dimmed ? 'opacity-30' : 'opacity-100'
+        dimmed ? 'opacity-50' : 'opacity-100'
       }`}
       onMouseLeave={() => onHover(null)}
     >
-      <g className="fill-stone-200 stroke-stone-50" strokeWidth={0.5}>
+      <g className="fill-stone-300/70 stroke-stone-50" strokeWidth={0.5}>
         {WORLD_MAP.countries.map((c) => (visitedIds.has(c.id) ? null : <path key={c.id} d={c.d} />))}
       </g>
       <g strokeWidth={0.75} strokeLinejoin="round">
@@ -72,22 +72,29 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
                   active ? 'fill-accent-strong stroke-accent-strong' : 'fill-accent stroke-accent-strong'
                 }`}
               />
-              <circle
-                cx={cx}
-                cy={cy}
-                r={active ? 7 : 5}
-                className={`transition-all duration-200 ${
-                  active ? 'fill-accent-strong/30' : 'fill-accent/20'
-                }`}
-                stroke="none"
-              />
-              <circle
-                cx={cx}
-                cy={cy}
-                r={active ? 3 : 2.5}
-                className="fill-accent-strong transition-all duration-200"
-                stroke="none"
-              />
+              {/* Decorative pin, hidden once the map zooms in: its radius is
+                  in viewBox units, so a zoomed map would blow it up into a
+                  blob over the country it is meant to mark. */}
+              {!dimmed && (
+                <>
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={active ? 7 : 5}
+                    className={`transition-all duration-200 ${
+                      active ? 'fill-accent-strong/30' : 'fill-accent/20'
+                    }`}
+                    stroke="none"
+                  />
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={active ? 3 : 2.5}
+                    className="fill-accent-strong transition-all duration-200"
+                    stroke="none"
+                  />
+                </>
+              )}
               <circle cx={cx} cy={cy} r={12} fill="transparent" stroke="none" />
             </g>
           );

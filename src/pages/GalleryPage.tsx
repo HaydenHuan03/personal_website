@@ -4,7 +4,8 @@ import { ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import WorldMap from '../components/gallery/WorldMap';
-import HoverCard from '../components/gallery/HoverCard';
+import LandmarkMarker from '../components/gallery/LandmarkMarker';
+import CountryGallery from '../components/gallery/CountryGallery';
 import { preloadLandmark } from '../components/gallery/LandmarkCanvas';
 import { useHoverCapable } from '../hooks/useHoverCapable';
 import { GALLERY } from '../data/gallery';
@@ -42,14 +43,18 @@ export default function GalleryPage() {
 
   const hovered = useMemo(() => findCountry(GALLERY, hoveredId) ?? null, [hoveredId]);
 
+  // The landmark stands on the country being hovered, and stays standing on
+  // the selected one while the map zooms into it.
+  const marked = selected ?? hovered;
+
   useEffect(() => {
-    if (hovered) preloadLandmark(hovered.landmark.model);
-  }, [hovered]);
+    if (marked) preloadLandmark(marked.landmark.model);
+  }, [marked]);
 
   return (
     <>
       <Navbar />
-      <main id="main-content" className="max-w-5xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
+      <main id="main-content" className="max-w-6xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
         <Link
           to="/"
           className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors mb-12 text-sm font-medium"
@@ -81,19 +86,18 @@ export default function GalleryPage() {
             onSelect={select}
             dimmed={selected !== null}
           />
-          {hoverCapable && hovered && !selected && svgRef.current && containerRef.current && (
-            <HoverCard country={hovered} svg={svgRef.current} containerEl={containerRef.current} />
+          {marked && (hoverCapable || selected) && (
+            <LandmarkMarker
+              key={marked.id}
+              country={marked}
+              svgRef={svgRef}
+              containerRef={containerRef}
+            />
           )}
         </div>
 
         {selected && (
-          <button
-            type="button"
-            onClick={back}
-            className="mt-6 text-sm font-medium text-stone-600 hover:text-stone-900"
-          >
-            Back to map
-          </button>
+          <CountryGallery key={selected.id} country={selected} svgRef={svgRef} onBack={back} />
         )}
       </main>
       <Footer />

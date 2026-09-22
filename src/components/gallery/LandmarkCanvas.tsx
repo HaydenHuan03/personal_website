@@ -8,12 +8,12 @@ const LandmarkScene = lazy(() => import('./LandmarkScene'));
 
 export interface LandmarkCanvasProps {
   model: string;
-  size: 'card' | 'panel';
+  size: 'marker' | 'panel';
   className?: string;
 }
 
 const SIZE_CLASS: Record<LandmarkCanvasProps['size'], string> = {
-  card: 'h-56 w-full',
+  marker: 'h-44 w-32',
   panel: 'h-72 md:h-96 w-full',
 };
 
