@@ -30,7 +30,9 @@ export default function HeroSection() {
     const parallaxTarget = section.querySelector<HTMLElement>('[data-hero-parallax]');
     const nav = document.querySelector<HTMLElement>('nav');
 
-    gsap.set([nav, label, bio, image], { opacity: 0 });
+    // The hero image is the LCP element — Chrome ignores opacity:0 elements for
+    // LCP, so it's only ever moved (transform), never faded.
+    gsap.set([nav, label, bio], { opacity: 0 });
     gsap.set(nav, { y: -20 });
     gsap.set([label, bio], { y: 16 });
     gsap.set(btns, { opacity: 0, y: 16 });
@@ -42,7 +44,7 @@ export default function HeroSection() {
       .to(label, { opacity: 1, y: 0, duration: 0.3 }, '-=0.1')
       .to(bio, { opacity: 1, y: 0, duration: 0.4 }, '+=0.35')
       .to(btns, { opacity: 1, y: 0, duration: 0.3, stagger: 0.08 }, '-=0.2')
-      .to(image, { opacity: 1, y: 0, duration: 0.5 }, '<');
+      .to(image, { y: 0, duration: 0.5 }, '<');
 
     const parallax = gsap.to(parallaxTarget, {
       y: -40,
@@ -139,8 +141,10 @@ export default function HeroSection() {
       <div data-hero-image className="relative w-full max-w-[380px] mx-auto lg:mx-0 lg:w-[380px]">
         <div data-hero-parallax className="relative">
           <PixelTransition
-            firstImage="/Profile.jpg"
+            firstImage="/Profile.webp"
             secondImage="/shinchan.webp"
+            width={598}
+            height={787}
             gridSize={14}
             pixelColor="#1c1917"
             animationStepDuration={800}

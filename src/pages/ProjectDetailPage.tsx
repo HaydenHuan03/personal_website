@@ -56,13 +56,13 @@ export default function ProjectDetailPage() {
             )}
             <div className="flex flex-wrap gap-2 mb-8">
               {project.tech.map((t) => {
-                const iconClass = techIconMap[t];
+                const icon = techIconMap[t];
                 return (
                   <span
                     key={t}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 text-stone-700 text-sm rounded-md font-medium border border-stone-200"
                   >
-                    {iconClass && <i className={`${iconClass} text-base leading-none`} />}
+                    {icon && <img src={icon} alt="" aria-hidden="true" width={16} height={16} className="h-4 w-4" />}
                     {t}
                   </span>
                 );
@@ -115,6 +115,9 @@ export default function ProjectDetailPage() {
                   )}
                   <ImageLightbox
                     src={image.src}
+                    fullSrc={image.fullSrc}
+                    width={image.width}
+                    height={image.height}
                     alt={image.alt}
                     className="w-full rounded-xl border border-stone-200 bg-white"
                   />

@@ -93,13 +93,13 @@ export default function ProjectsSection() {
 
               <div className="flex flex-wrap gap-2 mb-6">
                 {visibleTech.map((t) => {
-                  const iconClass = techIconMap[t];
+                  const icon = techIconMap[t];
                   return (
                     <span
                       key={t}
                       className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 text-stone-600 text-xs font-medium rounded border border-stone-200"
                     >
-                      {iconClass && <i className={`${iconClass} text-sm leading-none`} />}
+                      {icon && <img src={icon} alt="" aria-hidden="true" width={14} height={14} className="h-3.5 w-3.5" />}
                       {t}
                     </span>
                   );

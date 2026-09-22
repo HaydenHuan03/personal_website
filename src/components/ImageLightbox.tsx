@@ -3,7 +3,11 @@ import { Maximize2, X } from 'lucide-react';
 
 interface ImageLightboxProps {
   src: string;
+  /** Higher-resolution source for the dialog; falls back to `src`. */
+  fullSrc?: string;
   alt: string;
+  width?: number;
+  height?: number;
   className?: string;
 }
 
@@ -11,7 +15,7 @@ interface ImageLightboxProps {
  * An image that opens full-size in a native <dialog> when clicked.
  * showModal() provides focus trapping, Escape-to-close, and a backdrop for free.
  */
-export default function ImageLightbox({ src, alt, className }: ImageLightboxProps) {
+export default function ImageLightbox({ src, fullSrc, alt, width, height, className }: ImageLightboxProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
 
@@ -44,7 +48,7 @@ export default function ImageLightbox({ src, alt, className }: ImageLightboxProp
         aria-label={`View full size: ${alt}`}
         className="group relative block w-full cursor-zoom-in rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
       >
-        <img src={src} alt={alt} loading="lazy" className={className} />
+        <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" className={className} />
         <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-md border border-stone-200 bg-white/90 px-2.5 py-1 text-xs font-medium text-stone-700 opacity-70 shadow-sm backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
           <Maximize2 size={12} aria-hidden="true" />
           Click to enlarge
@@ -60,7 +64,7 @@ export default function ImageLightbox({ src, alt, className }: ImageLightboxProp
       >
         {open && (
           <img
-            src={src}
+            src={fullSrc ?? src}
             alt={alt}
             className="block max-h-[90vh] max-w-[95vw] rounded-lg bg-white object-contain shadow-2xl"
           />
