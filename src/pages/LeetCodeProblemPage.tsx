@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router';
-import { ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import BackLink from '../components/BackLink';
 import ProblemDetail from '../components/leetcode/ProblemDetail';
 import type { DescriptionMap, SolutionsSnapshot } from '../types/leetcode';
 import snapshotJson from '../data/leetcode-solutions.json';
@@ -26,7 +26,7 @@ export default function LeetCodeProblemPage() {
     return (
       <>
         <Navbar />
-        <main id="main-content" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20 text-center">
+        <main id="main-content" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
           <h1 className="text-3xl font-heading font-semibold text-stone-900 mb-4">Problem not found</h1>
           <Link to="/leetcode" className="text-stone-600 hover:text-stone-900 underline">
             Back to all solutions
@@ -40,13 +40,8 @@ export default function LeetCodeProblemPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="max-w-[90rem] mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
-        <Link
-          to="/leetcode"
-          className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors mb-12 text-sm font-medium"
-        >
-          <ArrowLeft size={16} /> All Solutions
-        </Link>
+      <BackLink to="/leetcode">All Solutions</BackLink>
+      <main id="main-content" className="max-w-[90rem] mx-auto px-6 md:px-12 pb-24">
         <ProblemDetail problem={problem} descriptionHtml={DESCRIPTIONS[problem.slug] ?? null} />
       </main>
       <Footer />

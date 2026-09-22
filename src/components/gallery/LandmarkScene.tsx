@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import LandmarkModel from './LandmarkModel';
+import SceneEnvironment from './SceneEnvironment';
 
 interface LandmarkSceneProps {
   model: string;
@@ -19,7 +20,8 @@ export default function LandmarkScene({ model }: LandmarkSceneProps) {
       gl={{ antialias: true, alpha: true }}
       style={{ background: 'transparent' }}
     >
-      <ambientLight intensity={0.9} />
+      <SceneEnvironment />
+      <ambientLight intensity={0.6} />
       <directionalLight position={[3, 5, 2]} intensity={1.4} />
       <directionalLight position={[-3, 2, -2]} intensity={0.5} />
       <Suspense fallback={null}>

@@ -1,4 +1,5 @@
-import { geoNaturalEarth1, geoPath } from 'd3-geo';
+import { geoEquirectangular, geoNaturalEarth1, geoPath } from 'd3-geo';
+import type { GeoProjection } from 'd3-geo';
 import { feature } from 'topojson-client';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import type { Feature, FeatureCollection, Geometry } from 'geojson';
@@ -27,9 +28,34 @@ export interface WorldMapSnapshot {
 
 const round = (n: number) => Math.round(n * 10) / 10;
 
+/**
+ * How the sphere is flattened.
+ *
+ * `naturalEarth1` is the flat map on the page. `equirectangular` is for the
+ * globe: longitude and latitude map linearly to x and y, which is exactly what
+ * wrapping an image around a sphere expects, and makes the inverse - screen
+ * point back to a country - a division rather than a projection solve.
+ */
+export type MapProjection = 'naturalEarth1' | 'equirectangular';
+
+/**
+ * The plate carree projection at a given image width, sized so the image spans
+ * the whole globe: 360 degrees across, 180 down, hence a 2:1 image. Built by
+ * hand rather than with `fitSize`, which would fit the *data's* bounds - land
+ * stops short of +-180 degrees, so the texture would be subtly stretched and
+ * every inverse lookup would be off.
+ */
+export function equirectangular(width: number): GeoProjection {
+  return geoEquirectangular()
+    .scale(width / (2 * Math.PI))
+    .translate([width / 2, width / 4]);
+}
+
 export interface BuildWorldMapOptions {
   width?: number;
   height?: number;
+  /** Defaults to `naturalEarth1`. */
+  projection?: MapProjection;
   /** Higher-resolution topology (e.g. countries-50m) for `detailIds`. */
   detailTopology?: Topology;
   detailIds?: readonly string[];
@@ -38,14 +64,26 @@ export interface BuildWorldMapOptions {
 /** Projects a world-atlas topology into SVG path data for a fixed viewBox. */
 export function buildWorldMap(
   topology: Topology,
-  { width = 960, height = 500, detailTopology, detailIds = [] }: BuildWorldMapOptions = {}
+  {
+    width = 960,
+    height = 500,
+    projection: kind = 'naturalEarth1',
+    detailTopology,
+    detailIds = [],
+  }: BuildWorldMapOptions = {}
 ): WorldMapSnapshot {
+  // Equirectangular covers the whole sphere, so its height follows from its
+  // width and the caller's is ignored.
+  const imageHeight = kind === 'equirectangular' ? width / 2 : height;
   const collection = feature(
     topology,
     topology.objects.countries as GeometryCollection
   ) as unknown as FeatureCollection<Geometry, { name: string }>;
 
-  const projection = geoNaturalEarth1().fitSize([width, height], collection);
+  const projection =
+    kind === 'equirectangular'
+      ? equirectangular(width)
+      : geoNaturalEarth1().fitSize([width, height], collection);
   const path = geoPath(projection);
 
   // Detail geometry is projected with the SAME projection, so the two
@@ -96,5 +134,5 @@ export function buildWorldMap(
     });
   }
 
-  return { viewBox: [0, 0, width, height], countries };
+  return { viewBox: [0, 0, width, imageHeight], countries };
 }

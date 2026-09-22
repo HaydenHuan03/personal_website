@@ -1,6 +1,6 @@
 import type { GalleryCountry, GalleryManifest } from '../types/gallery';
 
-type Box = [number, number, number, number];
+export type Box = [number, number, number, number];
 
 export function findCountry(
   manifest: GalleryManifest,
@@ -31,6 +31,19 @@ export function zoomViewBoxFor(bbox: Box, base: Box, padding = 2): Box {
 
   if (w >= bw || h >= bh) return [bx, by, bw, bh];
   return [cx - w / 2, cy - h / 2, w, h];
+}
+
+/** Smallest box containing all of `boxes`, or null if there are none. */
+export function unionBbox(boxes: readonly Box[]): Box | null {
+  if (!boxes.length) return null;
+  let [x0, y0, x1, y1] = boxes[0];
+  for (const b of boxes.slice(1)) {
+    x0 = Math.min(x0, b[0]);
+    y0 = Math.min(y0, b[1]);
+    x1 = Math.max(x1, b[2]);
+    y1 = Math.max(y1, b[3]);
+  }
+  return [x0, y0, x1, y1];
 }
 
 const MONTHS = [

@@ -6,7 +6,7 @@ export default function NotFoundPage() {
   return (
     <>
       <Navbar />
-      <main id="main-content" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20 text-center">
+      <main id="main-content" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
         <p className="font-mono text-sm text-stone-400 mb-4">404</p>
         <h1 className="text-3xl font-heading font-semibold text-stone-900 mb-4 text-balance">
           Page not found

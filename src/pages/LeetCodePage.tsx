@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import FilterBar from '../components/leetcode/FilterBar';
@@ -41,18 +40,11 @@ export default function LeetCodePage() {
     <>
       <Navbar />
       <main id="main-content" className="max-w-4xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
-        <Link
-          to="/#leetcode"
-          className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors mb-12 text-sm font-medium"
-        >
-          <ArrowLeft size={16} /> Previous Page
-        </Link>
-
-        <header className="mb-10 animate-[fadeInUp_0.5s_ease-out]">
+        <header className="mb-10 text-center animate-[fadeInUp_0.5s_ease-out]">
           <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 mb-4 leading-[1.1] text-balance">
             LeetCode Solutions
           </h1>
-          <div className="flex flex-wrap gap-3 mt-6">
+          <div className="flex flex-wrap justify-center gap-3 mt-6">
             <a href={PROFILE_URL} target="_blank" rel="noopener noreferrer" className={BUTTON}>
               LeetCode Profile <ExternalLink size={16} />
             </a>

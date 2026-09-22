@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import type { GalleryManifest } from '../types/gallery';
-import { findCountry, formatVisitedAt, zoomViewBoxFor } from './gallery';
+import { findCountry, formatVisitedAt, unionBbox, zoomViewBoxFor } from './gallery';
 
 const manifest: GalleryManifest = {
   version: 1,
@@ -64,5 +64,18 @@ describe('formatVisitedAt', () => {
   });
   test('returns the input unchanged when it is not YYYY-MM', () => {
     expect(formatVisitedAt('2025')).toBe('2025');
+  });
+});
+
+describe('unionBbox', () => {
+  test('returns null with nothing to union', () => {
+    expect(unionBbox([])).toBeNull();
+  });
+
+  test('covers every box', () => {
+    expect(unionBbox([
+      [10, 20, 30, 40],
+      [5, 25, 12, 60],
+    ])).toEqual([5, 20, 30, 60]);
   });
 });

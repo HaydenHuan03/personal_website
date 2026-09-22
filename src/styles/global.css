@@ -78,3 +78,33 @@
 .skip-link:focus {
   top: 1rem;
 }
+
+/*
+ * Narrow screens pan the world map instead of shrinking it. Its viewBox is
+ * about 1.92:1, so full-width on a phone it is a strip a couple of hundred
+ * pixels tall - shorter than the footer beneath it. Here the frame is given a
+ * portrait aspect and the svg is sized by its height, so the whole map is
+ * visible top to bottom at a readable scale and the rest of the world is a
+ * horizontal scroll away rather than cropped off for good. GalleryPage scrolls
+ * it to the visited region on mount.
+ *
+ * The aspect is set here, and not from a media-query hook, so the server
+ * renders the final layout: a hook cannot know the viewport before hydration
+ * and would reflow the page under the reader.
+ */
+@media (max-width: 767px) {
+  .map-frame {
+    position: relative;
+    aspect-ratio: var(--map-aspect, 0.78);
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* Keep a sideways swipe in the map off the browser's back gesture. */
+    overscroll-behavior-x: contain;
+  }
+
+  .map-frame > svg {
+    height: 100%;
+    width: auto;
+    max-width: none;
+  }
+}

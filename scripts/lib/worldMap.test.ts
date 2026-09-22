@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import topology from 'world-atlas/countries-110m.json';
 import detail from 'world-atlas/countries-50m.json';
 import type { Topology } from 'topojson-specification';
-import { buildWorldMap } from './worldMap';
+import { buildWorldMap, equirectangular } from './worldMap';
 
 const snapshot = buildWorldMap(topology as unknown as Topology);
 
@@ -68,5 +68,48 @@ describe('buildWorldMap with detail geometry', () => {
       expect(x).toBeGreaterThan(x0 - 15);
       expect(x).toBeLessThan(x1 + 15);
     }
+  });
+});
+
+describe('buildWorldMap in equirectangular mode', () => {
+  const globe = buildWorldMap(topology as unknown as Topology, {
+    projection: 'equirectangular',
+    width: 1024,
+  });
+
+  test('covers the whole sphere in a 2:1 viewBox', () => {
+    expect(globe.viewBox).toEqual([0, 0, 1024, 512]);
+  });
+
+  test('is a linear lon/lat mapping, so the prime meridian is the centre', () => {
+    // Null Island projects to the exact middle of the image.
+    const [x, y] = equirectangular(1024)([0, 0])!;
+    expect(x).toBeCloseTo(512, 3);
+    expect(y).toBeCloseTo(256, 3);
+  });
+
+  test('maps the date line to the edges and the poles to top and bottom', () => {
+    const project = equirectangular(1024);
+    expect(project([180, 0])![0]).toBeCloseTo(1024, 3);
+    expect(project([-180, 0])![0]).toBeCloseTo(0, 3);
+    expect(project([0, 90])![1]).toBeCloseTo(0, 3);
+    expect(project([0, -90])![1]).toBeCloseTo(512, 3);
+  });
+
+  test('every country stays inside the image', () => {
+    for (const c of globe.countries) {
+      const [x0, y0, x1, y1] = c.bbox;
+      expect(x0).toBeGreaterThanOrEqual(-0.05);
+      expect(y0).toBeGreaterThanOrEqual(-0.05);
+      expect(x1).toBeLessThanOrEqual(1024.05);
+      expect(y1).toBeLessThanOrEqual(512.05);
+    }
+  });
+
+  test('puts Taiwan in the northern hemisphere, east of the prime meridian', () => {
+    const tw = globe.countries.find((c) => c.id === '158')!;
+    const [cx, cy] = tw.centroid;
+    expect(cx).toBeGreaterThan(512);
+    expect(cy).toBeLessThan(256);
   });
 });
