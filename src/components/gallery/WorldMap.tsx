@@ -13,11 +13,6 @@ export interface WorldMapProps {
   dimmed?: boolean;
 }
 
-/**
- * Flat world map. Only countries in `visitedIds` are interactive; the rest are
- * inert outlines. The parent owns hover/selection state and animates the
- * `viewBox` through the forwarded <svg> ref.
- */
 const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
   { visitedIds, selectedId, hoveredId, onHover, onSelect, dimmed = false },
   ref
@@ -49,10 +44,6 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
           const active = c.id === hoveredId || c.id === selectedId;
           const [cx, cy] = c.centroid;
           return (
-            // Small countries (Taiwan is ~4x10 units here) are unhittable as
-            // bare outlines, so each visited country also gets a marker dot and
-            // an oversized transparent hit circle. The whole group is one
-            // control: the dot carries the button semantics.
             <g
               key={c.id}
               data-country={c.id}
@@ -72,9 +63,6 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
                   active ? 'fill-accent-strong stroke-accent-strong' : 'fill-accent stroke-accent-strong'
                 }`}
               />
-              {/* Decorative pin, hidden once the map zooms in: its radius is
-                  in viewBox units, so a zoomed map would blow it up into a
-                  blob over the country it is meant to mark. */}
               {!dimmed && (
                 <>
                   <circle

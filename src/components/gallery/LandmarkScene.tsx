@@ -7,12 +7,6 @@ interface LandmarkSceneProps {
   autoRotate: boolean;
 }
 
-/**
- * The WebGL scene. Imported only through a dynamic import from
- * LandmarkCanvas, so neither three.js nor @react-three/* is ever pulled into
- * the SSR module graph (doing so drags in a second React copy and nulls the
- * hook dispatcher on the Worker).
- */
 export default function LandmarkScene({ model, autoRotate }: LandmarkSceneProps) {
   return (
     <Canvas

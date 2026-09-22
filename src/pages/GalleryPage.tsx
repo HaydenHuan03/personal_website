@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -8,6 +8,8 @@ import LandmarkMarker from '../components/gallery/LandmarkMarker';
 import CountryGallery from '../components/gallery/CountryGallery';
 import { preloadLandmark } from '../components/gallery/LandmarkCanvas';
 import { useHoverCapable } from '../hooks/useHoverCapable';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useMapStage } from '../hooks/useMapStage';
 import { GALLERY } from '../data/gallery';
 import { findCountry } from '../utils/gallery';
 
@@ -17,9 +19,9 @@ export default function GalleryPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selected = findCountry(GALLERY, searchParams.get('country')) ?? null;
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const hoverCapable = useHoverCapable();
+  const reducedMotion = useReducedMotion();
+  const { svgRef, planeRef, tiltRef } = useMapStage(selected?.id ?? null, reducedMotion);
 
   useEffect(() => {
     document.title = 'Gallery - Hayden Huan';
@@ -42,9 +44,8 @@ export default function GalleryPage() {
   }, [setSearchParams]);
 
   const hovered = useMemo(() => findCountry(GALLERY, hoveredId) ?? null, [hoveredId]);
-
   // The landmark stands on the country being hovered, and stays standing on
-  // the selected one while the map zooms into it.
+  // the selected one while the map lies down and zooms into it.
   const marked = selected ?? hovered;
 
   useEffect(() => {
@@ -76,29 +77,30 @@ export default function GalleryPage() {
           <p className="text-sm text-stone-500 mb-6">Nothing here yet.</p>
         )}
 
-        <div ref={containerRef} className="relative">
-          <WorldMap
-            ref={svgRef}
-            visitedIds={VISITED_IDS}
-            selectedId={selected?.id ?? null}
-            hoveredId={hoveredId}
-            onHover={setHoveredId}
-            onSelect={select}
-            dimmed={selected !== null}
-          />
-          {marked && (hoverCapable || selected) && (
-            <LandmarkMarker
-              key={marked.id}
-              country={marked}
-              svgRef={svgRef}
-              containerRef={containerRef}
+        {/* The stage gives the map plane its vanishing point; the plane is what
+            lies down on select, carrying the landmark standing on it. */}
+        <div style={{ perspective: '1400px', perspectiveOrigin: '50% 35%' }}>
+          <div
+            ref={planeRef}
+            className="relative origin-top"
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            <WorldMap
+              ref={svgRef}
+              visitedIds={VISITED_IDS}
+              selectedId={selected?.id ?? null}
+              hoveredId={hoveredId}
+              onHover={setHoveredId}
+              onSelect={select}
+              dimmed={selected !== null}
             />
-          )}
+            {marked && (hoverCapable || selected) && (
+              <LandmarkMarker key={marked.id} country={marked} svgRef={svgRef} tiltRef={tiltRef} />
+            )}
+          </div>
         </div>
 
-        {selected && (
-          <CountryGallery key={selected.id} country={selected} svgRef={svgRef} onBack={back} />
-        )}
+        {selected && <CountryGallery key={selected.id} country={selected} onBack={back} />}
       </main>
       <Footer />
     </>
