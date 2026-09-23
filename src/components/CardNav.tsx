@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { gsap } from 'gsap';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, type LucideIcon } from 'lucide-react';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 
 type CardNavLink = {
@@ -12,6 +12,8 @@ type CardNavLink = {
 
 export type CardNavItem = {
   label: string;
+  /** Shown beside the label when this item is the current page. */
+  icon?: LucideIcon;
   bgColor: string;
   textColor: string;
   links: CardNavLink[];
@@ -54,6 +56,7 @@ const CardNav: React.FC<CardNavProps> = ({
   const reducedMotion = useReducedMotion();
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const { pathname } = useLocation();
+  const CurrentIcon = items.find((item) => item.label === currentLabel)?.icon;
 
   // The bar floats narrower than the content columns, so leaving it in place
   // would let text slide past in the gutters. It tucks away on the way down
@@ -271,9 +274,10 @@ const CardNav: React.FC<CardNavProps> = ({
 
             {currentLabel && (
               <span
-                className="hidden sm:block shrink-0 pr-2 text-[14px] md:text-[15px] opacity-50"
+                className="absolute left-1/2 -translate-x-1/2 inline-flex items-center gap-2 font-heading text-xl md:text-2xl font-bold tracking-tight"
                 style={{ color: menuColor || '#000' }}
               >
+                {CurrentIcon && <CurrentIcon className="size-5 md:size-6 shrink-0" aria-hidden="true" />}
                 {currentLabel}
               </span>
             )}

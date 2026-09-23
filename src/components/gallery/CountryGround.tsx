@@ -38,7 +38,7 @@ export default function CountryGround({ d, centroid, size = 2.4 }: CountryGround
     const parsed = new SVGLoader().parse(
       `<svg xmlns="http://www.w3.org/2000/svg"><path d="${d}"/></svg>`
     );
-    const shapes = parsed.paths.flatMap((path) => SVGLoader.createShapes(path));
+    const shapes = parsed.paths.flatMap((path) => path.toShapes());
 
     // Measure in the source coordinates so the extrusion depth can be a
     // fraction of the country's own size rather than an absolute guess, and so

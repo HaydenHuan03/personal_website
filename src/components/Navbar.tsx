@@ -1,9 +1,11 @@
 import { useLocation } from 'react-router';
+import { CodeXml, Globe, House } from 'lucide-react';
 import CardNav, { type CardNavItem } from './CardNav';
 
 const ITEMS: CardNavItem[] = [
   {
     label: 'Home',
+    icon: House,
     bgColor: '#1c1917',
     textColor: '#fafaf9',
     links: [
@@ -16,6 +18,7 @@ const ITEMS: CardNavItem[] = [
   },
   {
     label: 'LeetCode',
+    icon: CodeXml,
     bgColor: '#292524',
     textColor: '#fafaf9',
     links: [
@@ -34,6 +37,7 @@ const ITEMS: CardNavItem[] = [
   },
   {
     label: 'Gallery',
+    icon: Globe,
     bgColor: '#44403c',
     textColor: '#fafaf9',
     links: [{ label: 'World map', href: '/gallery', ariaLabel: 'Gallery world map' }],
