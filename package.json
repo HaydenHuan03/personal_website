@@ -10,6 +10,7 @@
     "deploy": "bun run build && wrangler deploy",
     "cf-typegen": "wrangler types",
     "build:world-map": "bun scripts/build-world-map.ts",
+    "build:logo-sprite": "python3 scripts/build-logo-sprite.py",
     "postinstall": "wrangler types"
   },
   "dependencies": {

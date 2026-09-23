@@ -8,6 +8,12 @@
   --color-accent-strong: #2a5854;
 }
 
+/* Keeps hash targets clear of the sticky nav, which sits 16px down and is
+   60px tall. Applies to scrollIntoView as well as plain hash jumps. */
+html {
+  scroll-padding-top: 6rem;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
