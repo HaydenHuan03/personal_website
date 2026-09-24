@@ -130,8 +130,6 @@ export default function GalleryPage() {
         setCrossfade(false);
         setPhase('country');
       } else if (phase === 'toMap') {
-        // Stays cross-faded until the URL clears, so the country cannot flash
-        // back in; the sync above then settles on the map.
         setSearchParams({});
       }
     }, CROSSFADE_MS);
@@ -207,10 +205,10 @@ export default function GalleryPage() {
             inert={!globeVisible}
           >
             <header className="min-h-0 overflow-hidden pb-6 text-center animate-[fadeInUp_0.5s_ease-out]">
-              <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 mb-4 leading-[1.1] text-balance">
+              <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 dark:text-stone-50 mb-4 leading-[1.1] text-balance">
                 The places I have been to.
               </h1>
-              <p className="text-lg text-stone-600 leading-relaxed font-light text-balance">
+              <p className="text-lg text-stone-600 dark:text-stone-400 leading-relaxed font-light text-balance">
                 Where my memories live
               </p>
             </header>
@@ -283,7 +281,7 @@ export default function GalleryPage() {
                 <button
                   type="button"
                   onClick={back}
-                  className="pointer-events-auto absolute top-0 left-0 inline-flex items-center gap-2 rounded-full bg-white/70 backdrop-blur min-h-11 px-4 text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors"
+                  className="pointer-events-auto absolute top-0 left-0 inline-flex items-center gap-2 rounded-full bg-white/70 dark:bg-stone-900/70 backdrop-blur min-h-11 px-4 text-sm font-medium text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors"
                 >
                   <ArrowLeft size={16} aria-hidden="true" /> Back to map
                 </button>
@@ -294,14 +292,14 @@ export default function GalleryPage() {
                     country={selected}
                     active={countryVisible}
                   />
-                  <p className="mt-3 text-xs text-stone-500">
+                  <p className="mt-3 text-xs text-stone-500 dark:text-stone-400">
                     Model: &ldquo;{selected.landmark.name}&rdquo; by{' '}
                     {selected.landmark.attribution.author},{' '}
                     <a
                       href={selected.landmark.attribution.source}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="pointer-events-auto inline-flex items-center gap-1 underline hover:text-stone-900"
+                      className="pointer-events-auto inline-flex items-center gap-1 underline hover:text-stone-900 dark:hover:text-stone-50"
                     >
                       {selected.landmark.attribution.license}{' '}
                       <ExternalLink size={10} aria-hidden="true" />

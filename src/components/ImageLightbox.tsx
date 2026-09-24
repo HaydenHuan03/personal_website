@@ -42,10 +42,10 @@ export default function ImageLightbox({ src, alt, className }: ImageLightboxProp
         type="button"
         onClick={show}
         aria-label={`View full size: ${alt}`}
-        className="group relative block w-full cursor-zoom-in rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
+        className="group relative block w-full cursor-zoom-in rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900 dark:focus-visible:outline-stone-100"
       >
         <img src={src} alt={alt} loading="lazy" className={className} />
-        <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-md border border-stone-200 bg-white/90 px-2.5 py-1 text-xs font-medium text-stone-700 opacity-70 shadow-sm backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+        <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-md border border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 px-2.5 py-1 text-xs font-medium text-stone-700 dark:text-stone-300 opacity-70 shadow-sm backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
           <Maximize2 size={12} aria-hidden="true" />
           Click to enlarge
         </span>
@@ -69,7 +69,7 @@ export default function ImageLightbox({ src, alt, className }: ImageLightboxProp
           type="button"
           onClick={close}
           aria-label="Close"
-          className="fixed right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-stone-800 shadow transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="fixed right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 dark:bg-stone-900/90 text-stone-800 dark:text-stone-100 shadow transition-colors hover:bg-white dark:hover:bg-stone-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           <X size={20} aria-hidden="true" />
         </button>

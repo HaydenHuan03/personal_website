@@ -148,8 +148,8 @@ export default function PixelTransition({
     <div ref={wrapperRef} className={`w-full cursor-pointer rounded-2xl ${className}`}>
       <div
         ref={innerRef}
-        className="relative w-full overflow-hidden rounded-2xl"
-        style={{ aspectRatio: '3 / 4', boxShadow: '0 0 0 1px #e7e5e4' }}
+        className="relative w-full overflow-hidden rounded-2xl ring-1 ring-stone-200 dark:ring-stone-800"
+        style={{ aspectRatio: '3 / 4' }}
       >
         <img ref={firstRef} src={firstImage} alt="Profile" draggable={false} style={imgStyle} />
         <img ref={secondRef} src={secondImage} alt="Profile alternate" draggable={false} style={{ ...imgStyle, opacity: 0 }} />

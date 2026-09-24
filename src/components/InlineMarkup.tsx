@@ -10,7 +10,7 @@ export default function InlineMarkup({ text }: InlineMarkupProps) {
     <>
       {parseInline(text).map((seg, i) =>
         seg.bold ? (
-          <strong key={i} className="font-semibold text-stone-900">
+          <strong key={i} className="font-semibold text-stone-900 dark:text-stone-50">
             {seg.text}
           </strong>
         ) : (

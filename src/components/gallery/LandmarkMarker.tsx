@@ -52,10 +52,10 @@ export default function LandmarkMarker({ country, svgRef }: LandmarkMarkerProps)
           the country rather than a couple of text-lines above it. It sits
           beside the base so it never overlaps the country underneath. */}
       <div className="absolute bottom-1 left-full ml-1 whitespace-nowrap text-left">
-        <p className="font-heading text-sm font-semibold leading-tight text-stone-900">
+        <p className="font-heading text-sm font-semibold leading-tight text-stone-900 dark:text-stone-50">
           {country.name}
         </p>
-        <p className="text-[11px] text-stone-500">
+        <p className="text-[11px] text-stone-500 dark:text-stone-400">
           {country.landmark.name} &middot; {formatVisitedAt(country.visitedAt)}
         </p>
       </div>

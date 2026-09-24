@@ -3,6 +3,13 @@ import { useEffect } from 'react';
 import { Links, Meta, Outlet, Scripts, useLocation, useNavigationType } from 'react-router';
 import './styles/global.css';
 
+/**
+ * Applies the theme before first paint, so a dark-mode visitor never sees a
+ * flash of the light page. Runs inline in <head>, ahead of hydration: the
+ * saved choice wins, otherwise the system setting.
+ */
+const THEME_SCRIPT = `try{var t=localStorage.getItem('theme');if(t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}`;
+
 function ScrollToHash() {
   const location = useLocation();
   const navigationType = useNavigationType();
@@ -24,8 +31,9 @@ function ScrollToHash() {
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <meta
@@ -58,7 +66,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="bg-stone-50 text-stone-900 font-sans antialiased selection:bg-stone-300 selection:text-stone-900 min-h-screen">
+      <body className="bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100 font-sans antialiased selection:bg-stone-300 selection:text-stone-900 dark:selection:bg-stone-700 dark:selection:text-stone-50 min-h-screen">
         {children}
         <Scripts />
       </body>

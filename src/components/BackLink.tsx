@@ -9,11 +9,11 @@ interface BackLinkProps {
 }
 
 const STYLE =
-  'inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors text-sm font-medium';
+  'inline-flex items-center gap-2 text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors text-sm font-medium';
 
 export default function BackLink({ to, onClick, children }: BackLinkProps) {
   return (
-    <div className="px-4 md:px-6 pt-12 md:pt-20 mb-10">
+    <div className="max-w-[90rem] mx-auto px-6 md:px-12 pt-12 md:pt-20 mb-10">
       {to ? (
         <Link to={to} className={STYLE}>
           <ArrowLeft size={16} /> {children}

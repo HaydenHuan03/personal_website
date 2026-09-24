@@ -23,8 +23,8 @@ export default function ProjectDetailPage() {
       <>
         <Navbar />
         <main id="main-content" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
-          <h1 className="text-3xl font-heading font-semibold text-stone-900 mb-4">Project not found</h1>
-          <Link to="/" className="text-stone-600 hover:text-stone-900 underline">Return to portfolio</Link>
+          <h1 className="text-3xl font-heading font-semibold text-stone-900 dark:text-stone-50 mb-4">Project not found</h1>
+          <Link to="/" className="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 underline">Return to portfolio</Link>
         </main>
         <Footer />
       </>
@@ -37,11 +37,11 @@ export default function ProjectDetailPage() {
       <main id="main-content" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
         <article className="animate-[fadeInUp_0.5s_ease-out]">
           <div className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 mb-4 leading-[1.1] text-balance">
+            <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 dark:text-stone-50 mb-4 leading-[1.1] text-balance">
               {project.title}
             </h1>
             {project.inProgress && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 mb-6 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full border border-amber-200 uppercase tracking-wide">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 mb-6 bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-xs font-semibold rounded-full border border-amber-200 dark:border-amber-900 uppercase tracking-wide">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                 In Progress
               </span>
@@ -52,7 +52,7 @@ export default function ProjectDetailPage() {
                 return (
                   <span
                     key={t}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 text-stone-700 text-sm rounded-md font-medium border border-stone-200"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-sm rounded-md font-medium border border-stone-200 dark:border-stone-800"
                   >
                     {iconClass && <i className={`${iconClass} text-base leading-none`} />}
                     {t}
@@ -60,7 +60,7 @@ export default function ProjectDetailPage() {
                 );
               })}
             </div>
-            <p className="text-xl text-stone-600 font-light leading-relaxed text-justify">{project.description}</p>
+            <p className="text-xl text-stone-600 dark:text-stone-400 font-light leading-relaxed text-justify">{project.description}</p>
           </div>
 
           <div className="mb-16">
@@ -70,7 +70,7 @@ export default function ProjectDetailPage() {
                   return (
                     <h2
                       key={index}
-                      className="font-heading font-semibold text-xl text-stone-900 mt-12 mb-4 first:mt-0"
+                      className="font-heading font-semibold text-xl text-stone-900 dark:text-stone-50 mt-12 mb-4 first:mt-0"
                     >
                       {block.text}
                     </h2>
@@ -79,8 +79,8 @@ export default function ProjectDetailPage() {
                   return (
                     <ul key={index} className="space-y-3 mb-6">
                       {block.items.map((item, i) => (
-                        <li key={i} className="flex gap-3 text-stone-700 leading-relaxed font-light text-lg">
-                          <span className="text-stone-400 mt-1 select-none" aria-hidden="true">▹</span>
+                        <li key={i} className="flex gap-3 text-stone-700 dark:text-stone-300 leading-relaxed font-light text-lg">
+                          <span className="text-stone-400 dark:text-stone-500 mt-1 select-none" aria-hidden="true">▹</span>
                           <span><InlineMarkup text={item} /></span>
                         </li>
                       ))}
@@ -88,7 +88,7 @@ export default function ProjectDetailPage() {
                   );
                 case 'paragraph':
                   return (
-                    <p key={index} className="text-stone-700 leading-relaxed mb-6 font-light text-lg text-justify">
+                    <p key={index} className="text-stone-700 dark:text-stone-300 leading-relaxed mb-6 font-light text-lg text-justify">
                       <InlineMarkup text={block.text} />
                     </p>
                   );
@@ -101,38 +101,38 @@ export default function ProjectDetailPage() {
               {project.images.map((image) => (
                 <figure key={image.src}>
                   {image.caption && (
-                    <figcaption className="font-heading font-semibold text-lg text-stone-900 mb-4">
+                    <figcaption className="font-heading font-semibold text-lg text-stone-900 dark:text-stone-50 mb-4">
                       {image.caption}
                     </figcaption>
                   )}
                   <ImageLightbox
                     src={image.src}
                     alt={image.alt}
-                    className="w-full rounded-xl border border-stone-200 bg-white"
+                    className="w-full rounded-xl border border-stone-200 dark:border-stone-800 bg-white"
                   />
                 </figure>
               ))}
             </section>
           )}
 
-          <div className="p-8 bg-stone-100 rounded-xl border border-stone-200">
-            <h3 className="font-heading font-semibold text-lg mb-4 text-stone-900">
+          <div className="p-8 bg-stone-100 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
+            <h3 className="font-heading font-semibold text-lg mb-4 text-stone-900 dark:text-stone-50">
               Key Architectural Highlights
             </h3>
             <ul className="space-y-4">
               {project.highlights.map((highlight, index) => (
-                <li key={index} className="flex gap-4 text-stone-700">
-                  <span className="text-stone-400 mt-1">▹</span>
+                <li key={index} className="flex gap-4 text-stone-700 dark:text-stone-300">
+                  <span className="text-stone-400 dark:text-stone-500 mt-1">▹</span>
                   <span className="leading-relaxed"><InlineMarkup text={highlight} /></span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="mt-16 pt-8 border-t border-stone-200 flex justify-center">
+          <div className="mt-16 pt-8 border-t border-stone-200 dark:border-stone-800 flex justify-center">
             <Link
               to="/"
-              className="px-6 py-3 bg-stone-900 text-stone-50 rounded-md hover:bg-stone-800 transition-colors font-medium text-sm"
+              className="px-6 py-3 bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 rounded-md hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors font-medium text-sm"
             >
               Return to Portfolio
             </Link>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
+import { ArrowRight } from 'lucide-react';
 import { Vector3, type Group, type Mesh, type PerspectiveCamera } from 'three';
 import equirectJson from '../../data/world-equirect.json';
 import type { WorldMapSnapshot } from '../../../scripts/lib/worldMap';
@@ -23,6 +24,9 @@ import { DIVE_MS, PULL_OUT_MS, ZOOM_FLOOR, ZOOM_TO } from './transition';
  * to download a projection it never draws.
  */
 const GLOBE = equirectJson as unknown as WorldMapSnapshot;
+
+/** NASA Blue Marble (July 2004), plate carree, 2048x1024. */
+const EARTH_IMAGERY = '/gallery/earth.webp';
 
 const RADIUS = 1;
 /** How far the pointer may travel during a press and still count as a click. */
@@ -179,11 +183,13 @@ interface EarthProps extends GlobeSceneProps {
 }
 
 /**
- * A country's name, pinned above it on the sphere. Hidden once the country
- * turns towards the limb or round the back: the globe is centred on the
- * origin, so the anchor's own position is its surface normal.
+ * A visited country's beacon, and its name when `named`, pinned to it on the
+ * sphere. The beacon pulses so the country reads as clickable before anyone
+ * hovers it. Hidden once the country turns towards the limb or round the back:
+ * the globe is centred on the origin, so the anchor's own position is its
+ * surface normal.
  */
-function CountryLabel({ id }: { id: string }) {
+function CountryLabel({ id, named, hovered }: { id: string; named: boolean; hovered: boolean }) {
   const country = GLOBE.countries.find((c) => c.id === id);
   const groupRef = useRef<Group>(null);
   // State, not a ref on the element: Html renders into its own root, which is
@@ -212,13 +218,26 @@ function CountryLabel({ id }: { id: string }) {
   return (
     <group ref={groupRef} position={position}>
       <Html zIndexRange={[20, 0]} style={{ pointerEvents: 'none' }}>
-        <span
-          className={`block -translate-x-1/2 -translate-y-[calc(100%+0.75rem)] whitespace-nowrap rounded-full bg-stone-900 px-3 py-1 text-sm font-medium text-stone-50 shadow-md transition-opacity duration-150 ${
-            visible ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          {country.name}
-        </span>
+        <div className={`transition-opacity duration-150 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+          <span
+            aria-hidden
+            className={`absolute -left-3 -top-3 size-6 rounded-full border-2 border-white transition-transform duration-200 ${
+              hovered ? 'scale-150 bg-white/30' : 'motion-safe:animate-ping'
+            }`}
+          />
+          {named && (
+            <span className="absolute left-0 top-0 inline-flex -translate-x-1/2 -translate-y-[calc(100%+1rem)] items-center gap-1.5 whitespace-nowrap rounded-full bg-stone-900 px-3 py-1 text-sm font-medium text-stone-50 shadow-md">
+              {country.name}
+              {hovered && (
+                <>
+                  <span className="text-stone-400">·</span>
+                  <span className="text-accent-soft">Explore</span>
+                  <ArrowRight size={14} className="text-accent-soft" />
+                </>
+              )}
+            </span>
+          )}
+        </div>
       </Html>
     </group>
   );
@@ -251,14 +270,27 @@ function Earth({
   const announced = useRef(false);
   const { invalidate, gl, camera } = useThree();
 
+  // The satellite land arrives after first paint; until then the globe shows
+  // flat land rather than waiting on the download.
+  const [imagery, setImagery] = useState<HTMLImageElement | null>(null);
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setImagery(img);
+    img.src = EARTH_IMAGERY;
+    return () => {
+      img.onload = null;
+    };
+  }, []);
+
   const painted = useMemo(
     () =>
       createGlobeTexture({
         countries: GLOBE.countries,
         visitedIds,
         viewBox: GLOBE.viewBox,
+        imagery,
       }),
-    [visitedIds]
+    [visitedIds, imagery]
   );
 
   useEffect(() => () => painted?.dispose(), [painted]);
@@ -379,8 +411,8 @@ function Earth({
       <meshStandardMaterial map={painted?.texture ?? null} roughness={0.85} metalness={0.05} />
       {/* Children of the mesh, so they turn with it. Hidden for the dive. */}
       {!target &&
-        (alwaysLabel ? [...visitedIds] : hoveredId ? [hoveredId] : []).map((id) => (
-          <CountryLabel key={id} id={id} />
+        [...visitedIds].map((id) => (
+          <CountryLabel key={id} id={id} named={alwaysLabel || id === hoveredId} hovered={id === hoveredId} />
         ))}
     </mesh>
   );

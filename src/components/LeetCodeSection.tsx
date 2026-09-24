@@ -23,9 +23,9 @@ const LEETCODE_USERNAME = 'teomeehua';
 const hasStats = stats.totalSolved !== null;
 const total = stats.totalSolved || 1;
 const breakdown = [
-  { label: 'Easy', value: stats.easySolved ?? 0, bar: 'bg-emerald-500', text: 'text-emerald-600' },
-  { label: 'Medium', value: stats.mediumSolved ?? 0, bar: 'bg-amber-500', text: 'text-amber-600' },
-  { label: 'Hard', value: stats.hardSolved ?? 0, bar: 'bg-rose-500', text: 'text-rose-600' },
+  { label: 'Easy', value: stats.easySolved ?? 0, bar: 'bg-emerald-500', text: 'text-emerald-600 dark:text-emerald-400' },
+  { label: 'Medium', value: stats.mediumSolved ?? 0, bar: 'bg-amber-500', text: 'text-amber-600 dark:text-amber-400' },
+  { label: 'Hard', value: stats.hardSolved ?? 0, bar: 'bg-rose-500', text: 'text-rose-600 dark:text-rose-400' },
 ] as const;
 
 export default function LeetCodeSection() {
@@ -65,24 +65,24 @@ export default function LeetCodeSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="leetcode" className="py-24 border-t border-stone-200">
+    <section ref={sectionRef} id="leetcode" className="py-24 border-t border-stone-200 dark:border-stone-800">
       <SectionHeader title="LeetCode" subtitle="Problem-solving practice, tracked at each deploy." />
 
       <div
         ref={panelSpotlight.ref}
         onMouseMove={panelSpotlight.onMouseMove}
         style={{ '--spot-color': 'rgba(63, 125, 120, 0.12)' } as React.CSSProperties}
-        className="spotlight mt-12 border border-stone-200 rounded-2xl bg-white overflow-hidden grid grid-cols-1 md:grid-cols-[220px_1fr] divide-y divide-stone-200 md:divide-y-0 md:divide-x"
+        className="spotlight mt-12 border border-stone-200 dark:border-stone-800 rounded-2xl bg-white dark:bg-stone-900 overflow-hidden grid grid-cols-1 md:grid-cols-[220px_1fr] divide-y divide-stone-200 dark:divide-stone-800 md:divide-y-0 md:divide-x"
       >
         <div data-lc-card className="p-8 flex flex-col justify-center gap-1">
-          <span className="text-6xl font-heading font-semibold text-stone-900 tabular-nums leading-none">
+          <span className="text-6xl font-heading font-semibold text-stone-900 dark:text-stone-50 tabular-nums leading-none">
             {hasStats ? <CountUp value={stats.totalSolved ?? 0} /> : '-'}
           </span>
-          <span className="text-stone-500 text-sm uppercase tracking-wide mt-2">Problems Solved</span>
+          <span className="text-stone-500 dark:text-stone-400 text-sm uppercase tracking-wide mt-2">Problems Solved</span>
         </div>
 
         <div data-lc-card className="p-8 flex flex-col justify-center gap-5">
-          <div className="flex h-2.5 w-full rounded-full overflow-hidden bg-stone-100" role="img" aria-label="Easy, medium, hard problem breakdown">
+          <div className="flex h-2.5 w-full rounded-full overflow-hidden bg-stone-100 dark:bg-stone-800" role="img" aria-label="Easy, medium, hard problem breakdown">
             {breakdown.map((b) => (
               <div
                 key={b.label}
@@ -95,7 +95,7 @@ export default function LeetCodeSection() {
             {breakdown.map((b) => (
               <div key={b.label} className="flex items-baseline gap-2">
                 <span className={`text-sm font-medium ${b.text}`}>{b.label}</span>
-                <span className="text-xl font-heading font-semibold text-stone-900 tabular-nums">
+                <span className="text-xl font-heading font-semibold text-stone-900 dark:text-stone-50 tabular-nums">
                   {hasStats ? b.value : '-'}
                 </span>
               </div>
@@ -105,7 +105,7 @@ export default function LeetCodeSection() {
       </div>
 
       {!hasStats && (
-        <p className="mt-4 text-sm text-stone-500">
+        <p className="mt-4 text-sm text-stone-500 dark:text-stone-400">
           Stats temporarily unavailable. Check the profile directly below.
         </p>
       )}
@@ -116,7 +116,7 @@ export default function LeetCodeSection() {
           onMouseMove={browseBtn.onMouseMove}
           onMouseLeave={browseBtn.onMouseLeave}
           to="/leetcode"
-          className="magnetic inline-flex items-center gap-2 px-6 py-3 bg-stone-900 text-stone-50 rounded-md hover:bg-stone-800 transition-colors font-medium text-sm"
+          className="magnetic inline-flex items-center gap-2 px-6 py-3 bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 rounded-md hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors font-medium text-sm"
         >
           Browse Solutions <ArrowRight size={16} />
         </Link>
@@ -124,7 +124,7 @@ export default function LeetCodeSection() {
           href={`https://leetcode.com/u/${LEETCODE_USERNAME}/`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
+          className="inline-flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50"
         >
           View Profile <ExternalLink size={16} />
         </a>

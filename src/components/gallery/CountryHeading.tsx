@@ -48,14 +48,14 @@ export default function CountryHeading({ country, active = true }: CountryHeadin
     <div ref={rootRef}>
       <h1
         data-name
-        className="font-heading text-3xl md:text-4xl font-semibold text-stone-900 leading-[1.1] text-balance"
+        className="font-heading text-3xl md:text-4xl font-semibold text-stone-900 dark:text-stone-50 leading-[1.1] text-balance"
         style={{ visibility: 'hidden' }}
       >
         {country.name}
       </h1>
       <p
         data-meta
-        className="mt-2 text-sm md:text-base text-stone-600"
+        className="mt-2 text-sm md:text-base text-stone-600 dark:text-stone-400"
         style={{ visibility: 'hidden' }}
       >
         {country.landmark.name} &middot; {formatVisitedAt(country.visitedAt)}

@@ -33,7 +33,7 @@ const WorldMap = forwardRef<SVGSVGElement, WorldMapProps>(function WorldMap(
       style={{ overflow: 'visible' }}
       onMouseLeave={() => onHover(null)}
     >
-      <g className="fill-stone-300/70 stroke-stone-50" strokeWidth={0.5}>
+      <g className="fill-stone-300/70 dark:fill-stone-700/70 stroke-stone-50 dark:stroke-stone-950" strokeWidth={0.5}>
         {WORLD_MAP.countries.map((c) => (visitedIds.has(c.id) ? null : <path key={c.id} d={c.d} />))}
       </g>
       <g strokeWidth={0.75} strokeLinejoin="round">

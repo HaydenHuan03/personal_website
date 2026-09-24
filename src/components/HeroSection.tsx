@@ -70,20 +70,20 @@ export default function HeroSection() {
       className="pt-20 pb-32 lg:pt-32 lg:pb-40 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] items-center gap-12 lg:gap-16"
     >
       <div className="min-w-0">
-        <p data-hero-label className="text-stone-500 font-medium tracking-wide text-sm uppercase mb-4">
+        <p data-hero-label className="text-stone-500 dark:text-stone-400 font-medium tracking-wide text-sm uppercase mb-4">
           Backend Engineer
         </p>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-semibold tracking-tight text-stone-900 mb-6 leading-[1.1] break-words text-balance">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-semibold tracking-tight text-stone-900 dark:text-stone-50 mb-6 leading-[1.1] break-words text-balance">
           <DecryptedText
             text={HERO_NAME}
             animateOn="view"
             sequential
             revealDirection="start"
             speed={50}
-            encryptedClassName="text-stone-400"
+            encryptedClassName="text-stone-400 dark:text-stone-500"
           />
         </h1>
-        <p data-hero-bio className="text-lg text-stone-600 leading-relaxed font-light mb-10">
+        <p data-hero-bio className="text-lg text-stone-600 dark:text-stone-400 leading-relaxed font-light mb-10">
           I am a rookie backend developer who enjoys trying new technologies instead of using one tech only. I am passionate about growing my skills and understanding how backend logic connects with reliable infrastructure.
         </p>
 
@@ -94,7 +94,7 @@ export default function HeroSection() {
             onMouseMove={projectsBtn.onMouseMove}
             onMouseLeave={projectsBtn.onMouseLeave}
             to="/#projects"
-            className="magnetic flex items-center gap-2 px-6 py-3 bg-stone-900 text-stone-50 rounded-md hover:bg-stone-800 transition-colors font-medium text-sm"
+            className="magnetic flex items-center gap-2 px-6 py-3 bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 rounded-md hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors font-medium text-sm"
           >
             View Projects <ArrowRight size={16} />
           </Link>
@@ -104,7 +104,7 @@ export default function HeroSection() {
             onMouseMove={contactBtn.onMouseMove}
             onMouseLeave={contactBtn.onMouseLeave}
             href="mailto:teomeehua@gmail.com"
-            className="magnetic flex items-center gap-2 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
+            className="magnetic flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50"
           >
             <Mail size={16} /> Contact Me
           </a>
@@ -116,19 +116,19 @@ export default function HeroSection() {
             href="https://docs.google.com/document/d/1bSoNi0MSzojWipmAgBUMJmb8V38dLV8IbYYKth9xvhk/edit?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
-            className="magnetic flex items-center gap-2 px-6 py-3 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900"
+            className="magnetic flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50"
           >
             <FileText size={16} /> Resume
           </a>
-          <div data-hero-btn className="flex items-center gap-3 ml-2 border-l border-stone-300 pl-6">
-            <a href="https://github.com/HaydenHuan03" className="text-stone-500 hover:text-stone-900 transition-colors">
+          <div data-hero-btn className="flex items-center gap-3 ml-2 border-l border-stone-300 dark:border-stone-700 pl-6">
+            <a href="https://github.com/HaydenHuan03" className="text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors">
               <Github size={20} />
             </a>
             <a
               href="https://www.instagram.com/hayden_1729/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-stone-500 hover:text-stone-900 transition-colors"
+              className="text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors"
             >
               <Instagram size={20} />
             </a>

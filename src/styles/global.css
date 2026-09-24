@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Dark mode follows a `.dark` class on <html>, set before paint by the script
+   in root.tsx from the saved choice or the system setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Geist', sans-serif;
   --font-heading: 'Outfit', sans-serif;
@@ -12,6 +16,28 @@
    60px tall. Applies to scrollIntoView as well as plain hash jumps. */
 html {
   scroll-padding-top: 6rem;
+}
+
+/* Native controls and scrollbars follow the theme too. */
+html.dark {
+  color-scheme: dark;
+}
+
+/* The nav takes its colours as inline styles, so it reads them from here. */
+:root {
+  --nav-base: #ffffff;
+  --nav-menu: #1c1917;
+  --nav-card-1: #1c1917;
+  --nav-card-2: #292524;
+  --nav-card-3: #44403c;
+}
+
+.dark {
+  --nav-base: #1c1917;
+  --nav-menu: #fafaf9;
+  --nav-card-1: #292524;
+  --nav-card-2: #44403c;
+  --nav-card-3: #57534e;
 }
 
 @keyframes fadeInUp {
@@ -65,6 +91,27 @@ html {
 .magnetic {
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform;
+}
+
+/* Idle bob for the footer pills. Animates `translate`, not `transform`, so it
+   stacks with the inline transform useMagnetic() writes instead of fighting it. */
+@keyframes float {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+.float {
+  animation: float 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float {
+    animation: none;
+  }
 }
 
 .skip-link {

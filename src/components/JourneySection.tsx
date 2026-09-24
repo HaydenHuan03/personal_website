@@ -42,7 +42,7 @@ export default function JourneySection() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="journey" className="py-24 border-t border-stone-200">
+    <section ref={sectionRef} id="journey" className="py-24 border-t border-stone-200 dark:border-stone-800">
       <SectionHeader title="The Journey" subtitle="Experience, education, and continuous learning." />
 
       <div className="orbit-timeline">

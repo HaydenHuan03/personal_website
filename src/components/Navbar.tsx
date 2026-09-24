@@ -1,12 +1,13 @@
 import { useLocation } from 'react-router';
-import { CodeXml, Globe, House } from 'lucide-react';
+import { CodeXml, House, Images } from 'lucide-react';
 import CardNav, { type CardNavItem } from './CardNav';
+import ThemeToggle from './ThemeToggle';
 
 const ITEMS: CardNavItem[] = [
   {
     label: 'Home',
     icon: House,
-    bgColor: '#1c1917',
+    bgColor: 'var(--nav-card-1)',
     textColor: '#fafaf9',
     links: [
       { label: 'Overview', href: '/', ariaLabel: 'Home' },
@@ -19,7 +20,7 @@ const ITEMS: CardNavItem[] = [
   {
     label: 'LeetCode',
     icon: CodeXml,
-    bgColor: '#292524',
+    bgColor: 'var(--nav-card-2)',
     textColor: '#fafaf9',
     links: [
       { label: 'All solutions', href: '/leetcode', ariaLabel: 'All LeetCode solutions' },
@@ -37,8 +38,8 @@ const ITEMS: CardNavItem[] = [
   },
   {
     label: 'Gallery',
-    icon: Globe,
-    bgColor: '#44403c',
+    icon: Images,
+    bgColor: 'var(--nav-card-3)',
     textColor: '#fafaf9',
     links: [{ label: 'World map', href: '/gallery', ariaLabel: 'Gallery world map' }],
   },
@@ -58,8 +59,9 @@ export default function Navbar() {
     <CardNav
       items={ITEMS}
       currentLabel={currentLabel(pathname)}
-      baseColor="#ffffff"
-      menuColor="#1c1917"
+      baseColor="var(--nav-base)"
+      menuColor="var(--nav-menu)"
+      actions={<ThemeToggle />}
     />
   );
 }

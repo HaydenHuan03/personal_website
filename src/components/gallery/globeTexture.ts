@@ -12,20 +12,18 @@ import type { WorldMapCountry } from '../../../scripts/lib/worldMap';
  */
 
 /**
- * Palette. It reads as an earth - water, land, ice - without going
- * photographic, which would fight the page's warm stone background. The two
- * unvisited tones are deliberately low-contrast against the ocean: everywhere
- * you have not been is scenery, and it should not invite a click it will not
- * answer. Visited countries carry the site's accent and are the only thing on
- * the sphere with real colour.
+ * Palette. The surface is satellite imagery once it has loaded (see
+ * `imagery`); the painted ocean, flat LAND tone and drawn ice caps are the
+ * stand-in until then. Visited countries stay a flat fill of the site's
+ * accent so they read as marked, not as more terrain.
  */
-const OCEAN_DEEP = '#4a7f92';
-const OCEAN_SHALLOW = '#6fa3b4';
-const LAND = '#cabfa4';
-const LAND_EDGE = '#b3a689';
+const OCEAN_DEEP = '#1d3647';
+const OCEAN_SHALLOW = '#2a4d61';
+const LAND = '#a09274';
+const LAND_EDGE = '#85795e';
 const ICE = '#e8e6e0';
-const VISITED = '#3f7d78';
-const VISITED_EDGE = '#2a5854';
+const VISITED = '#6fd1c4';
+const VISITED_EDGE = '#ffffff';
 const ACTIVE = '#dcebe9';
 const ACTIVE_EDGE = '#2a5854';
 const MARKER = '#2a5854';
@@ -39,6 +37,11 @@ export interface GlobeTextureOptions {
   viewBox: readonly [number, number, number, number];
   /** Texture width in pixels; the height follows from the 2:1 image. */
   resolution?: number;
+  /**
+   * An equirectangular photo of the earth, drawn under the borders and
+   * visited countries. Without it the surface is flat painted tones.
+   */
+  imagery?: CanvasImageSource | null;
 }
 
 export interface GlobeTexture {
@@ -56,12 +59,17 @@ export interface GlobeTexture {
 function drawMarker(ctx: CanvasRenderingContext2D, centroid: readonly [number, number]) {
   const [cx, cy] = centroid;
   ctx.save();
-  ctx.globalAlpha = 0.28;
-  ctx.fillStyle = MARKER;
+  // White halo and ring: the photo's greens and blues swallow a teal dot.
+  ctx.globalAlpha = 0.35;
+  ctx.fillStyle = '#ffffff';
   ctx.beginPath();
-  ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+  ctx.arc(cx, cy, 8, 0, Math.PI * 2);
   ctx.fill();
   ctx.globalAlpha = 1;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = MARKER;
   ctx.beginPath();
   ctx.arc(cx, cy, 3, 0, Math.PI * 2);
   ctx.fill();
@@ -77,6 +85,7 @@ export function createGlobeTexture({
   visitedIds,
   viewBox,
   resolution = 2048,
+  imagery = null,
 }: GlobeTextureOptions): GlobeTexture | null {
   if (typeof document === 'undefined') return null;
 
@@ -126,18 +135,35 @@ export function createGlobeTexture({
     base.stroke(path);
   }
 
+  const land = new Path2D();
+  for (const country of countries) {
+    const path = shapes.get(country.id);
+    if (path && !visitedIds.has(country.id)) land.addPath(path);
+  }
+
+  if (imagery) {
+    // The photo is the same plate carree as the canvas, so it is stretched
+    // over the whole image, sea and land both.
+    base.save();
+    base.setTransform(1, 0, 0, 1, 0, 0);
+    base.drawImage(imagery, 0, 0, canvasWidth, canvasHeight);
+    base.restore();
+
+    // Faint borders back over the photo, so countries still read as shapes.
+    base.save();
+    base.globalAlpha = 0.35;
+    base.strokeStyle = LAND_EDGE;
+    base.stroke(land);
+    base.restore();
+  }
+
   // Polar ice, clipped to land and faded towards the tropics.
   //
   // It must be clipped: in an equirectangular image the top row of pixels IS
   // the north pole, so a band filled across the full width collapses into a
   // solid white disc at each pole on the sphere. Only Antarctica, Greenland
   // and the northern rim should whiten, and the gradient keeps the boundary
-  // from reading as a drawn line of latitude.
-  const land = new Path2D();
-  for (const country of countries) {
-    const path = shapes.get(country.id);
-    if (path && !visitedIds.has(country.id)) land.addPath(path);
-  }
+  // from reading as a drawn line of latitude. The photo has its own ice.
   const capHeight = ((1 - ICE_LATITUDE) / 2) * height;
   const cap = (top: number, fadeTowards: number) => {
     base.save();
@@ -150,11 +176,13 @@ export function createGlobeTexture({
     base.fillRect(x0, Math.min(top, fadeTowards), width, capHeight);
     base.restore();
   };
-  cap(y0, y0 + capHeight);
-  cap(y0 + height, y0 + height - capHeight);
+  if (!imagery) {
+    cap(y0, y0 + capHeight);
+    cap(y0 + height, y0 + height - capHeight);
+  }
 
   // Visited countries last, so nothing overdraws them.
-  base.lineWidth = 0.9;
+  base.lineWidth = 1.2;
   for (const country of countries) {
     const path = shapes.get(country.id);
     if (!path || !visitedIds.has(country.id)) continue;

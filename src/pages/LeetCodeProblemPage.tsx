@@ -27,8 +27,8 @@ export default function LeetCodeProblemPage() {
       <>
         <Navbar />
         <main id="main-content" className="max-w-3xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
-          <h1 className="text-3xl font-heading font-semibold text-stone-900 mb-4">Problem not found</h1>
-          <Link to="/leetcode" className="text-stone-600 hover:text-stone-900 underline">
+          <h1 className="text-3xl font-heading font-semibold text-stone-900 dark:text-stone-50 mb-4">Problem not found</h1>
+          <Link to="/leetcode" className="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 underline">
             Back to all solutions
           </Link>
         </main>

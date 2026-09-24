@@ -1,13 +1,12 @@
-import { Mail, Github, Instagram, ArrowUpRight } from 'lucide-react';
+import { Github, Instagram, ArrowUpRight } from 'lucide-react';
 import { useMagnetic } from '../hooks/useMagnetic';
 
 const SOCIALS = [
-  { href: 'mailto:teomeehua@gmail.com', label: 'Email', icon: Mail, external: false },
   { href: 'https://github.com/HaydenHuan03', label: 'GitHub', icon: Github, external: true },
   { href: 'https://www.instagram.com/hayden_1729/', label: 'Instagram', icon: Instagram, external: true },
 ] as const;
 
-function SocialLink({ href, label, icon: Icon, external }: (typeof SOCIALS)[number]) {
+function SocialLink({ href, label, icon: Icon, external, index }: (typeof SOCIALS)[number] & { index: number }) {
   const magnetic = useMagnetic<HTMLAnchorElement>(0.35);
   return (
     <a
@@ -17,10 +16,11 @@ function SocialLink({ href, label, icon: Icon, external }: (typeof SOCIALS)[numb
       href={href}
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
-      aria-label={label}
-      className="magnetic flex items-center justify-center w-11 h-11 rounded-full border border-stone-700 text-stone-400 hover:text-stone-50 hover:border-stone-500 transition-colors"
+      style={{ animationDelay: `${index * 0.4}s` }}
+      className="magnetic float inline-flex items-center gap-2 min-h-11 px-5 rounded-full bg-stone-50 text-sm font-medium text-stone-900 shadow-lg shadow-black/30 hover:bg-white hover:text-accent"
     >
-      <Icon size={18} />
+      <Icon size={16} />
+      {label}
     </a>
   );
 }
@@ -46,9 +46,9 @@ export default function Footer() {
               <ArrowUpRight size={28} className="text-accent flex-shrink-0" />
             </a>
           </div>
-          <div className="flex items-center gap-3">
-            {SOCIALS.map((s) => (
-              <SocialLink key={s.label} {...s} />
+          <div className="flex flex-wrap items-center gap-3">
+            {SOCIALS.map((s, i) => (
+              <SocialLink key={s.label} {...s} index={i} />
             ))}
           </div>
         </div>

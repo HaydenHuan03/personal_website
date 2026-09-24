@@ -21,7 +21,7 @@ const REPO_URL = 'https://github.com/HaydenHuan03/Leetcode';
 const PROFILE_URL = 'https://leetcode.com/u/teomeehua/';
 
 const BUTTON =
-  'inline-flex items-center gap-2 px-5 py-2.5 border border-stone-300 rounded-md hover:bg-stone-200 transition-colors font-medium text-sm text-stone-900';
+  'inline-flex items-center gap-2 px-5 py-2.5 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50';
 
 export default function LeetCodePage() {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
@@ -41,7 +41,7 @@ export default function LeetCodePage() {
       <Navbar />
       <main id="main-content" className="max-w-4xl mx-auto px-6 md:px-12 pb-24 pt-12 md:pt-20">
         <header className="mb-10 text-center animate-[fadeInUp_0.5s_ease-out]">
-          <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 mb-4 leading-[1.1] text-balance">
+          <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 dark:text-stone-50 mb-4 leading-[1.1] text-balance">
             LeetCode Solutions
           </h1>
           <div className="flex flex-wrap justify-center gap-3 mt-6">
@@ -55,9 +55,9 @@ export default function LeetCodePage() {
         </header>
 
         {PROBLEMS.length === 0 ? (
-          <p className="text-stone-500">
+          <p className="text-stone-500 dark:text-stone-400">
             Solutions are temporarily unavailable. Browse them directly on{' '}
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-stone-900">
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-stone-900 dark:hover:text-stone-50">
               GitHub
             </a>
             .
@@ -73,20 +73,20 @@ export default function LeetCodePage() {
             />
 
             {groups.length === 0 ? (
-              <p className="mt-12 text-stone-500">
+              <p className="mt-12 text-stone-500 dark:text-stone-400">
                 No problems match.{' '}
-                <button type="button" onClick={() => setFilters(EMPTY_FILTERS)} className="underline hover:text-stone-900">
+                <button type="button" onClick={() => setFilters(EMPTY_FILTERS)} className="underline hover:text-stone-900 dark:hover:text-stone-50">
                   Clear filters
                 </button>
               </p>
             ) : (
               groups.map((group) => (
                 <section key={group.topic} className="mt-12">
-                  <h2 className="flex items-baseline gap-3 text-2xl font-heading font-semibold text-stone-900 mb-2">
+                  <h2 className="flex items-baseline gap-3 text-2xl font-heading font-semibold text-stone-900 dark:text-stone-50 mb-2">
                     {group.topic}
-                    <span className="text-sm font-sans font-normal text-stone-400 tabular-nums">{group.problems.length}</span>
+                    <span className="text-sm font-sans font-normal text-stone-400 dark:text-stone-500 tabular-nums">{group.problems.length}</span>
                   </h2>
-                  <ul className="border-t border-stone-200">
+                  <ul className="border-t border-stone-200 dark:border-stone-800">
                     {group.problems.map((p) => (
                       <ProblemRow key={p.id} problem={p} />
                     ))}

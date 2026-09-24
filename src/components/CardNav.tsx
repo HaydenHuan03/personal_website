@@ -27,6 +27,8 @@ export interface CardNavProps {
   ease?: string;
   baseColor?: string;
   menuColor?: string;
+  /** Controls at the right end of the bar, such as the theme toggle. */
+  actions?: React.ReactNode;
 }
 
 /** How far down the page the bar starts tucking away on a downward scroll. */
@@ -44,7 +46,8 @@ const CardNav: React.FC<CardNavProps> = ({
   className = '',
   ease = 'power3.out',
   baseColor = '#fff',
-  menuColor
+  menuColor,
+  actions
 }) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -224,7 +227,7 @@ const CardNav: React.FC<CardNavProps> = ({
         ref={scrimRef}
         aria-hidden="true"
         onClick={closeMenu}
-        className={`card-nav-scrim fixed inset-0 z-[98] bg-stone-50/40 backdrop-blur-md ${
+        className={`card-nav-scrim fixed inset-0 z-[98] bg-stone-50/40 dark:bg-stone-950/40 backdrop-blur-md ${
           isExpanded ? 'visible pointer-events-auto' : 'invisible pointer-events-none'
         }`}
         style={{ opacity: 0 }}
@@ -281,6 +284,8 @@ const CardNav: React.FC<CardNavProps> = ({
                 {currentLabel}
               </span>
             )}
+
+            {actions}
           </div>
 
           <div
