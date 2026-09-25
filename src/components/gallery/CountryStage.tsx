@@ -1,4 +1,4 @@
-import { lazy, Suspense, type CSSProperties } from 'react';
+import { lazy, Suspense, type CSSProperties, type RefObject } from 'react';
 import { useMounted } from '../../hooks/useMounted';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
@@ -16,6 +16,8 @@ export interface CountryStageProps {
   direction: 'in' | 'out';
   /** Fired once the scene has everything it needs to be shown. */
   onReady?: () => void;
+  /** Camera draw-back as the page scrolls towards the photos; see CountryScene. */
+  recede?: RefObject<number>;
   className?: string;
   style?: CSSProperties;
 }
@@ -28,6 +30,7 @@ export default function CountryStage({
   active,
   direction,
   onReady,
+  recede,
   className = '',
   style,
 }: CountryStageProps) {
@@ -47,6 +50,7 @@ export default function CountryStage({
           active={active}
           direction={direction}
           onReady={onReady}
+          recede={recede}
         />
       </Suspense>
     </div>

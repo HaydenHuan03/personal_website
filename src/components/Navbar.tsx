@@ -52,7 +52,7 @@ function currentLabel(pathname: string): string | undefined {
   return undefined;
 }
 
-export default function Navbar() {
+export default function Navbar({ floating = false }: { floating?: boolean }) {
   const { pathname } = useLocation();
 
   return (
@@ -62,6 +62,7 @@ export default function Navbar() {
       baseColor="var(--nav-base)"
       menuColor="var(--nav-menu)"
       actions={<ThemeToggle />}
+      floating={floating}
     />
   );
 }

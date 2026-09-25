@@ -29,6 +29,8 @@ export interface CardNavProps {
   menuColor?: string;
   /** Controls at the right end of the bar, such as the theme toggle. */
   actions?: React.ReactNode;
+  /** Take no space in the page, so the content starts under the bar. */
+  floating?: boolean;
 }
 
 /** How far down the page the bar starts tucking away on a downward scroll. */
@@ -47,7 +49,8 @@ const CardNav: React.FC<CardNavProps> = ({
   ease = 'power3.out',
   baseColor = '#fff',
   menuColor,
-  actions
+  actions,
+  floating = false
 }) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -234,7 +237,9 @@ const CardNav: React.FC<CardNavProps> = ({
       />
 
       <div
-        className={`card-nav-container sticky top-4 z-[99] mx-auto mt-[1.2em] md:mt-[2em] w-[90%] max-w-[800px] transition-transform ${
+        className={`card-nav-container sticky top-4 z-[99] mx-auto mt-[1.2em] md:mt-[2em] ${
+          floating ? 'mb-[calc(-60px-1.2em)] md:mb-[calc(-60px-2em)]' : ''
+        } w-[90%] max-w-[800px] transition-transform ${
           reducedMotion ? 'duration-0' : 'duration-300'
         } ease-out ${hidden ? '-translate-y-[calc(100%+1.5rem)]' : 'translate-y-0'} ${className}`}
         onFocusCapture={() => setScrolledPast(false)}

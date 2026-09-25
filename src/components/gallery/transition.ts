@@ -27,7 +27,7 @@ export const CROSSFADE_MS = 420;
 export const READY_CAP_MS = 700;
 
 /** How close the dive gets, as a fraction of the fitted camera distance. */
-export const ZOOM_TO = 0.42;
+export const ZOOM_TO = 0.325;
 
 /**
  * How close it is allowed to creep while waiting for the stage.
@@ -36,4 +36,4 @@ export const ZOOM_TO = 0.42;
  * hands over reads as a stall, however short the wait. It keeps going at the
  * speed it had, and this is where it finally runs out of room.
  */
-export const ZOOM_FLOOR = 0.3;
+export const ZOOM_FLOOR = 0.232;

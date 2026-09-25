@@ -24,6 +24,8 @@ export interface GalleryPhoto {
   width: number;
   height: number;
   caption: string;
+  /** Describes the photo for screen readers; the caption stands in when absent. */
+  alt?: string;
 }
 
 export interface GalleryCountry {

@@ -35,8 +35,13 @@ const CLICK_SLOP = 6;
 const DRAG_SPEED = 0.006;
 /** Stop short of the poles, so the globe cannot be tumbled upside down. */
 const MAX_PITCH = 1.1;
-/** Fraction of the frame left as space around the globe. */
-const FIT_MARGIN = 1.16;
+/**
+ * Fraction of the frame left as space around the globe. The canvas runs up
+ * under the page's heading, so this keeps the sphere clear of it; ZOOM_TO and
+ * ZOOM_FLOOR are scaled to match, so the dive still ends where the country
+ * stage begins.
+ */
+const FIT_MARGIN = 1.5;
 /** How far a label's country may turn towards the limb before it hides:
  * the cosine between the surface normal and the view direction. */
 const LABEL_MIN_FACING = 0.2;

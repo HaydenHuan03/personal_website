@@ -39,6 +39,17 @@ export function largestRing(rings: readonly (readonly Point[])[]): readonly Poin
   return best;
 }
 
+/**
+ * Indices of the rings whose area is at least `minShare` of the largest one:
+ * the islands big enough to read as land rather than a speck floating off the
+ * coast.
+ */
+export function significantRings(rings: readonly (readonly Point[])[], minShare: number): number[] {
+  const areas = rings.map((ring) => (ring.length < 3 ? 0 : Math.abs(ringArea(ring))));
+  const floor = Math.max(0, ...areas) * minShare;
+  return areas.flatMap((area, i) => (area > 0 && area >= floor ? [i] : []));
+}
+
 export function pointInRing(p: Point, ring: readonly Point[]): boolean {
   let inside = false;
   for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {

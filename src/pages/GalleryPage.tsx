@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useSearchParams } from 'react-router';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import WorldMap, { WORLD_MAP } from '../components/gallery/WorldMap';
@@ -8,6 +8,8 @@ import LandmarkMarker from '../components/gallery/LandmarkMarker';
 import CountryHeading from '../components/gallery/CountryHeading';
 import CountryStage, { preloadCountryScene } from '../components/gallery/CountryStage';
 import Globe from '../components/gallery/Globe';
+import PhotoStream from '../components/gallery/PhotoStream';
+import { useStageHandover } from '../components/gallery/useStageHandover';
 import { preloadLandmark } from '../components/gallery/LandmarkCanvas';
 import { CLIMB_MS, CROSSFADE_MS, DIVE_MS, READY_CAP_MS } from '../components/gallery/transition';
 import { useHoverCapable } from '../hooks/useHoverCapable';
@@ -17,11 +19,13 @@ import { findCountry, unionBbox } from '../utils/gallery';
 
 const VISITED_IDS: ReadonlySet<string> = new Set(GALLERY.countries.map((c) => c.id));
 
-const COLUMN = 'max-w-6xl mx-auto px-6 md:px-12';
+// The whole screen, with the nav floating over it. Sticky, so the photos
+// slide up over it rather than pushing it away.
+const STAGE = 'sticky top-0 h-svh min-h-[32rem] overflow-hidden';
 
-// Short enough to sit under the header without scrolling, and on a phone no
-// taller than the globe, which is sized by the width.
-const SCENE_BOX = 'relative w-full h-[max(20rem,min(72vh,46rem,calc(100svh-20rem),100vw))]';
+// Where both canvases sit: the same box, so the globe's dive hands over to
+// the country at the same size, and below the nav so the spire is not hidden.
+const SCENE = 'absolute inset-x-0 top-28 bottom-0';
 
 const NARROW_ASPECT = 0.78;
 
@@ -58,6 +62,13 @@ export default function GalleryPage() {
   const frameRef = useRef<HTMLDivElement>(null);
 
   const incomingReady = useRef(false);
+  const stageRef = useRef<HTMLElement>(null);
+  const sheetRef = useRef<HTMLElement>(null);
+  const recedeRef = useRef(0);
+  const [stagePassed, setStagePassed] = useState(false);
+  // Built behind the end of the photos, so leaving from there finds it ready.
+  const [globeWarm, setGlobeWarm] = useState(false);
+  const warmGlobe = useCallback(() => setGlobeWarm(true), []);
 
   // The URL is the source of truth for which country is open, so browser
   // Back/Forward moves the view with it. setSearchParams lands a render or so
@@ -72,7 +83,9 @@ export default function GalleryPage() {
       : (phase === 'country' || phase === 'toMap') && 'map';
     if (!settled) return;
     setCrossfade(false);
+    setGlobeWarm(false);
     setPhase(settled);
+    window.scrollTo(0, 0);
   }, [selectedId, phase]);
 
   useEffect(() => {
@@ -101,10 +114,14 @@ export default function GalleryPage() {
       setSearchParams({});
       return;
     }
+    window.scrollTo(0, 0);
     incomingReady.current = false;
     setCrossfade(false);
     setPhase('toMap');
   }, [reducedMotion, setSearchParams]);
+
+  // From the end of the photos the building is far behind, so there is no climb out of it.
+  const leave = useCallback(() => setSearchParams({}), [setSearchParams]);
 
   useEffect(() => {
     if (phase !== 'toCountry' && phase !== 'toMap') return;
@@ -185,131 +202,145 @@ export default function GalleryPage() {
     phase === 'map' || (phase === 'toCountry' && !crossfade) || (phase === 'toMap' && crossfade);
   const countryVisible =
     phase === 'country' || (phase === 'toCountry' && crossfade) || (phase === 'toMap' && !crossfade);
-  const globeMounted = phase !== 'country';
+  const headerVisible = phase === 'map' || (phase === 'toMap' && crossfade);
+  const globeMounted = phase !== 'country' || globeWarm;
   const countryMounted = (phase !== 'map' || stageWarm) && Boolean(stageCountry && stageShape);
 
   const onIncomingReady = useCallback(() => {
     incomingReady.current = true;
   }, []);
 
+  const showPhotos = phase === 'country' && Boolean(selected?.photos.length);
+  useStageHandover({
+    enabled: showPhotos,
+    stage: stageRef,
+    sheet: sheetRef,
+    recede: recedeRef,
+    onPassed: setStagePassed,
+  });
+
   return (
     <>
-      <Navbar />
-      <main id="main-content" className="pb-24 pt-12 md:pt-20">
-        <div className={COLUMN}>
-          <div
-            className={`grid transition-[grid-template-rows,opacity] ease-out motion-reduce:transition-none ${
-              globeVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-            }`}
+      <Navbar floating />
+      <main id="main-content">
+        <section ref={stageRef} aria-label="Gallery" className={STAGE}>
+          {globeMounted && (
+            <Globe
+              visitedIds={VISITED_IDS}
+              hoveredId={hoveredId}
+              onHover={setHoveredId}
+              onSelect={select}
+              resumeId={phase === 'toMap' ? (selected?.id ?? null) : null}
+              pullOut={phase === 'toMap' && crossfade}
+              diveId={phase === 'toCountry' ? selectedId : null}
+              alwaysLabel={!hoverCapable}
+              onReady={phase === 'toMap' ? onIncomingReady : undefined}
+              // Softened at the top, where the dive fills the box right up to its edge.
+              className={`${SCENE} [mask-image:linear-gradient(to_bottom,transparent,#000_4rem)] ${fade(globeVisible)}`}
+              style={FADE_STYLE}
+              fallback={
+                <div ref={frameRef} className="relative map-frame" style={NARROW_STYLE}>
+                  <WorldMap
+                    ref={svgRef}
+                    visitedIds={VISITED_IDS}
+                    selectedId={null}
+                    hoveredId={hoveredId}
+                    onHover={setHoveredId}
+                    onSelect={select}
+                  />
+                  {hovered && hoverCapable && (
+                    <LandmarkMarker key={hovered.id} country={hovered} svgRef={svgRef} />
+                  )}
+                </div>
+              }
+            />
+          )}
+          <header
+            className={`pointer-events-none absolute inset-x-0 top-28 px-6 text-center animate-[fadeInUp_0.5s_ease-out] ${fade(headerVisible)}`}
             style={FADE_STYLE}
-            inert={!globeVisible}
+            inert={!headerVisible}
           >
-            <header className="min-h-0 overflow-hidden pb-6 text-center animate-[fadeInUp_0.5s_ease-out]">
-              <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 dark:text-stone-50 mb-4 leading-[1.1] text-balance">
-                The places I have been to.
-              </h1>
-              <p className="text-lg text-stone-600 dark:text-stone-400 leading-relaxed font-light text-balance">
-                Where my memories live
-              </p>
-            </header>
-          </div>
-          <div className={SCENE_BOX}>
-            {globeMounted && (
-              <Globe
-                visitedIds={VISITED_IDS}
-                hoveredId={hoveredId}
-                onHover={setHoveredId}
-                onSelect={select}
-                resumeId={phase === 'toMap' ? (selected?.id ?? null) : null}
-                pullOut={phase === 'toMap' && crossfade}
-                diveId={phase === 'toCountry' ? selectedId : null}
-                alwaysLabel={!hoverCapable}
-                onReady={phase === 'toMap' ? onIncomingReady : undefined}
-                className={`absolute inset-0 ${fade(globeVisible)}`}
-                style={FADE_STYLE}
-                fallback={
-                  <div ref={frameRef} className="relative map-frame" style={NARROW_STYLE}>
-                    <WorldMap
-                      ref={svgRef}
-                      visitedIds={VISITED_IDS}
-                      selectedId={null}
-                      hoveredId={hoveredId}
-                      onHover={setHoveredId}
-                      onSelect={select}
-                    />
-                    {hovered && hoverCapable && (
-                      <LandmarkMarker key={hovered.id} country={hovered} svgRef={svgRef} />
-                    )}
-                  </div>
-                }
+            <h1 className="text-4xl md:text-5xl font-heading font-semibold text-stone-900 dark:text-stone-50 mb-4 leading-[1.1] text-balance">
+              The places I have been to.
+            </h1>
+            <p className="text-lg text-stone-600 dark:text-stone-400 leading-relaxed font-light text-balance">
+              Where my memories live
+            </p>
+          </header>
+          <ul aria-label="Visited countries" className="sr-only" inert={!globeVisible}>
+            {GALLERY.countries.map((c) => (
+              <li key={c.id}>
+                <button
+                  type="button"
+                  onClick={() => select(c.id)}
+                  onFocus={() => setHoveredId(c.id)}
+                  onBlur={() => setHoveredId(null)}
+                >
+                  Open {c.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          {/* Before the stage, so the canvas draws the landmark over the text. */}
+          {selected && (
+            <div
+              className={`absolute inset-0 overflow-hidden pointer-events-none ${fade(countryVisible)}`}
+              style={FADE_STYLE}
+              inert={!countryVisible}
+            >
+              <CountryHeading
+                key={`${selected.id}-heading`}
+                country={selected}
+                active={countryVisible}
               />
-            )}
-            <ul aria-label="Visited countries" className="sr-only" inert={!globeVisible}>
-              {GALLERY.countries.map((c) => (
-                <li key={c.id}>
-                  <button
-                    type="button"
-                    onClick={() => select(c.id)}
-                    onFocus={() => setHoveredId(c.id)}
-                    onBlur={() => setHoveredId(null)}
-                  >
-                    Open {c.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-            {countryMounted && stageCountry && stageShape && (
+            </div>
+          )}
+          {countryMounted && stageCountry && stageShape && (
+            <div data-handover="model" className="pointer-events-none absolute inset-0">
               <CountryStage
                 key={stageCountry.id}
                 d={stageShape.d}
                 centroid={stageShape.centroid}
                 model={stageCountry.landmark.model}
-                active={phase === 'toMap' ? true : countryVisible}
+                active={phase === 'toMap' ? true : countryVisible && !stagePassed}
                 direction={phase === 'toMap' ? 'out' : 'in'}
                 onReady={phase === 'toCountry' ? onIncomingReady : undefined}
-                className={`absolute inset-0 ${fade(countryVisible)}`}
+                recede={recedeRef}
+                className={`${SCENE} ${fade(countryVisible)}`}
                 style={FADE_STYLE}
               />
-            )}
+            </div>
+          )}
 
-            {selected && (
-              <div
-                className={`absolute inset-0 pointer-events-none ${fade(countryVisible)}`}
-                style={FADE_STYLE}
-                inert={!countryVisible}
+          {showPhotos && (
+            <div data-handover="dim" className="pointer-events-none absolute inset-0 bg-stone-950 opacity-0" />
+          )}
+
+          {selected && (
+            <div
+              className={`absolute inset-0 pointer-events-none ${fade(countryVisible)}`}
+              style={FADE_STYLE}
+              inert={!countryVisible}
+            >
+              <button
+                type="button"
+                data-handover="fade"
+                onClick={back}
+                className="pointer-events-auto absolute top-28 left-6 md:left-12 inline-flex items-center gap-2 rounded-full bg-white/70 dark:bg-stone-900/70 backdrop-blur min-h-11 px-4 text-sm font-medium text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors"
               >
-                <button
-                  type="button"
-                  onClick={back}
-                  className="pointer-events-auto absolute top-0 left-0 inline-flex items-center gap-2 rounded-full bg-white/70 dark:bg-stone-900/70 backdrop-blur min-h-11 px-4 text-sm font-medium text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors"
-                >
-                  <ArrowLeft size={16} aria-hidden="true" /> Back to map
-                </button>
-
-                <div className="absolute left-0 bottom-0 max-w-sm text-left">
-                  <CountryHeading
-                    key={`${selected.id}-heading`}
-                    country={selected}
-                    active={countryVisible}
-                  />
-                  <p className="mt-3 text-xs text-stone-500 dark:text-stone-400">
-                    Model: &ldquo;{selected.landmark.name}&rdquo; by{' '}
-                    {selected.landmark.attribution.author},{' '}
-                    <a
-                      href={selected.landmark.attribution.source}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="pointer-events-auto inline-flex items-center gap-1 underline hover:text-stone-900 dark:hover:text-stone-50"
-                    >
-                      {selected.landmark.attribution.license}{' '}
-                      <ExternalLink size={10} aria-hidden="true" />
-                    </a>
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+                <ArrowLeft size={16} aria-hidden="true" /> Back to map
+              </button>
+            </div>
+          )}
+        </section>
+        {showPhotos && selected && (
+          <>
+            {/* Scroll room for the name to zoom through before the photos arrive. */}
+            <div aria-hidden="true" className="motion-safe:h-[40svh]" />
+            <PhotoStream key={selected.id} ref={sheetRef} country={selected} onBack={leave} onEnd={warmGlobe} />
+          </>
+        )}
       </main>
       <Footer />
     </>

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 import { Box2, BufferAttribute, ExtrudeGeometry, Vector2 } from 'three';
 import { createCliffTexture, createLandTexture } from './terrain';
-import { landAnchor, largestRing } from '../../utils/landAnchor';
+import { landAnchor, largestRing, significantRings } from '../../utils/landAnchor';
 
 interface CountryGroundProps {
   /** SVG path data for the country outline, in the world map's projected space. */
@@ -24,6 +24,8 @@ const THICKNESS = 0.055;
 /** Height of the slab's top face for a given `size`, i.e. where things stand. */
 export const slabTop = (size: number) => size * THICKNESS;
 
+const MIN_ISLAND_SHARE = 0.01;
+
 /** How often the strata repeat around the slab's perimeter. */
 const CLIFF_REPEAT = 6;
 
@@ -38,7 +40,14 @@ export default function CountryGround({ d, centroid, size = 2.4 }: CountryGround
     const parsed = new SVGLoader().parse(
       `<svg xmlns="http://www.w3.org/2000/svg"><path d="${d}"/></svg>`
     );
-    const shapes = parsed.paths.flatMap((path) => path.toShapes());
+    // Islands under 1% of the mainland, like Penghu, read as a stray block
+    // floating beside the landmark at this camera angle.
+    const allShapes = parsed.paths.flatMap((path) => path.toShapes());
+    const kept = significantRings(
+      allShapes.map((shape) => shape.getPoints(12)),
+      MIN_ISLAND_SHARE
+    );
+    const shapes = kept.map((i) => allShapes[i]);
 
     // Measure in the source coordinates so the extrusion depth can be a
     // fraction of the country's own size rather than an absolute guess, and so

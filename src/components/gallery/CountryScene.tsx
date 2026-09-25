@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef, type RefObject } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { Camera } from 'three';
 import './quietThree';
@@ -25,6 +25,8 @@ interface CountrySceneProps {
   direction: 'in' | 'out';
   /** Fired once the slab, its textures and the model are all live. */
   onReady?: () => void;
+  /** 0 at rest, 1 drawn back and up; driven by scrolling into the photos. */
+  recede?: RefObject<number>;
 }
 
 /** Longest horizontal dimension of the country slab, in scene units. */
@@ -51,6 +53,8 @@ const TARGET: [number, number, number] = [0, 0.6, 0];
  */
 const START = { radius: 2.0, elevation: 1.5, azimuth: 0.5 };
 const REST = { radius: 4.35, elevation: 0.46, azimuth: 0.5 };
+/** Where the camera draws back to as the name zooms past it towards the photos. */
+const RECEDED = { radius: 6.8, elevation: 0.95 };
 /** Slow orbit around the rest position: motion parallax is what sells depth. */
 const DRIFT = { amplitude: 0.13, speed: 0.22 };
 /** The descent, in seconds. The climb back out is CLIMB_MS, i.e. quicker. */
@@ -75,10 +79,12 @@ function CameraRig({
   reducedMotion,
   active,
   direction,
+  recede,
 }: {
   reducedMotion: boolean;
   active: boolean;
   direction: 'in' | 'out';
+  recede?: RefObject<number>;
 }) {
   const { camera } = useThree();
   // 0 is overhead, 1 is the resting view. The climb out runs the same number
@@ -104,10 +110,11 @@ function CameraRig({
     // reduced motion - there the view is simply static.
     const drift =
       reducedMotion || p < 1 ? 0 : Math.sin(state.clock.elapsedTime * DRIFT.speed) * DRIFT.amplitude;
+    const away = recede?.current ?? 0;
     placeCamera(
       camera,
-      lerp(START.radius, REST.radius),
-      lerp(START.elevation, REST.elevation),
+      lerp(START.radius, REST.radius) + (RECEDED.radius - REST.radius) * away,
+      lerp(START.elevation, REST.elevation) + (RECEDED.elevation - REST.elevation) * away,
       lerp(START.azimuth, REST.azimuth) + drift
     );
   });
@@ -139,6 +146,7 @@ export default function CountryScene({
   active,
   direction,
   onReady,
+  recede,
 }: CountrySceneProps) {
   const top = slabTop(SIZE);
 
@@ -163,7 +171,7 @@ export default function CountryScene({
         placeCamera(camera, from.radius, from.elevation, from.azimuth);
       }}
     >
-      <CameraRig reducedMotion={reducedMotion} active={active} direction={direction} />
+      <CameraRig reducedMotion={reducedMotion} active={active} direction={direction} recede={recede} />
       <SceneEnvironment />
       <ambientLight intensity={0.35} />
       {/* The key light casts: the tower's shadow falling across the country is

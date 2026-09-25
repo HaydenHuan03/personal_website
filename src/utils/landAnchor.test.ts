@@ -7,6 +7,7 @@ import {
   ringArea,
   ringCentroid,
   signedDistance,
+  significantRings,
   type Point,
 } from './landAnchor';
 
@@ -93,5 +94,17 @@ describe('landAnchor', () => {
 
   test('returns null without a usable ring', () => {
     expect(landAnchor([])).toBeNull();
+  });
+});
+
+describe('significantRings', () => {
+  test('keeps rings at least the given share of the largest one', () => {
+    const rings = [square(0, 0, 10), square(50, 0, 1), square(80, 0, 0.5)];
+    expect(significantRings(rings, 0.01)).toEqual([0, 1]);
+  });
+
+  test('skips degenerate rings and handles none', () => {
+    expect(significantRings([square(0, 0, 10), [{ x: 0, y: 0 }]], 0.01)).toEqual([0]);
+    expect(significantRings([], 0.01)).toEqual([]);
   });
 });

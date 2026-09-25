@@ -7,6 +7,7 @@
 @theme {
   --font-sans: 'Geist', sans-serif;
   --font-heading: 'Outfit', sans-serif;
+  --font-hand: 'Caveat', cursive;
   --color-accent: #3f7d78;
   --color-accent-soft: #dcebe9;
   --color-accent-strong: #2a5854;
@@ -95,6 +96,21 @@ html.dark {
 
 /* Idle bob for the footer pills. Animates `translate`, not `transform`, so it
    stacks with the inline transform useMagnetic() writes instead of fighting it. */
+@keyframes scrollCue {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes bubbleFloat {
+  50% {
+    transform: translateY(-0.75rem);
+  }
+}
+
 @keyframes float {
   0%, 100% {
     translate: 0 0;
