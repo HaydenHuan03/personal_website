@@ -1,37 +1,33 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import FilterBar from '../components/leetcode/FilterBar';
-import ProblemRow from '../components/leetcode/ProblemRow';
-import type { SolutionsSnapshot } from '../types/leetcode';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import FilterBar from '@/components/leetcode/FilterBar';
+import ProblemRow from '@/components/leetcode/ProblemRow';
+import type { SolutionsSnapshot } from '@/types/leetcode';
 import {
   EMPTY_FILTERS,
   groupByPrimaryTopic,
   matchesFilters,
+  PROFILE_URL,
+  REPO_URL,
   topicCounts,
   type Filters,
-} from '../utils/leetcodeSolutions';
-import snapshotJson from '../data/leetcode-solutions.json';
+} from '@/lib/leetcode';
+import snapshotJson from '@/data/leetcode-solutions.json';
+import type { Route } from './+types/LeetCodePage';
 
 const snapshot = snapshotJson as unknown as SolutionsSnapshot;
 const PROBLEMS = snapshot.problems;
 const TOPICS = topicCounts(PROBLEMS);
-const REPO_URL = 'https://github.com/HaydenHuan03/Leetcode';
-const PROFILE_URL = 'https://leetcode.com/u/teomeehua/';
 
 const BUTTON =
   'inline-flex items-center gap-2 px-5 py-2.5 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50';
 
+export const meta: Route.MetaFunction = () => [{ title: 'LeetCode Solutions - Hayden Huan' }];
+
 export default function LeetCodePage() {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
-
-  useEffect(() => {
-    document.title = 'LeetCode Solutions - Hayden Huan';
-    return () => {
-      document.title = 'Hayden Huan - Backend Engineer & Infrastructure Developer';
-    };
-  }, []);
 
   const visible = useMemo(() => PROBLEMS.filter((p) => matchesFilters(p, filters)), [filters]);
   const groups = useMemo(() => groupByPrimaryTopic(visible), [visible]);

@@ -5,7 +5,7 @@ import csharp from 'react-syntax-highlighter/dist/esm/languages/prism/csharp';
 import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
 import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
 import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
-import type { Language } from '../../types/leetcode';
+import type { Language } from '@/types/leetcode';
 
 SyntaxHighlighter.registerLanguage('cpp', cpp);
 SyntaxHighlighter.registerLanguage('csharp', csharp);

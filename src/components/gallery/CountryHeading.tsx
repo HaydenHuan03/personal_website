@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ExternalLink } from 'lucide-react';
-import type { GalleryCountry } from '../../types/gallery';
-import { formatVisitedAt } from '../../utils/gallery';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
+import type { GalleryCountry } from '@/types/gallery';
+import { formatVisitedAt } from '@/lib/gallery';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export interface CountryHeadingProps {
   country: GalleryCountry;
@@ -55,8 +55,8 @@ export default function CountryHeading({ country, active = true }: CountryHeadin
     const name = root.querySelector<HTMLElement>('[data-name]');
     const rise = root.querySelector<HTMLElement>('[data-name-rise]');
     const meta = root.querySelectorAll<HTMLElement>('[data-meta]');
-    const targets = [name, rise, ...meta].filter(Boolean) as HTMLElement[];
     if (!name || !rise) return;
+    const targets = [name, rise, ...meta];
 
     if (reducedMotion) {
       gsap.set(targets, { autoAlpha: 1 });
@@ -65,8 +65,7 @@ export default function CountryHeading({ country, active = true }: CountryHeadin
       };
     }
 
-    // The word rises whole from behind its own line box: splitting it into
-    // letters would drop the kerning its edge-to-edge fit is measured with.
+    // The word rises as a whole; splitting it into letters would break its spacing.
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.set(name, { autoAlpha: 1 })
       .fromTo(rise, { yPercent: 100 }, { yPercent: 0, duration: 1.1, ease: 'expo.out' })

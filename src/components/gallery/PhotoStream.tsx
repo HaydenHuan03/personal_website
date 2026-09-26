@@ -2,40 +2,41 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type Ref } fr
 import { gsap } from 'gsap';
 import { ArrowLeft } from 'lucide-react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import type { GalleryCountry, GalleryPhoto } from '../../types/gallery';
-import { bubbleSpots, formatVisitedAt, photoAlt, photoLayout } from '../../utils/gallery';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
+import type { GalleryCountry, GalleryPhoto } from '@/types/gallery';
+import { bubbleSpots, formatVisitedAt, photoAlt, photoLayout } from '@/lib/gallery';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import Particles from '@/components/Particles';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** The manifest's thumbnail size: its long edge, in pixels. */
+/** Long edge of a thumbnail, in pixels. */
 const THUMB_EDGE = 480;
 
 /**
- * A photo's flight, in equal fifths of its time: out of the depths, settling
- * almost centred, held there, sliding off towards its wall, then past the
- * viewer. It stays opaque until it is mostly off to the side, so the next
- * photo, already settling behind it, is covered cleanly rather than showing
- * through.
+ * Keyframes for each photo's flight, in five equal steps: come out of the
+ * distance, settle near the centre, hold, slide to the side, fly past.
  */
 const FLIGHT_Z = [-2600, -900, -150, 0, 80, 700];
-/** Sideways, as a share of the photo's own width. */
+/** Sideways offset, as a percentage of the photo's width. */
 const FLIGHT_SIDE = [70, 35, 8, 4, 30, 110];
-/** Turned in towards the tunnel's centre far away, straight on once settled. */
+/** Turn angle: angled in when far away, straight once settled. */
 const FLIGHT_TURN = [28, 14, 2, 0, 0, 0];
 const FLIGHT_ALPHA = [0, 1, 1, 1, 1, 0];
-/** Where in its flight a photo takes focus: settling, with the one before it slid off. */
+/** Point in a photo's flight where it becomes the photo in focus. */
 const FOCUS_FROM = 0.45;
-/** Timeline gap between one photo setting off and the next, as a share of a photo's flight. */
+/** Gap between one photo starting and the next, as a share of a flight. */
 const STAGGER = 0.45;
-/** How long the ending holds, in photo flights, before the tunnel lets go. */
+/** How long the ending stays pinned, in flights. */
 const TAIL = 0.6;
-/** Scrolling, in svh, between one photo setting off and the next. */
+/** Scroll distance per photo, in svh. */
 const SCROLL_PER_PHOTO = 50;
-/** Scrolling back up this far, in pixels, after the bubble pops gathers the photos back into it. */
+/** Scrolling back up this many pixels after the bubble pops gathers the photos again. */
 const RECOLLECT_AFTER = 40;
+/** How long each photo shows inside the big bubble, and its fade, in seconds. */
+const SLIDE_HOLD = 2.2;
+const SLIDE_FADE = 0.8;
 
-/** Written in by sweeping `--ink` from 0% to past 100%. */
+/** Text appears as `--ink` goes from 0% to past 100%. */
 const INK: CSSProperties = {
   maskImage: 'linear-gradient(90deg, #000 calc(var(--ink) - 10%), transparent var(--ink))',
 };
@@ -94,7 +95,7 @@ function PhotoFigure({
   );
 }
 
-/** Lights a round photo as a glass sphere: shaded away from the light, with a soap-film rim. */
+/** Makes a round photo look like a glass bubble: a highlight, shading and a rainbow rim. */
 function Glass() {
   return (
     <>
@@ -107,19 +108,16 @@ function Glass() {
 interface PhotoStreamProps {
   country: GalleryCountry;
   onBack: () => void;
-  /** Told once the ending comes into view. */
+  /** Called when the ending comes into view. */
   onEnd?: () => void;
   ref?: Ref<HTMLElement>;
 }
 
 /**
- * The country's photos as a dark tunnel: pinned to the screen while the page
- * scrolls, each photo in turn comes out of the depths from alternating sides,
- * settles into the middle to be looked at, then flies past. The screen behind
- * takes on the colours of the photo in focus. At the end a big bubble waits;
- * popping it scatters every photo as a small bubble around the handwritten
- * closing words. Reduced motion gets the photos as a still, zig-zagging grid
- * instead.
+ * The country's photos as a scroll-driven tunnel. Each photo flies in from
+ * alternating sides, pauses in the middle, then flies past, and the background
+ * takes its colours. At the end, popping a big bubble scatters the photos as
+ * small bubbles. With reduced motion it is a still grid instead.
  */
 export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStreamProps) {
   const reducedMotion = useReducedMotion();
@@ -133,6 +131,8 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
   const popRef = useRef<() => void>(undefined);
   const frontCanvas = useRef(0);
   const [focus, setFocus] = useState(0);
+  // Mount the particles on first reaching the ending, so WebGL isn't running during the photos.
+  const [reachedEnd, setReachedEnd] = useState(false);
   const layout = useMemo(() => photoLayout(country.photos), [country.photos]);
   const spots = useMemo(() => bubbleSpots(country.photos.length), [country.photos.length]);
   const total = country.photos.length;
@@ -214,6 +214,25 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
         { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' },
         '>-0.1'
       );
+      // Cycle the photos inside the big bubble. Later slides sit on top, so the
+      // next one fades in over the current, except on wrapping back to the first.
+      const slides = gsap.utils.toArray<HTMLElement>('[data-slide]', big);
+      let shown = 0;
+      const cycle = gsap
+        .delayedCall(SLIDE_HOLD, () => {
+          const prev = slides[shown];
+          shown = (shown + 1) % slides.length;
+          const next = slides[shown];
+          if (shown === 0) {
+            gsap.set(next, { opacity: 1 });
+            gsap.to(prev, { opacity: 0, duration: SLIDE_FADE });
+          } else {
+            gsap.to(next, { opacity: 1, duration: SLIDE_FADE, onComplete: () => gsap.set(prev, { opacity: 0 }) });
+          }
+          cycle.restart(true);
+        })
+        .pause();
+
       const recollect = () => burst.timeScale(2).reverse();
       popRef.current = () => {
         peak = window.scrollY;
@@ -241,8 +260,11 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
             focused = i;
             setFocus(i);
           }
+          const atEnd = tl.time() >= arriveAt;
+          if (slides.length > 1 && atEnd === cycle.paused()) cycle.paused(!atEnd);
           if (!ended && tl.time() >= arriveAt) {
             ended = true;
+            setReachedEnd(true);
             onEnd?.();
           }
           if (tl.time() < arriveAt && burst.progress() && !burst.reversed()) recollect();
@@ -282,6 +304,10 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
         .fromTo(ending, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15, ease: 'none' }, arriveAt)
         .fromTo(big, { scale: 0.6 }, { scale: 1, duration: 0.3, ease: 'power2.out' }, arriveAt)
         .set({}, {}, photosEnd + TAIL);
+      return () => {
+        gsap.killTweensOf(slides);
+        gsap.set(slides, { clearProps: 'opacity' });
+      };
     }, track);
     return () => {
       ctx.revert();
@@ -289,9 +315,8 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
     };
   }, [reducedMotion, country.id, total, onEnd]);
 
-  // Paints the photo in focus into a tiny canvas the browser stretches to fill
-  // the screen, which softens it into a wash of its colours without the cost
-  // of a live blur filter, then cross-fades it over the previous one.
+  // Background: draw the focused photo into a tiny canvas stretched to full
+  // screen (a cheap blur), then fade it in over the previous one.
   useEffect(() => {
     if (reducedMotion) return;
     const canvases = ambientRef.current?.querySelectorAll('canvas');
@@ -378,8 +403,7 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
             <div className="absolute inset-0 bg-stone-950/55 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgb(12_10_9/0.8)_100%)]" />
           </div>
 
-          {/* Its own layer, so the photos are drawn by depth rather than in page
-              order: overflow-hidden on the viewport would flatten them. */}
+          {/* Separate 3D layer so photos stack by depth, not page order. */}
           <div className="absolute inset-0 [transform-style:preserve-3d]">
             {country.photos.map((photo, i) => (
               <PhotoFigure
@@ -401,7 +425,7 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
             className="invisible absolute inset-x-6 md:inset-x-12 bottom-6 md:bottom-10 flex items-end justify-between gap-6"
           >
             <div className="min-w-0">
-              <h2 id="photos-heading" className="text-xs uppercase tracking-[0.2em] text-stone-400">
+              <h2 id="photos-heading" className="sr-only">
                 Photos &middot; {formatVisitedAt(country.visitedAt)}
               </h2>
               <p
@@ -417,6 +441,12 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
             </p>
           </div>
           <div ref={endingRef} className="invisible absolute inset-0 bg-stone-50 dark:bg-stone-950">
+            {reachedEnd && (
+              // White particles, inverted to black in light mode.
+              <div aria-hidden="true" className="absolute inset-0 invert dark:invert-0">
+                <Particles particleCount={150} alphaParticles />
+              </div>
+            )}
             <div aria-hidden="true" className="absolute inset-0">
               {country.photos.map((photo, i) => (
                 <div
@@ -466,22 +496,25 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
                   >
                     <span
                       data-pop-visual
-                      className="relative block size-[min(64vw,40svh)] overflow-hidden rounded-full shadow-[0_32px_80px_-24px_rgb(28_25_23/0.35)] dark:shadow-[0_32px_80px_-24px_rgb(0_0_0/0.7)]"
+                      className="relative block size-[min(64vw,40svh)] overflow-hidden rounded-full shadow-[0_32px_80px_-24px_rgb(28_25_23/0.35)] animate-[bubbleBreathe_4s_ease-in-out_infinite] dark:shadow-[0_32px_80px_-24px_rgb(0_0_0/0.7)]"
                     >
-                      <img
-                        src={first.src}
-                        srcSet={srcSet(first)}
-                        sizes="min(64vw, 40svh)"
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full scale-110 object-cover"
-                      />
+                      {country.photos.map((photo, i) => (
+                        <img
+                          key={photo.id}
+                          data-slide
+                          src={photo.src}
+                          srcSet={srcSet(photo)}
+                          sizes="min(64vw, 40svh)"
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          className={`absolute inset-0 h-full w-full scale-110 object-cover ${i === 0 ? '' : 'opacity-0'}`}
+                        />
+                      ))}
                       <Glass />
                     </span>
                     <span className="absolute left-1/2 top-full mt-6 -translate-x-1/2 whitespace-nowrap text-xs uppercase tracking-[0.2em] text-stone-500 dark:text-stone-300">
-                      <span className="pointer-coarse:hidden">Click</span>
-                      <span className="hidden pointer-coarse:inline">Tap</span> to open
+                      Pop me!
                     </span>
                   </button>
                 </div>

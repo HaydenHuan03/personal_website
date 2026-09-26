@@ -1,10 +1,9 @@
 import { useCallback, useRef } from 'react';
-import { isCoarsePointer, prefersReducedMotion } from '../utils/motion';
+import { isCoarsePointer, prefersReducedMotion } from '@/lib/motion';
 
 /**
- * Nudges an element toward the cursor while hovered, springing back on
- * leave. Pair with the `.magnetic` class in global.css for the transition.
- * No-ops on touch devices and when the user prefers reduced motion.
+ * Moves an element slightly toward the cursor, and back when it leaves. Use
+ * with the `.magnetic` class. Does nothing on touch screens or with reduced motion.
  */
 export function useMagnetic<T extends HTMLElement>(strength = 0.25) {
   const ref = useRef<T>(null);

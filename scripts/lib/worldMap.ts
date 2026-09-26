@@ -3,49 +3,22 @@ import type { GeoProjection } from 'd3-geo';
 import { feature } from 'topojson-client';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import type { Feature, FeatureCollection, Geometry } from 'geojson';
-
-export interface WorldMapCountry {
-  id: string;
-  name: string;
-  d: string;
-  centroid: [number, number];
-  bbox: [number, number, number, number];
-  /**
-   * Higher-resolution outline, emitted only for the ids passed in `detailIds`.
-   * The low-resolution `d` is fine at world scale but turns into a blob when a
-   * country is enlarged on its own, which is what visited countries do.
-   */
-  detailD?: string;
-  /** Centroid/bbox of `detailD`, which differs from the coarse outline's. */
-  detailCentroid?: [number, number];
-  detailBbox?: [number, number, number, number];
-}
-
-export interface WorldMapSnapshot {
-  viewBox: [number, number, number, number];
-  countries: WorldMapCountry[];
-}
+import type { WorldMapCountry, WorldMapSnapshot } from '../../src/types/gallery';
 
 const round = (n: number) => Math.round(n * 10) / 10;
 
 /**
- * How the sphere is flattened.
- *
- * `naturalEarth1` is the flat map on the page. `equirectangular` is for the
- * globe: longitude and latitude map linearly to x and y, which is exactly what
- * wrapping an image around a sphere expects, and makes the inverse - screen
- * point back to a country - a division rather than a projection solve.
+ * How the world is flattened. `naturalEarth1` is for the flat map.
+ * `equirectangular` is for the globe: longitude and latitude map straight to
+ * x and y, which is what wrapping an image round a sphere needs.
  */
 export type MapProjection = 'naturalEarth1' | 'equirectangular';
 
 /**
- * The plate carree projection at a given image width, sized so the image spans
- * the whole globe: 360 degrees across, 180 down, hence a 2:1 image. Built by
- * hand rather than with `fitSize`, which would fit the *data's* bounds - land
- * stops short of +-180 degrees, so the texture would be subtly stretched and
- * every inverse lookup would be off.
+ * An equirectangular projection covering the whole globe (360 by 180 degrees,
+ * a 2:1 image). Set by hand because `fitSize` would fit the land, not the globe.
  */
-export function equirectangular(width: number): GeoProjection {
+function equirectangular(width: number): GeoProjection {
   return geoEquirectangular()
     .scale(width / (2 * Math.PI))
     .translate([width / 2, width / 4]);
@@ -72,8 +45,7 @@ export function buildWorldMap(
     detailIds = [],
   }: BuildWorldMapOptions = {}
 ): WorldMapSnapshot {
-  // Equirectangular covers the whole sphere, so its height follows from its
-  // width and the caller's is ignored.
+  // Equirectangular is always 2:1, so its height comes from the width.
   const imageHeight = kind === 'equirectangular' ? width / 2 : height;
   const collection = feature(
     topology,
@@ -86,13 +58,9 @@ export function buildWorldMap(
       : geoNaturalEarth1().fitSize([width, height], collection);
   const path = geoPath(projection);
 
-  // Detail geometry is projected with the SAME projection, so the two
-  // outlines share a coordinate space and can be swapped in place.
+  // Use the same projection for detail outlines, so they line up with the normal ones.
   const wanted = new Set(detailIds);
-  const detailPaths = new Map<
-    string,
-    { d: string; centroid: [number, number]; bbox: [number, number, number, number] }
-  >();
+  const detailPaths = new Map<string, { d: string; centroid: [number, number] }>();
   if (detailTopology && wanted.size) {
     const detailCollection = feature(
       detailTopology,
@@ -104,12 +72,7 @@ export function buildWorldMap(
       const d = path(f);
       if (!d) continue;
       const [dcx, dcy] = path.centroid(f);
-      const [[dx0, dy0], [dx1, dy1]] = path.bounds(f);
-      detailPaths.set(id, {
-        d,
-        centroid: [round(dcx), round(dcy)],
-        bbox: [round(dx0), round(dy0), round(dx1), round(dy1)],
-      });
+      detailPaths.set(id, { d, centroid: [round(dcx), round(dcy)] });
     }
   }
 
@@ -128,9 +91,7 @@ export function buildWorldMap(
       d,
       centroid: [round(cx), round(cy)],
       bbox: [round(x0), round(y0), round(x1), round(y1)],
-      ...(detail
-        ? { detailD: detail.d, detailCentroid: detail.centroid, detailBbox: detail.bbox }
-        : {}),
+      ...(detail ? { detailD: detail.d, detailCentroid: detail.centroid } : {}),
     });
   }
 

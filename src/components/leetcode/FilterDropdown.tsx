@@ -37,12 +37,14 @@ export default function FilterDropdown({ label, options, selected, onToggle }: P
     };
   }, [open]);
 
-  useEffect(() => {
-    if (!open || !rootRef.current) return;
-    const rect = rootRef.current.getBoundingClientRect();
-    const menuWidth = 256; // matches w-64
-    setAlignRight(rect.left + menuWidth > window.innerWidth - 12);
-  }, [open]);
+  const toggle = () => {
+    if (!open && rootRef.current) {
+      const rect = rootRef.current.getBoundingClientRect();
+      const menuWidth = 256; // matches w-64
+      setAlignRight(rect.left + menuWidth > window.innerWidth - 12);
+    }
+    setOpen(!open);
+  };
 
   const active = selected.size > 0;
 
@@ -50,7 +52,7 @@ export default function FilterDropdown({ label, options, selected, onToggle }: P
     <div ref={rootRef} className="relative">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}

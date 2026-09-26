@@ -7,20 +7,19 @@ gsap.registerPlugin(ScrollTrigger);
 interface StageHandover {
   enabled: boolean;
   /**
-   * The stage, holding the parts marked `data-handover`: "zoom" grows towards
-   * the viewer, "model" dissolves behind it, "fade" goes as soon as the page
-   * moves, and "dim" darkens the screen for the photos' tunnel.
+   * The stage. Its `data-handover` parts animate: "zoom" grows, "model" fades
+   * out, "fade" hides as soon as you scroll, and "dim" darkens the screen.
    */
   stage: RefObject<HTMLElement | null>;
-  /** The photos, which take over the screen once their top reaches the top of it. */
+  /** The photos section. It takes over when its top reaches the top of the screen. */
   sheet: RefObject<HTMLElement | null>;
-  /** The camera's draw-back, 0 to 1; see CountryScene. */
+  /** How far the country scene's camera pulls back, 0 to 1. */
   recede: RefObject<number>;
-  /** Told when the photos have taken over the screen, so the stage's canvas can stop drawing. */
+  /** Called when the photos cover the screen, so the 3D scene can stop drawing. */
   onPassed: (passed: boolean) => void;
 }
 
-/** Scrubs the stage into the photos: the name zooms towards the viewer until the photos take over. */
+/** Scroll-driven hand-over from the country stage to the photos: the name zooms in, then the photos take over. */
 export function useStageHandover({ enabled, stage, sheet, recede, onPassed }: StageHandover) {
   useEffect(() => {
     const stageEl = stage.current;
@@ -47,8 +46,7 @@ export function useStageHandover({ enabled, stage, sheet, recede, onPassed }: St
           },
         })
         .to(part('fade'), { autoAlpha: 0, duration: 0.12, ease: 'none' }, 0)
-        // 2D transforms, so the browser re-rasterises the glyphs as they grow
-        // instead of stretching a bitmap of them.
+        // 2D transforms keep the text sharp as it grows.
         .fromTo(
           part('zoom'),
           { scale: 1 },

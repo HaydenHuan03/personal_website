@@ -1,10 +1,7 @@
 /**
- * Generates src/data/world-map.json from world-atlas (Natural Earth).
- * Run manually when changing projection/size or the visited-country list; the
- * output is committed so the client never bundles d3-geo or topojson.
- *
- * Visited countries additionally get a 50m outline, because they are shown
- * enlarged on their own, where the 110m world-scale outline looks like a blob.
+ * Builds the world map JSON files from world-atlas. Run it by hand when the
+ * visited countries change; the output is committed. Visited countries also
+ * get a sharper outline, because they are shown large.
  */
 import topology from 'world-atlas/countries-110m.json';
 import detailTopology from 'world-atlas/countries-50m.json';
@@ -15,7 +12,7 @@ import { GALLERY } from '../src/data/gallery';
 const OUT = new URL('../src/data/world-map.json', import.meta.url);
 const GLOBE_OUT = new URL('../src/data/world-equirect.json', import.meta.url);
 
-/** Texture-space width of the globe snapshot; the height follows as width/2. */
+/** Width of the globe's map in texture units; height is half of it. */
 const GLOBE_WIDTH = 1024;
 const detailIds = GALLERY.countries.map((c) => c.id);
 const snapshot = buildWorldMap(topology as unknown as Topology, {
@@ -27,10 +24,7 @@ console.log(
   `Wrote ${snapshot.countries.length} countries (detail: ${detailIds.join(', ') || 'none'}) to ${OUT.pathname}`
 );
 
-// The same outlines in plate carree, for the globe. Kept in its own file
-// because only the globe's chunk needs it - the server-rendered flat map must
-// not pay to download a projection it never draws. No detail outlines here:
-// the globe never enlarges a single country, CountryStage does.
+// The same outlines in the globe's projection, in a separate file that only the globe loads.
 const globe = buildWorldMap(topology as unknown as Topology, {
   projection: 'equirectangular',
   width: GLOBE_WIDTH,

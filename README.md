@@ -38,19 +38,12 @@ bun run preview      # build, then preview the Worker locally
 bun run deploy       # build, then wrangler deploy
 bun run cf-typegen   # regenerate worker-configuration.d.ts from wrangler.jsonc
 bunx tsc --noEmit    # type-check only
-
-bun test                                  # all suites
-bun test scripts/lib/solutions.test.ts    # one file
-bun test -t "test name"                   # by name
 ```
 
 There is no lint script. **`bun run build` is the source of truth for
 correctness** — it runs the data-fetch scripts, regenerates Worker and route
 types, runs `tsc --noEmit`, and only then bundles. A type error fails the build
 before any bundling happens.
-
-Tests live next to what they cover: `scripts/lib/*.test.ts` and
-`src/utils/*.test.ts`. They run under `bun:test` with no network access.
 
 ## Deploying
 
@@ -95,13 +88,52 @@ another hostname, add another entry and redeploy.
 If Cloudflare refuses to attach the domain, check the zone's DNS tab for a
 pre-existing A or CNAME on that hostname; it must be removed first.
 
+## Project structure
+
+```
+src/
+  root.tsx             HTML shell: meta tags, theme script (no dark-mode flash), ScrollToHash
+  routes.ts            route table; each route is a file in pages/
+  entry.client.tsx     hydration entry
+  entry.server.tsx     SSR entry
+  pages/               one component per route
+  components/
+    layout/            page chrome: Navbar (with CardNav, ThemeToggle), Footer, BackLink
+    ui/                reusable pieces with no page logic: SectionHeader, ImageLightbox,
+                       InlineMarkup, animation effects, the WanderingEyes loader
+    home/              home-page sections, in page order: Hero, LeetCode, Projects, Journey
+    leetcode/          /leetcode list and problem pages: filters, rows, problem detail, code view
+    gallery/           /gallery page
+      globe/           3D globe, and the flat WorldMap shown when WebGL is missing
+      country/         3D country slab shown after picking a country
+      landmark/        landmark model: hover preview on the map, and standing on the country
+      (top level)      page parts: CountryHeading, PhotoStream, scroll hand-over, shared
+                       timings; plus SceneEnvironment and quietThree, which load three.js
+                       and are only imported by the *Scene files
+  hooks/               generic React hooks: media queries, reduced motion, hover effects
+  lib/                 plain TypeScript, no React: formatting, geometry, LeetCode filters
+                       and URLs, the `cn` class joiner
+  types/               shared data shapes: gallery manifest, world map, LeetCode snapshot
+  data/                content: hand-written projects and gallery, generated JSON
+  styles/              global.css (Tailwind and theme tokens), journey.css
+scripts/               Bun scripts that generate src/data
+workers/app.ts         Cloudflare Worker entry
+```
+
+Imports across folders use the `@/` alias; imports within a folder use `./`.
+
+The 3D gallery pieces come in pairs. `XCanvas` is what a page renders: it
+waits for the browser, then lazily loads `XScene`, which holds the three.js
+code. Import the `Canvas`, never the `Scene`, so three.js stays out of server
+rendering.
+
 ## Managing it
 
 ### Content
 
 - **Projects** — `src/data/projects.ts`, hand-written. Rendered by
   `ProjectsSection` and, per slug, `ProjectDetailPage`.
-- **Home-page sections** — components in `src/components/`. When adding or
+- **Home-page sections** — components in `src/components/home/`. When adding or
   renaming a section, keep its `id` in sync with the `/#id` links in `Navbar`;
   the scroll-spy indicator and `ScrollToHash` in `src/root.tsx` both depend on
   that match.
@@ -131,8 +163,8 @@ never break a build or blank out already-synced data. Preserve that behavior
 when editing them.
 
 Pure logic is factored into `scripts/lib/solutions.ts` and
-`scripts/lib/description.ts` so it can be tested without network access — put
-new parsing and merging logic there rather than inline in the fetch scripts.
+`scripts/lib/description.ts` — put new parsing and merging logic there rather
+than inline in the fetch scripts.
 
 `.github/workflows/refresh-leetcode.yml` runs both scripts daily at 02:00 UTC
 (and on `workflow_dispatch`), committing `src/data/` only when it actually

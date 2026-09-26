@@ -1,13 +1,8 @@
 import { Search, X } from 'lucide-react';
-import type { Difficulty } from '../../types/leetcode';
-import { DIFFICULTIES, EMPTY_FILTERS, hasActiveFilters, type Filters, type TopicCount } from '../../utils/leetcodeSolutions';
+import type { Difficulty } from '@/types/leetcode';
+import { DIFFICULTIES, EMPTY_FILTERS, hasActiveFilters, type Filters, type TopicCount } from '@/lib/leetcode';
 import FilterDropdown from './FilterDropdown';
-
-const DIFFICULTY_DOT: Record<Difficulty, string> = {
-  Easy: 'bg-emerald-500',
-  Medium: 'bg-amber-500',
-  Hard: 'bg-rose-500',
-};
+import { DIFFICULTY_DOT } from './difficulty';
 
 function toggled<T>(set: ReadonlySet<T>, value: T): Set<T> {
   const next = new Set(set);

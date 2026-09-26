@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Check, Copy, ExternalLink } from 'lucide-react';
-import type { Problem } from '../../types/leetcode';
-import { LANGUAGE_LABELS, githubFileUrl, leetcodeProblemUrl } from '../../utils/leetcodeSolutions';
+import type { Problem } from '@/types/leetcode';
+import { LANGUAGE_LABELS, githubFileUrl, leetcodeProblemUrl } from '@/lib/leetcode';
 import CodeBlock from './CodeBlock';
 import { DIFFICULTY_CLASSES } from './difficulty';
 
@@ -35,7 +35,7 @@ export default function ProblemDetail({ problem, descriptionHtml }: Props) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      // Clipboard unavailable (insecure context / permission denied); ignore.
+      // Clipboard not available; ignore.
     }
   }
 

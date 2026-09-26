@@ -1,26 +1,25 @@
-import { useEffect } from 'react';
 import { Link, useParams } from 'react-router';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import BackLink from '../components/BackLink';
-import ProblemDetail from '../components/leetcode/ProblemDetail';
-import type { DescriptionMap, SolutionsSnapshot } from '../types/leetcode';
-import snapshotJson from '../data/leetcode-solutions.json';
-import descriptionsJson from '../data/leetcode-descriptions.json';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import BackLink from '@/components/layout/BackLink';
+import ProblemDetail from '@/components/leetcode/ProblemDetail';
+import type { DescriptionMap, SolutionsSnapshot } from '@/types/leetcode';
+import snapshotJson from '@/data/leetcode-solutions.json';
+import descriptionsJson from '@/data/leetcode-descriptions.json';
+import type { Route } from './+types/LeetCodeProblemPage';
 
 const PROBLEMS = (snapshotJson as unknown as SolutionsSnapshot).problems;
 const DESCRIPTIONS = descriptionsJson as DescriptionMap;
 
+// Unknown slugs keep the site title from root.
+export const meta: Route.MetaFunction = ({ params, matches }) => {
+  const problem = PROBLEMS.find((p) => p.slug === params.slug);
+  return problem ? [{ title: `${problem.title} - Hayden Huan` }] : matches[0].meta;
+};
+
 export default function LeetCodeProblemPage() {
   const { slug } = useParams<{ slug: string }>();
   const problem = PROBLEMS.find((p) => p.slug === slug);
-
-  useEffect(() => {
-    if (problem) document.title = `${problem.title} - Hayden Huan`;
-    return () => {
-      document.title = 'Hayden Huan - Backend Engineer & Infrastructure Developer';
-    };
-  }, [problem]);
 
   if (!problem) {
     return (

@@ -1,30 +1,29 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useSearchParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import WorldMap, { WORLD_MAP } from '../components/gallery/WorldMap';
-import LandmarkMarker from '../components/gallery/LandmarkMarker';
-import CountryHeading from '../components/gallery/CountryHeading';
-import CountryStage, { preloadCountryScene } from '../components/gallery/CountryStage';
-import Globe from '../components/gallery/Globe';
-import PhotoStream from '../components/gallery/PhotoStream';
-import { useStageHandover } from '../components/gallery/useStageHandover';
-import { preloadLandmark } from '../components/gallery/LandmarkCanvas';
-import { CLIMB_MS, CROSSFADE_MS, DIVE_MS, READY_CAP_MS } from '../components/gallery/transition';
-import { useHoverCapable } from '../hooks/useHoverCapable';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-import { GALLERY } from '../data/gallery';
-import { findCountry, unionBbox } from '../utils/gallery';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import WorldMap, { WORLD_MAP } from '@/components/gallery/globe/WorldMap';
+import LandmarkMarker from '@/components/gallery/landmark/LandmarkMarker';
+import CountryHeading from '@/components/gallery/CountryHeading';
+import CountryCanvas, { preloadCountryScene } from '@/components/gallery/country/CountryCanvas';
+import GlobeCanvas from '@/components/gallery/globe/GlobeCanvas';
+import PhotoStream from '@/components/gallery/PhotoStream';
+import { useStageHandover } from '@/components/gallery/useStageHandover';
+import { preloadLandmark } from '@/components/gallery/landmark/LandmarkCanvas';
+import { CLIMB_MS, CROSSFADE_MS, DIVE_MS, READY_CAP_MS } from '@/components/gallery/transition';
+import { useHoverCapable } from '@/hooks/useHoverCapable';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { GALLERY } from '@/data/gallery';
+import { findCountry, unionBbox } from '@/lib/gallery';
+import type { Route } from './+types/GalleryPage';
 
 const VISITED_IDS: ReadonlySet<string> = new Set(GALLERY.countries.map((c) => c.id));
 
-// The whole screen, with the nav floating over it. Sticky, so the photos
-// slide up over it rather than pushing it away.
+// Full-screen stage under the floating nav. Sticky, so the photos slide up over it.
 const STAGE = 'sticky top-0 h-svh min-h-[32rem] overflow-hidden';
 
-// Where both canvases sit: the same box, so the globe's dive hands over to
-// the country at the same size, and below the nav so the spire is not hidden.
+// Both 3D scenes use this same box, below the nav.
 const SCENE = 'absolute inset-x-0 top-28 bottom-0';
 
 const NARROW_ASPECT = 0.78;
@@ -46,19 +45,18 @@ const fade = (visible: boolean) =>
 
 const FADE_STYLE: CSSProperties = { transitionDuration: `${CROSSFADE_MS}ms` };
 
+export const meta: Route.MetaFunction = () => [{ title: 'Gallery - Hayden Huan' }];
+
 export default function GalleryPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selected = findCountry(GALLERY, searchParams.get('country')) ?? null;
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>(() => (selected ? 'country' : 'map'));
   const [crossfade, setCrossfade] = useState(false);
-  // The country stage, built and drawn once while the map is idle and then
-  // kept: creating its WebGL context, compiling shaders and building the slab
-  // inside the tap is what stuttered the dive on phones.
+  // Build the country scene early, while the map is idle, so a tap doesn't stutter.
   const [stageWarm, setStageWarm] = useState(false);
   const hoverCapable = useHoverCapable();
   const reducedMotion = useReducedMotion();
-  const svgRef = useRef<SVGSVGElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
 
   const incomingReady = useRef(false);
@@ -66,16 +64,13 @@ export default function GalleryPage() {
   const sheetRef = useRef<HTMLElement>(null);
   const recedeRef = useRef(0);
   const [stagePassed, setStagePassed] = useState(false);
-  // Built behind the end of the photos, so leaving from there finds it ready.
+  // Build the globe early near the end of the photos, so going back is instant.
   const [globeWarm, setGlobeWarm] = useState(false);
   const warmGlobe = useCallback(() => setGlobeWarm(true), []);
 
-  // The URL is the source of truth for which country is open, so browser
-  // Back/Forward moves the view with it. setSearchParams lands a render or so
-  // after it is called, so a transition in flight is left alone: a dive that
-  // has not seen its ?country yet is not a closed country. Only the settled
-  // views are corrected, and the end of the climb out waits here for the URL
-  // to clear rather than flipping to the map ahead of it.
+  // The ?country URL param decides which country is open, so browser
+  // Back/Forward work. Only resting views are synced to it; transitions in
+  // progress are left alone because the URL updates a moment later.
   const selectedId = selected?.id ?? null;
   useEffect(() => {
     const settled = selectedId
@@ -88,28 +83,18 @@ export default function GalleryPage() {
     window.scrollTo(0, 0);
   }, [selectedId, phase]);
 
-  useEffect(() => {
-    document.title = 'Gallery - Hayden Huan';
-    return () => {
-      document.title = 'Hayden Huan - Backend Engineer & Infrastructure Developer';
-    };
-  }, []);
+  const select = (id: string) => {
+    setHoveredId(null);
+    setSearchParams({ country: id });
+    // Reduced motion: no animation, the URL change opens the country directly.
+    if (reducedMotion) return;
 
-  const select = useCallback(
-    (id: string) => {
-      setHoveredId(null);
-      setSearchParams({ country: id });
-      // Reduced motion has no move to make: the URL change opens it directly.
-      if (reducedMotion) return;
+    incomingReady.current = false;
+    setCrossfade(false);
+    setPhase('toCountry');
+  };
 
-      incomingReady.current = false;
-      setCrossfade(false);
-      setPhase('toCountry');
-    },
-    [setSearchParams, reducedMotion]
-  );
-
-  const back = useCallback(() => {
+  const back = () => {
     if (reducedMotion) {
       setSearchParams({});
       return;
@@ -118,10 +103,10 @@ export default function GalleryPage() {
     incomingReady.current = false;
     setCrossfade(false);
     setPhase('toMap');
-  }, [reducedMotion, setSearchParams]);
+  };
 
-  // From the end of the photos the building is far behind, so there is no climb out of it.
-  const leave = useCallback(() => setSearchParams({}), [setSearchParams]);
+  // Leaving from the end of the photos skips the zoom-out animation.
+  const leave = () => setSearchParams({});
 
   useEffect(() => {
     if (phase !== 'toCountry' && phase !== 'toMap') return;
@@ -162,23 +147,11 @@ export default function GalleryPage() {
     frame.scrollLeft = Math.min(Math.max(target, 0), overflow);
   }, [phase]);
 
-  const hovered = useMemo(() => findCountry(GALLERY, hoveredId) ?? null, [hoveredId]);
+  const hovered = findCountry(GALLERY, hoveredId) ?? null;
 
   const stageCountry = selected ?? (stageWarm ? (GALLERY.countries[0] ?? null) : null);
 
-  const stageShape = useMemo(() => {
-    if (!stageCountry) return null;
-    const entry = WORLD_MAP.countries.find((c) => c.id === stageCountry.id);
-    if (!entry) return null;
-    const detailed = entry.detailD !== undefined;
-    return {
-      d: detailed ? entry.detailD! : entry.d,
-      centroid: (detailed ? (entry.detailCentroid ?? entry.centroid) : entry.centroid) as [
-        number,
-        number,
-      ],
-    };
-  }, [stageCountry]);
+  const stageShape = stageCountry && WORLD_MAP.countries.find((c) => c.id === stageCountry.id);
 
   useEffect(() => {
     if (!hovered) return;
@@ -200,11 +173,10 @@ export default function GalleryPage() {
 
   const globeVisible =
     phase === 'map' || (phase === 'toCountry' && !crossfade) || (phase === 'toMap' && crossfade);
-  const countryVisible =
-    phase === 'country' || (phase === 'toCountry' && crossfade) || (phase === 'toMap' && !crossfade);
+  const countryVisible = !globeVisible;
   const headerVisible = phase === 'map' || (phase === 'toMap' && crossfade);
   const globeMounted = phase !== 'country' || globeWarm;
-  const countryMounted = (phase !== 'map' || stageWarm) && Boolean(stageCountry && stageShape);
+  const countryMounted = phase !== 'map' || stageWarm;
 
   const onIncomingReady = useCallback(() => {
     incomingReady.current = true;
@@ -225,7 +197,7 @@ export default function GalleryPage() {
       <main id="main-content">
         <section ref={stageRef} aria-label="Gallery" className={STAGE}>
           {globeMounted && (
-            <Globe
+            <GlobeCanvas
               visitedIds={VISITED_IDS}
               hoveredId={hoveredId}
               onHover={setHoveredId}
@@ -235,21 +207,19 @@ export default function GalleryPage() {
               diveId={phase === 'toCountry' ? selectedId : null}
               alwaysLabel={!hoverCapable}
               onReady={phase === 'toMap' ? onIncomingReady : undefined}
-              // Softened at the top, where the dive fills the box right up to its edge.
+              // Fade the top edge, which the zoomed-in globe reaches.
               className={`${SCENE} [mask-image:linear-gradient(to_bottom,transparent,#000_4rem)] ${fade(globeVisible)}`}
               style={FADE_STYLE}
               fallback={
                 <div ref={frameRef} className="relative map-frame" style={NARROW_STYLE}>
                   <WorldMap
-                    ref={svgRef}
                     visitedIds={VISITED_IDS}
-                    selectedId={null}
                     hoveredId={hoveredId}
                     onHover={setHoveredId}
                     onSelect={select}
                   />
                   {hovered && hoverCapable && (
-                    <LandmarkMarker key={hovered.id} country={hovered} svgRef={svgRef} />
+                    <LandmarkMarker key={hovered.id} country={hovered} />
                   )}
                 </div>
               }
@@ -282,7 +252,7 @@ export default function GalleryPage() {
             ))}
           </ul>
 
-          {/* Before the stage, so the canvas draws the landmark over the text. */}
+          {/* Before the 3D scene, so the landmark draws over the text. */}
           {selected && (
             <div
               className={`absolute inset-0 overflow-hidden pointer-events-none ${fade(countryVisible)}`}
@@ -298,10 +268,10 @@ export default function GalleryPage() {
           )}
           {countryMounted && stageCountry && stageShape && (
             <div data-handover="model" className="pointer-events-none absolute inset-0">
-              <CountryStage
+              <CountryCanvas
                 key={stageCountry.id}
-                d={stageShape.d}
-                centroid={stageShape.centroid}
+                d={stageShape.detailD ?? stageShape.d}
+                centroid={stageShape.detailCentroid ?? stageShape.centroid}
                 model={stageCountry.landmark.model}
                 active={phase === 'toMap' ? true : countryVisible && !stagePassed}
                 direction={phase === 'toMap' ? 'out' : 'in'}
@@ -336,7 +306,7 @@ export default function GalleryPage() {
         </section>
         {showPhotos && selected && (
           <>
-            {/* Scroll room for the name to zoom through before the photos arrive. */}
+            {/* Extra scroll space for the country name animation before the photos. */}
             <div aria-hidden="true" className="motion-safe:h-[40svh]" />
             <PhotoStream key={selected.id} ref={sheetRef} country={selected} onBack={leave} onEnd={warmGlobe} />
           </>

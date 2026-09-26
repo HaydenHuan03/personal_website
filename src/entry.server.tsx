@@ -7,7 +7,7 @@ export default async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   routerContext: EntryContext,
-  // Not yet consumed anywhere — sub-project A1 wires loaders through this.
+  // Not used yet.
   _loadContext: AppLoadContext
 ) {
   let shellRendered = false;
@@ -16,9 +16,6 @@ export default async function handleRequest(
   const body = await renderToReadableStream(<ServerRouter context={routerContext} url={request.url} />, {
     onError(error: unknown) {
       responseStatusCode = 500;
-      // Log streaming rendering errors from inside the shell. Don't log
-      // errors encountered during initial shell rendering since they'll
-      // reject and get logged in handleDocumentRequest.
       if (shellRendered) {
         console.error(error);
       }
@@ -26,9 +23,6 @@ export default async function handleRequest(
   });
   shellRendered = true;
 
-  // Ensure requests from bots and SPA Mode renders wait for all content to
-  // load before responding.
-  // https://react.dev/reference/react-dom/server/renderToReadableStream
   if ((userAgent && isbot(userAgent)) || routerContext.isSpaMode) {
     await body.allReady;
   }

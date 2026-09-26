@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
-/* Dark mode follows a `.dark` class on <html>, set before paint by the script
-   in root.tsx from the saved choice or the system setting. */
+/* Dark mode is on when <html> has the `.dark` class, set by the script in root.tsx. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -13,18 +12,25 @@
   --color-accent-strong: #2a5854;
 }
 
-/* Keeps hash targets clear of the sticky nav, which sits 16px down and is
-   60px tall. Applies to scrollIntoView as well as plain hash jumps. */
+/* Leaves room for the sticky nav when jumping to a #section. */
 html {
   scroll-padding-top: 6rem;
 }
 
-/* Native controls and scrollbars follow the theme too. */
+/* Hides the page scrollbar; the page still scrolls. */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Makes scrollbars and form controls dark too. */
 html.dark {
   color-scheme: dark;
 }
 
-/* The nav takes its colours as inline styles, so it reads them from here. */
+/* Nav colours, used by the nav's inline styles. */
 :root {
   --nav-base: #ffffff;
   --nav-menu: #1c1917;
@@ -52,7 +58,7 @@ html.dark {
   }
 }
 
-/* Fixed film-grain texture applied over the whole app to break up flat surfaces. */
+/* Faint film grain over the whole page. */
 .grain-overlay {
   position: fixed;
   inset: 0;
@@ -63,7 +69,7 @@ html.dark {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* Cursor-tracked glow. Pair with a useSpotlight() ref + onMouseMove/onMouseLeave. */
+/* A glow that follows the cursor. Use with useSpotlight(). */
 .spotlight {
   position: relative;
 }
@@ -88,14 +94,12 @@ html.dark {
   opacity: 1;
 }
 
-/* Pointer-follow pull. Pair with a useMagnetic() ref + onMouseMove/onMouseLeave. */
+/* Pulls the element toward the cursor. Use with useMagnetic(). */
 .magnetic {
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform;
 }
 
-/* Idle bob for the footer pills. Animates `translate`, not `transform`, so it
-   stacks with the inline transform useMagnetic() writes instead of fighting it. */
 @keyframes scrollCue {
   from {
     transform: translateY(-100%);
@@ -111,6 +115,18 @@ html.dark {
   }
 }
 
+/* Wobble for the big bubble. Uses `scale` so it stacks on GSAP's pop transform. */
+@keyframes bubbleBreathe {
+  25% {
+    scale: 1.025 0.975;
+  }
+  75% {
+    scale: 0.975 1.025;
+  }
+}
+
+/* Gentle bob for the footer buttons. Uses `translate` so it doesn't clash with
+   the `transform` that useMagnetic() sets. */
 @keyframes float {
   0%, 100% {
     translate: 0 0;
@@ -148,26 +164,16 @@ html.dark {
   top: 1rem;
 }
 
-/*
- * Narrow screens pan the world map instead of shrinking it. Its viewBox is
- * about 1.92:1, so full-width on a phone it is a strip a couple of hundred
- * pixels tall - shorter than the footer beneath it. Here the frame is given a
- * portrait aspect and the svg is sized by its height, so the whole map is
- * visible top to bottom at a readable scale and the rest of the world is a
- * horizontal scroll away rather than cropped off for good. GalleryPage scrolls
- * it to the visited region on mount.
- *
- * The aspect is set here, and not from a media-query hook, so the server
- * renders the final layout: a hook cannot know the viewport before hydration
- * and would reflow the page under the reader.
- */
+/* On phones the map keeps a readable height and scrolls sideways instead of
+   shrinking. GalleryPage scrolls it to the visited countries. Done in CSS so
+   the server already renders the right layout. */
 @media (max-width: 767px) {
   .map-frame {
     position: relative;
     aspect-ratio: var(--map-aspect, 0.78);
     overflow-x: auto;
     overflow-y: hidden;
-    /* Keep a sideways swipe in the map off the browser's back gesture. */
+    /* Stops a sideways swipe from triggering the browser's back gesture. */
     overscroll-behavior-x: contain;
   }
 

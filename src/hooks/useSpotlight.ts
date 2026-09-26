@@ -1,10 +1,9 @@
 import { useCallback, useRef } from 'react';
-import { isCoarsePointer } from '../utils/motion';
+import { isCoarsePointer } from '@/lib/motion';
 
 /**
- * Tracks pointer position within an element and writes it to CSS vars
- * (--spot-x/--spot-y) consumed by the `.spotlight` class in global.css.
- * No-ops on touch devices, where there's no cursor to track.
+ * Writes the cursor position inside the element to --spot-x/--spot-y, which the
+ * `.spotlight` class uses. Does nothing on touch screens.
  */
 export function useSpotlight<T extends HTMLElement>() {
   const ref = useRef<T>(null);

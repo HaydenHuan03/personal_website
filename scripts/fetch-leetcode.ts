@@ -1,14 +1,9 @@
+import type { LeetCodeStats } from '../src/types/leetcode';
+
 const USERNAME = 'teomeehua';
 const OUT = new URL('../src/data/leetcode.json', import.meta.url).pathname;
 
-interface Stats {
-  totalSolved: number | null;
-  easySolved: number | null;
-  mediumSolved: number | null;
-  hardSolved: number | null;
-}
-
-async function fetchStats(): Promise<Stats | null> {
+async function fetchStats(): Promise<LeetCodeStats | null> {
   try {
     const res = await fetch('https://leetcode.com/graphql', {
       method: 'POST',

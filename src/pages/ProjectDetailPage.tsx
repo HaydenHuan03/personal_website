@@ -1,22 +1,21 @@
-import { useEffect } from 'react';
 import { Link, useParams } from 'react-router';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import InlineMarkup from '../components/InlineMarkup';
-import ImageLightbox from '../components/ImageLightbox';
-import { getProjectBySlug } from '../data/projects';
-import { techIconMap } from '../utils/techIcons';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import InlineMarkup from '@/components/ui/InlineMarkup';
+import ImageLightbox from '@/components/ui/ImageLightbox';
+import { getProjectBySlug } from '@/data/projects';
+import { techIconMap } from '@/lib/techIcons';
+import type { Route } from './+types/ProjectDetailPage';
+
+// Unknown slugs keep the site title from root.
+export const meta: Route.MetaFunction = ({ params, matches }) => {
+  const project = getProjectBySlug(params.slug);
+  return project ? [{ title: `${project.title} - Hayden Huan` }] : matches[0].meta;
+};
 
 export default function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const project = slug ? getProjectBySlug(slug) : undefined;
-
-  useEffect(() => {
-    if (project) document.title = `${project.title} - Hayden Huan`;
-    return () => {
-      document.title = 'Hayden Huan - Backend Engineer & Infrastructure Developer';
-    };
-  }, [project]);
 
   if (!project) {
     return (
