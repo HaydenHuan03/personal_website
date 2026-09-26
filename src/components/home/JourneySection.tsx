@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import SectionHeader from '@/components/ui/SectionHeader';
-import '@/styles/journey.css';
 
 const experiences = [
   {

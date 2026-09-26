@@ -4,7 +4,12 @@ export type ContentBlock =
   | { type: 'list'; items: string[] };
 
 export interface ProjectImage {
+  /** Inline (downsized) source. */
   src: string;
+  /** Optional full-resolution source shown in the lightbox. */
+  fullSrc?: string;
+  width?: number;
+  height?: number;
   alt: string;
   caption?: string;
 }
@@ -32,7 +37,10 @@ export const projects: Project[] = [
     tech: ['FastAPI', 'Python', 'MySQL', 'Pinecone', 'LangChain', 'Ollama', 'Keycloak', 'Valkey', 'RQ', 'Ragas', 'Cloudflare R2', 'Docker'],
     images: [
       {
-        src: '/projects/finguardmy-architecture.png',
+        src: '/projects/finguardmy-architecture-1600.webp',
+        fullSrc: '/projects/finguardmy-architecture.webp',
+        width: 1600,
+        height: 1308,
         alt: 'FinGuardMY system architecture diagram',
         caption: 'System Architecture',
       },

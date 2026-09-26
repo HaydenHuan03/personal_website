@@ -2,7 +2,9 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { Links, Meta, Outlet, Scripts, useLocation, useNavigationType } from 'react-router';
 import type { Route } from './+types/root';
-import '@/styles/global.css';
+import globalCss from './styles/global.css?inline';
+import geistWoff2 from './assets/fonts/geist-latin-wght-normal.woff2?url';
+import outfitWoff2 from './assets/fonts/outfit-latin-wght-normal.woff2?url';
 
 /**
  * Sets the theme before the page paints, so dark mode doesn't flash light.
@@ -41,7 +43,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content={DESCRIPTION} />
         <meta property="og:title" content={TITLE} />
         <meta property="og:description" content={DESCRIPTION} />
@@ -51,16 +53,16 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta name="twitter:title" content={TITLE} />
         <meta name="twitter:description" content={DESCRIPTION} />
         <meta name="twitter:image" content="/Profile.webp" />
-        <link rel="icon" type="image/png" href="/image.png" />
+        <link rel="icon" type="image/png" sizes="128x128" href="/favicon.png" />
+        <link rel="preload" href={geistWoff2} as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href={outfitWoff2} as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* Caveat is only used for gallery captions, so it stays on Google Fonts. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&family=Caveat:wght@500&display=swap"
-          rel="stylesheet"
-        />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet" />
         <Meta />
         <Links />
+        <style dangerouslySetInnerHTML={{ __html: globalCss }} />
       </head>
       <body className="bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100 font-sans antialiased selection:bg-stone-300 selection:text-stone-900 dark:selection:bg-stone-700 dark:selection:text-stone-50 min-h-screen">
         {children}

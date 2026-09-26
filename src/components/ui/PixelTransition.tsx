@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   firstImage: string;
@@ -7,6 +7,9 @@ interface Props {
   pixelColor?: string;
   animationStepDuration?: number;
   className?: string;
+  /** Intrinsic pixel size of the images, used for width/height to reserve layout. */
+  width?: number;
+  height?: number;
 }
 
 export default function PixelTransition({
@@ -16,12 +19,32 @@ export default function PixelTransition({
   pixelColor = '#1c1917',
   animationStepDuration = 1200,
   className = '',
+  width = 600,
+  height = 800,
 }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const firstRef = useRef<HTMLImageElement>(null);
   const secondRef = useRef<HTMLImageElement>(null);
+  // The hover image is invisible until the user interacts, so it shouldn't
+  // compete with the LCP image. Attach its src only once the page is idle.
+  const [secondSrc, setSecondSrc] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => { if (!cancelled) setSecondSrc(secondImage); };
+    const schedule = () => {
+      if ('requestIdleCallback' in window) window.requestIdleCallback(load);
+      else setTimeout(load, 1000);
+    };
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
+    return () => {
+      cancelled = true;
+      window.removeEventListener('load', schedule);
+    };
+  }, [secondImage]);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -151,8 +174,26 @@ export default function PixelTransition({
         className="relative w-full overflow-hidden rounded-2xl ring-1 ring-stone-200 dark:ring-stone-800"
         style={{ aspectRatio: '3 / 4' }}
       >
-        <img ref={firstRef} src={firstImage} alt="Profile" draggable={false} style={imgStyle} />
-        <img ref={secondRef} src={secondImage} alt="Profile alternate" draggable={false} style={{ ...imgStyle, opacity: 0 }} />
+        <img
+          ref={firstRef}
+          src={firstImage}
+          alt="Profile"
+          width={width}
+          height={height}
+          fetchPriority="high"
+          decoding="async"
+          draggable={false}
+          style={imgStyle}
+        />
+        <img
+          ref={secondRef}
+          src={secondSrc}
+          alt="Profile alternate"
+          width={width}
+          height={height}
+          draggable={false}
+          style={{ ...imgStyle, opacity: 0 }}
+        />
         <canvas
           ref={canvasRef}
           className="pointer-events-none"

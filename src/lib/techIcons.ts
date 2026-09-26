@@ -1,30 +1,45 @@
+import spring from '../assets/icons/spring.svg';
+import python from '../assets/icons/python.svg';
+import fastapi from '../assets/icons/fastapi.svg';
+import kubernetes from '../assets/icons/kubernetes.svg';
+import docker from '../assets/icons/docker.svg';
+import nginx from '../assets/icons/nginx.svg';
+import apachekafka from '../assets/icons/apachekafka.svg';
+import apacheairflow from '../assets/icons/apacheairflow.svg';
+import apachespark from '../assets/icons/apachespark.svg';
+import redis from '../assets/icons/redis.svg';
+import postgresql from '../assets/icons/postgresql.svg';
+import mysql from '../assets/icons/mysql.svg';
+import cloudflare from '../assets/icons/cloudflare.svg';
+
 /**
- * Maps tech names to their Devicon class strings.
- * Uses `colored` for plain-variant icons; `original` icons are inherently colored.
- * Empty string means no devicon available — fall back to text-only.
+ * Maps tech names to a bundled SVG URL (the `-original` colored logos copied
+ * from github.com/devicons/devicon). Self-hosting the ~15 SVGs we use avoids
+ * the render-blocking devicon.min.css + 1.5MB icon font from the CDN.
+ * Empty string means no icon available — fall back to text-only.
  */
 export const techIconMap: Record<string, string> = {
   // Languages & frameworks
-  'Java (Spring Boot)': 'devicon-spring-plain colored',
-  'Python':             'devicon-python-plain colored',
-  'FastAPI':            'devicon-fastapi-plain colored',
+  'Java (Spring Boot)': spring,
+  'Python':             python,
+  'FastAPI':            fastapi,
 
   // Infrastructure
-  'Kubernetes':         'devicon-kubernetes-plain colored',
-  'Docker':             'devicon-docker-plain colored',
-  'Nginx':              'devicon-nginx-original',
+  'Kubernetes':         kubernetes,
+  'Docker':             docker,
+  'Nginx':              nginx,
   'Caddy':              '',
 
   // Data & events
-  'Apache Kafka':       'devicon-apachekafka-original',
-  'Apache Airflow':     'devicon-apacheairflow-plain colored',
-  'Apache Spark':       'devicon-apachespark-original',
-  'Valkey':             'devicon-redis-plain colored', // Valkey is a Redis fork; use Redis icon
+  'Apache Kafka':       apachekafka,
+  'Apache Airflow':     apacheairflow,
+  'Apache Spark':       apachespark,
+  'Valkey':             redis, // Valkey is a Redis fork; use Redis icon
 
   // Databases
-  'PostgreSQL':         'devicon-postgresql-plain colored',
-  'MySQL':              'devicon-mysql-original',
-  'Redis':              'devicon-redis-plain colored',
+  'PostgreSQL':         postgresql,
+  'MySQL':              mysql,
+  'Redis':              redis,
   'Vector Databases':   '',
   'Hybrid SQL':         '',
 
@@ -35,8 +50,8 @@ export const techIconMap: Record<string, string> = {
   'Keycloak':           '',
 
   // Cloud / storage
-  'Cloudflare R2':      'devicon-cloudflare-plain colored',
+  'Cloudflare R2':      cloudflare,
 
   // Templating
-  'Jinja2':             'devicon-jinja-plain colored',
+  'Jinja2':             '', // devicon has no Jinja icon
 };
