@@ -21,12 +21,51 @@
   unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
 
+/* Dark mode is on when <html> has the `.dark` class, set by the script in root.tsx. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Geist', sans-serif;
   --font-heading: 'Outfit', sans-serif;
+  --font-hand: 'Caveat', cursive;
   --color-accent: #3f7d78;
   --color-accent-soft: #dcebe9;
   --color-accent-strong: #2a5854;
+}
+
+/* Leaves room for the sticky nav when jumping to a #section. */
+html {
+  scroll-padding-top: 6rem;
+}
+
+/* Hides the page scrollbar; the page still scrolls. */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Makes scrollbars and form controls dark too. */
+html.dark {
+  color-scheme: dark;
+}
+
+/* Nav colours, used by the nav's inline styles. */
+:root {
+  --nav-base: #ffffff;
+  --nav-menu: #1c1917;
+  --nav-card-1: #1c1917;
+  --nav-card-2: #292524;
+  --nav-card-3: #44403c;
+}
+
+.dark {
+  --nav-base: #1c1917;
+  --nav-menu: #fafaf9;
+  --nav-card-1: #292524;
+  --nav-card-2: #44403c;
+  --nav-card-3: #57534e;
 }
 
 @keyframes fadeInUp {
@@ -40,7 +79,7 @@
   }
 }
 
-/* Fixed film-grain texture applied over the whole app to break up flat surfaces. */
+/* Faint film grain over the whole page. */
 .grain-overlay {
   position: fixed;
   inset: 0;
@@ -51,7 +90,7 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* Cursor-tracked glow. Pair with a useSpotlight() ref + onMouseMove/onMouseLeave. */
+/* A glow that follows the cursor. Use with useSpotlight(). */
 .spotlight {
   position: relative;
 }
@@ -76,10 +115,56 @@
   opacity: 1;
 }
 
-/* Pointer-follow pull. Pair with a useMagnetic() ref + onMouseMove/onMouseLeave. */
+/* Pulls the element toward the cursor. Use with useMagnetic(). */
 .magnetic {
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform;
+}
+
+@keyframes scrollCue {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes bubbleFloat {
+  50% {
+    transform: translateY(-0.75rem);
+  }
+}
+
+/* Wobble for the big bubble. Uses `scale` so it stacks on GSAP's pop transform. */
+@keyframes bubbleBreathe {
+  25% {
+    scale: 1.025 0.975;
+  }
+  75% {
+    scale: 0.975 1.025;
+  }
+}
+
+/* Gentle bob for the footer buttons. Uses `translate` so it doesn't clash with
+   the `transform` that useMagnetic() sets. */
+@keyframes float {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+.float {
+  animation: float 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float {
+    animation: none;
+  }
 }
 
 .skip-link {
@@ -98,4 +183,24 @@
 
 .skip-link:focus {
   top: 1rem;
+}
+
+/* On phones the map keeps a readable height and scrolls sideways instead of
+   shrinking. GalleryPage scrolls it to the visited countries. Done in CSS so
+   the server already renders the right layout. */
+@media (max-width: 767px) {
+  .map-frame {
+    position: relative;
+    aspect-ratio: var(--map-aspect, 0.78);
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* Stops a sideways swipe from triggering the browser's back gesture. */
+    overscroll-behavior-x: contain;
+  }
+
+  .map-frame > svg {
+    height: 100%;
+    width: auto;
+    max-width: none;
+  }
 }

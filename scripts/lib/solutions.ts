@@ -1,6 +1,6 @@
 import type { Language } from '../../src/types/leetcode';
 
-export const LANGUAGE_BY_EXT: Record<string, Language> = {
+const LANGUAGE_BY_EXT: Record<string, Language> = {
   cpp: 'cpp',
   py: 'python',
   java: 'java',
@@ -8,7 +8,7 @@ export const LANGUAGE_BY_EXT: Record<string, Language> = {
   cs: 'csharp',
 };
 
-export const LANGUAGE_ORDER: Language[] = ['cpp', 'python', 'java', 'javascript', 'csharp'];
+const LANGUAGE_ORDER: Language[] = ['cpp', 'python', 'java', 'javascript', 'csharp'];
 
 /** "0001-two-sum/0001-two-sum.py" — folder and file stem must match. */
 const SOLUTION_PATH = /^(\d+)-([a-z0-9-]+)\/\1-\2\.([a-z]+)$/;
@@ -20,7 +20,7 @@ export interface ParsedPath {
   language: Language;
 }
 
-export function parseSolutionPath(path: string): ParsedPath | null {
+function parseSolutionPath(path: string): ParsedPath | null {
   const m = SOLUTION_PATH.exec(path);
   if (!m) return null;
   const language = LANGUAGE_BY_EXT[m[3]];

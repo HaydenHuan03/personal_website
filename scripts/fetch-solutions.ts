@@ -1,6 +1,7 @@
 import type { DescriptionMap, Difficulty, Problem, Solution, SolutionsSnapshot } from '../src/types/leetcode';
 import { sanitizeDescription } from './lib/description';
 import { groupBlobs, sortSolutions, type ProblemFiles } from './lib/solutions';
+import { DIFFICULTIES } from '../src/lib/leetcode';
 
 const REPO = 'HaydenHuan03/Leetcode';
 const BRANCH = 'main';
@@ -102,8 +103,8 @@ async function fetchMeta(slug: string): Promise<Meta | null> {
     };
     const q = json.data?.question;
     if (!q) return null;
-    const difficulty = (['Easy', 'Medium', 'Hard'] as const).find((d) => d === q.difficulty) ?? null;
-    // Some problems (e.g. "30 Days of JavaScript") have no tags; fall back to the category.
+    const difficulty = DIFFICULTIES.find((d) => d === q.difficulty) ?? null;
+    // Some problems have no tags; use the category instead.
     const topics = q.topicTags.map((t) => t.name);
     if (topics.length === 0 && q.categoryTitle) topics.push(q.categoryTitle);
     const description = q.content ? sanitizeDescription(q.content) : null;
@@ -143,8 +144,7 @@ async function buildProblem(
   cached: Problem | undefined,
   cachedDescription: string | undefined
 ): Promise<Built | null> {
-  // Reuse cached metadata unless it came from the slug fallback (difficulty null / no topics)
-  // or the description has not been fetched yet.
+  // Reuse cached metadata unless it is incomplete (no difficulty, topics or description).
   let meta: Meta;
   if (cached && cached.difficulty !== null && cached.topics.length > 0 && cachedDescription !== undefined) {
     meta = { title: cached.title, difficulty: cached.difficulty, topics: cached.topics, description: cachedDescription };
@@ -206,7 +206,7 @@ if (groups.length === 0) {
   }
 
   if (cache && JSON.stringify(cache.problems) === JSON.stringify(problems)) {
-    // Nothing changed; leave fetchedAt alone so the daily job has nothing to commit.
+    // Nothing changed: keep the old fetchedAt so the daily job has nothing to commit.
     console.log(`LeetCode solutions unchanged: ${problems.length} problems`);
   } else {
     const snapshot: SolutionsSnapshot = { fetchedAt: new Date().toISOString(), problems };

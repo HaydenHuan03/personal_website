@@ -96,7 +96,7 @@
   flex-shrink: 0;
 }
 
-/* Stone-50 disc erases the axis line behind the node */
+/* A disc in the page colour hides the axis line behind the node */
 .orbit-node::before {
   content: '';
   position: absolute;
@@ -130,7 +130,7 @@
   z-index: 2;
 }
 
-/* Satellite that travels the ring */
+/* Small dot that travels round the ring */
 .node-sat {
   position: absolute;
   width: 48px;
@@ -200,3 +200,16 @@
     transform: translateY(0);
   }
 }
+
+/* Dark mode colours */
+.dark .orbit-axis           { background-color: #292524; /* stone-800 */ }
+.dark .orbit-card           { background: #1c1917; border-color: #292524; }
+.dark .orbit-card:hover     { border-color: #44403c; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+.dark .orbit-date,
+.dark .orbit-role           { color: #78716c; /* stone-500 */ }
+.dark .orbit-title          { color: #fafaf9; /* stone-50 */ }
+.dark .orbit-desc           { color: #a8a29e; /* stone-400 */ }
+.dark .orbit-node::before   { background: #0c0a09; /* stone-950, the page */ }
+.dark .node-ring            { border-top-color: #a8a29e; border-right-color: #44403c; border-bottom-color: #a8a29e; }
+.dark .node-dot             { background: #d6d3d1; /* stone-300 */ }
+.dark .node-sat span        { background: #e7e5e4; border-color: #0c0a09; }

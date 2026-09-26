@@ -23,3 +23,10 @@ export interface SolutionsSnapshot {
 }
 
 export type DescriptionMap = Record<string, string>;
+
+export interface LeetCodeStats {
+  totalSolved: number | null;
+  easySolved: number | null;
+  mediumSolved: number | null;
+  hardSolved: number | null;
+}
