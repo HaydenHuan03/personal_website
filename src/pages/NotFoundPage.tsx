@@ -1,6 +1,10 @@
-import { Link } from 'react-router';
+import { data, Link } from 'react-router';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+
+export function loader() {
+  return data(null, { status: 404 });
+}
 
 export default function NotFoundPage() {
   return (

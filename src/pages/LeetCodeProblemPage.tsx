@@ -1,9 +1,10 @@
-import { Link, useParams } from 'react-router';
+import { data, Link, useParams } from 'react-router';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BackLink from '@/components/layout/BackLink';
 import ProblemDetail from '@/components/leetcode/ProblemDetail';
 import type { DescriptionMap, SolutionsSnapshot } from '@/types/leetcode';
+import { pageMeta } from '@/lib/meta';
 import snapshotJson from '@/data/leetcode-solutions.json';
 import descriptionsJson from '@/data/leetcode-descriptions.json';
 import type { Route } from './+types/LeetCodeProblemPage';
@@ -11,10 +12,17 @@ import type { Route } from './+types/LeetCodeProblemPage';
 const PROBLEMS = (snapshotJson as unknown as SolutionsSnapshot).problems;
 const DESCRIPTIONS = descriptionsJson as DescriptionMap;
 
-// Unknown slugs keep the site title from root.
+// Unknown slugs still render the not-found view below, but with a 404 status.
+export function loader({ params }: Route.LoaderArgs) {
+  return PROBLEMS.some((p) => p.slug === params.slug) ? null : data(null, { status: 404 });
+}
+
+// Unknown slugs keep the site meta from root.
 export const meta: Route.MetaFunction = ({ params, matches }) => {
   const problem = PROBLEMS.find((p) => p.slug === params.slug);
-  return problem ? [{ title: `${problem.title} - Hayden Huan` }] : matches[0].meta;
+  return problem
+    ? pageMeta(`${problem.title} - Hayden Huan`, `LeetCode ${problem.id}. ${problem.title} solution.`)
+    : matches[0].meta;
 };
 
 export default function LeetCodeProblemPage() {

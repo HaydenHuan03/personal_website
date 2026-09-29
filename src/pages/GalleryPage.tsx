@@ -8,7 +8,7 @@ import LandmarkMarker from '@/components/gallery/landmark/LandmarkMarker';
 import CountryHeading from '@/components/gallery/CountryHeading';
 import CountryCanvas, { preloadCountryScene } from '@/components/gallery/country/CountryCanvas';
 import GlobeCanvas from '@/components/gallery/globe/GlobeCanvas';
-import PhotoStream from '@/components/gallery/PhotoStream';
+import PhotoStream, { preloadPhotos } from '@/components/gallery/PhotoStream';
 import { useStageHandover } from '@/components/gallery/useStageHandover';
 import { preloadLandmark } from '@/components/gallery/landmark/LandmarkCanvas';
 import { CLIMB_MS, CROSSFADE_MS, DIVE_MS, READY_CAP_MS } from '@/components/gallery/transition';
@@ -16,6 +16,7 @@ import { useHoverCapable } from '@/hooks/useHoverCapable';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { GALLERY } from '@/data/gallery';
 import { findCountry, unionBbox } from '@/lib/gallery';
+import { pageMeta } from '@/lib/meta';
 import type { Route } from './+types/GalleryPage';
 
 const VISITED_IDS: ReadonlySet<string> = new Set(GALLERY.countries.map((c) => c.id));
@@ -45,7 +46,8 @@ const fade = (visible: boolean) =>
 
 const FADE_STYLE: CSSProperties = { transitionDuration: `${CROSSFADE_MS}ms` };
 
-export const meta: Route.MetaFunction = () => [{ title: 'Gallery - Hayden Huan' }];
+export const meta: Route.MetaFunction = () =>
+  pageMeta('Gallery - Hayden Huan', "Hayden Huan's travel photos.");
 
 export default function GalleryPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -88,6 +90,10 @@ export default function GalleryPage() {
     setSearchParams({ country: id });
     // Reduced motion: no animation, the URL change opens the country directly.
     if (reducedMotion) return;
+
+    // Touch screens have no hover, so this is their first chance to preload.
+    const country = findCountry(GALLERY, id);
+    if (country) preloadPhotos(country);
 
     incomingReady.current = false;
     setCrossfade(false);
@@ -157,7 +163,9 @@ export default function GalleryPage() {
     if (!hovered) return;
     preloadLandmark(hovered.landmark.model);
     preloadCountryScene();
-  }, [hovered]);
+    // The reduced-motion grid uses different sizes, so it loads its own.
+    if (!reducedMotion) preloadPhotos(hovered);
+  }, [hovered, reducedMotion]);
 
 
   useEffect(() => {

@@ -41,9 +41,31 @@ const INK: CSSProperties = {
   maskImage: 'linear-gradient(90deg, #000 calc(var(--ink) - 10%), transparent var(--ink))',
 };
 
+/** Rendered width of a photo in the tunnel. */
+const TUNNEL_SIZES = '(min-width: 768px) 56vw, 84vw';
+
 function srcSet(photo: GalleryPhoto): string {
   const thumbWidth = Math.round(photo.width * Math.min(1, THUMB_EDGE / Math.max(photo.width, photo.height)));
   return `${photo.thumb} ${thumbWidth}w, ${photo.src} ${photo.width}w`;
+}
+
+// Holds the images until they finish, and skips countries already started.
+const preloaded = new Map<string, HTMLImageElement[]>();
+
+/** Starts downloading a country's photos, so the tunnel has them when it opens. */
+export function preloadPhotos(country: GalleryCountry) {
+  if (preloaded.has(country.id)) return;
+  preloaded.set(
+    country.id,
+    country.photos.map((photo) => {
+      const img = new Image();
+      // Same sizes and srcset as the tunnel, so the browser picks the same file.
+      img.sizes = TUNNEL_SIZES;
+      img.srcset = srcSet(photo);
+      img.src = photo.src;
+      return img;
+    })
+  );
 }
 
 function PhotoFigure({
@@ -411,7 +433,7 @@ export default function PhotoStream({ country, onBack, onEnd, ref }: PhotoStream
                 photo={photo}
                 index={i}
                 country={country}
-                sizes="(min-width: 768px) 56vw, 84vw"
+                sizes={TUNNEL_SIZES}
                 className="absolute left-1/2 top-1/2 w-[min(84vw,calc(56svh*var(--ar)))] md:w-[min(56vw,calc(66svh*var(--ar)))]"
                 frameClassName="ring-1 ring-white/10"
                 captionClassName="sr-only"

@@ -14,6 +14,7 @@ import {
   topicCounts,
   type Filters,
 } from '@/lib/leetcode';
+import { pageMeta } from '@/lib/meta';
 import snapshotJson from '@/data/leetcode-solutions.json';
 import type { Route } from './+types/LeetCodePage';
 
@@ -24,7 +25,11 @@ const TOPICS = topicCounts(PROBLEMS);
 const BUTTON =
   'inline-flex items-center gap-2 px-5 py-2.5 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50';
 
-export const meta: Route.MetaFunction = () => [{ title: 'LeetCode Solutions - Hayden Huan' }];
+export const meta: Route.MetaFunction = () =>
+  pageMeta(
+    'LeetCode Solutions - Hayden Huan',
+    `${PROBLEMS.length} LeetCode solutions`
+  );
 
 export default function LeetCodePage() {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);

@@ -1,16 +1,22 @@
-import { Link, useParams } from 'react-router';
+import { data, Link, useParams } from 'react-router';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import InlineMarkup from '@/components/ui/InlineMarkup';
 import ImageLightbox from '@/components/ui/ImageLightbox';
 import { getProjectBySlug } from '@/data/projects';
 import { techIconMap } from '@/lib/techIcons';
+import { pageMeta } from '@/lib/meta';
 import type { Route } from './+types/ProjectDetailPage';
 
-// Unknown slugs keep the site title from root.
+// Unknown slugs still render the not-found view below, but with a 404 status.
+export function loader({ params }: Route.LoaderArgs) {
+  return getProjectBySlug(params.slug) ? null : data(null, { status: 404 });
+}
+
+// Unknown slugs keep the site meta from root.
 export const meta: Route.MetaFunction = ({ params, matches }) => {
   const project = getProjectBySlug(params.slug);
-  return project ? [{ title: `${project.title} - Hayden Huan` }] : matches[0].meta;
+  return project ? pageMeta(`${project.title} - Hayden Huan`, project.description) : matches[0].meta;
 };
 
 export default function ProjectDetailPage() {

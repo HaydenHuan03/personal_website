@@ -6,5 +6,6 @@ export default [
   route('leetcode', 'pages/LeetCodePage.tsx'),
   route('leetcode/:slug', 'pages/LeetCodeProblemPage.tsx'),
   route('gallery', 'pages/GalleryPage.tsx'),
+  route('sitemap.xml', 'sitemap.ts'),
   route('*', 'pages/NotFoundPage.tsx'),
 ] satisfies RouteConfig;
