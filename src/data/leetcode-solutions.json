@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T06:24:25.196Z",
+  "fetchedAt": "2026-10-04T07:37:26.440Z",
   "problems": [
     {
       "id": 1,
@@ -831,6 +831,26 @@
           "path": "0145-binary-tree-postorder-traversal/0145-binary-tree-postorder-traversal.py",
           "sha": "0455484eb6541009c737bcb3a374cc8d97f02cdc",
           "code": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:\n        result = []\n\n        def postorder(node):\n            if not node:\n                return\n            \n            postorder(node.left)\n            postorder(node.right)\n            result.append(node.val)\n\n        postorder(root)\n\n        return result"
+        }
+      ]
+    },
+    {
+      "id": 146,
+      "slug": "lru-cache",
+      "title": "LRU Cache",
+      "difficulty": "Medium",
+      "topics": [
+        "Hash Table",
+        "Linked List",
+        "Design",
+        "Doubly-Linked List"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0146-lru-cache/0146-lru-cache.java",
+          "sha": "b3eb9bb342c5d38127821e68a2d3c6b8580fc4b5",
+          "code": "import java.util.HashMap;\nimport java.util.Map;\n\nclass Node {\n    int key;\n    int val;\n    Node prev;\n    Node next;\n\n    public Node(int key, int val) {\n        this.key = key;\n        this.val = val;\n    }\n}\n\nclass LRUCache {\n    private final int cap;\n    private final Map<Integer, Node> cache; // key -> node, for fast lookup\n\n    // Dummy nodes at both ends. List looks like:\n    // oldest <-> (least recent) ... (most recent) <-> latest\n    private final Node oldest;\n    private final Node latest;\n\n    public LRUCache(int capacity) {\n        this.cap = capacity;\n        this.cache = new HashMap<>();\n        this.oldest = new Node(0, 0);\n        this.latest = new Node(0, 0);\n        oldest.next = latest;\n        latest.prev = oldest;\n    }\n\n    public int get(int key) {\n        if (!cache.containsKey(key)) {\n            return -1;\n        }\n        Node node = cache.get(key);\n        remove(node);  // move it to the most recent spot\n        insert(node);\n        return node.val;\n    }\n\n    public void put(int key, int value) {\n        // Key exists: update value and mark as most recent\n        if (cache.containsKey(key)) {\n            Node node = cache.get(key);\n            node.val = value;\n            remove(node);\n            insert(node);\n            return;\n        }\n\n        // New key: add it\n        Node newNode = new Node(key, value);\n        cache.put(key, newNode);\n        insert(newNode);\n\n        // Too many items: remove the least recent one\n        if (cache.size() > cap) {\n            Node lru = oldest.next;\n            remove(lru);\n            cache.remove(lru.key);\n        }\n    }\n\n    // Take a node out of the list\n    private void remove(Node node) {\n        node.prev.next = node.next;\n        node.next.prev = node.prev;\n    }\n\n    // Put a node at the most recent spot (just before \"latest\")\n    private void insert(Node node) {\n        Node prev = latest.prev;\n        prev.next = node;\n        node.prev = prev;\n        node.next = latest;\n        latest.prev = node;\n    }\n}"
         }
       ]
     },
