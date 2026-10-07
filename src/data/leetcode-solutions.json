@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-05T08:01:05.460Z",
+  "fetchedAt": "2026-10-07T07:59:17.205Z",
   "problems": [
     {
       "id": 1,
@@ -762,8 +762,8 @@
         {
           "language": "java",
           "path": "0121-best-time-to-buy-and-sell-stock/0121-best-time-to-buy-and-sell-stock.java",
-          "sha": "f18a6fb223700f7736ac887f49991225e74807ab",
-          "code": "class Solution {\n    public int maxProfit(int[] prices) {\n        int profit = 0;\n        int buy = prices[0];\n        int n = prices.length;\n\n        for(int i = 1; i < n; i++){\n            if(prices[i] < buy){\n                buy = prices[i];\n            }else if(prices[i] - buy > profit){\n                profit = prices[i] - buy;\n            }\n        }\n\n        return profit;\n    }\n}"
+          "sha": "0b8006d76d313a9ae2e346615070e4d73c624cb2",
+          "code": "class Solution {\n    public int maxProfit(int[] prices) {\n        int buy = prices[0];\n        int profit = 0;\n\n        for(int i = 1; i < prices.length; i++){\n            if(buy > prices[i]){\n                buy = prices[i];\n            }\n\n            profit = Math.max(profit, prices[i]-buy);\n        }\n\n        return profit;\n    }\n}"
         }
       ]
     },
@@ -939,6 +939,25 @@
           "path": "0169-majority-element/0169-majority-element.java",
           "sha": "0925b5e428b719061593457f40fb81cc3e64f310",
           "code": "class Solution {\n    public int majorityElement(int[] nums) {\n        int candidate = 0;\n        int count = 0;\n\n        for(int num : nums){\n            if(count == 0){\n                candidate = num;\n            }\n\n            count += (num==candidate)?1:-1;\n        }\n\n        return candidate;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 189,
+      "slug": "rotate-array",
+      "title": "Rotate Array",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Math",
+        "Two Pointers"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0189-rotate-array/0189-rotate-array.java",
+          "sha": "99a3799a02ef6813b9a017302346fefbbab6e1c9",
+          "code": "class Solution {\n    public void rotate(int[] nums, int k) {\n        int n = nums.length;\n        k = k % n;\n\n        reverse(nums, 0, n-1);\n        reverse(nums, 0, k-1);\n        reverse(nums, k, n-1);\n    }\n\n    public void reverse(int[] nums, int start, int end){\n        while(start < end){\n            int temp = nums[start];\n            nums[start] = nums[end];\n            nums[end] = temp;\n\n            start++;\n            end--;\n        }\n    }\n}"
         }
       ]
     },
@@ -1426,6 +1445,12 @@
           "path": "0383-ransom-note/0383-ransom-note.cpp",
           "sha": "37d9060a75efc0c7b9bb31f58d86cc2108e49d2b",
           "code": "class Solution {\npublic:\n    bool canConstruct(string ransomNote, string magazine) {\n        unordered_map<char, int> freq;\n\n        for(char c : magazine){\n            freq[c]++;\n        }\n\n        for(char c : ransomNote){\n            if(freq[c] > 0){\n                freq[c]--;\n            }else{\n                return false;\n            }\n        }\n\n        return true;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0383-ransom-note/0383-ransom-note.java",
+          "sha": "e6adebe90688b260443370208c874d479eebd0f9",
+          "code": "class Solution {\n    public boolean canConstruct(String ransomNote, String magazine) {\n        int[] count = new int[26];\n\n        for(char c : magazine.toCharArray()){\n            count[c-'a']++;\n        }\n\n        for(char s : ransomNote.toCharArray()){\n            if(count[s-'a'] == 0){\n                return false;\n            }\n\n            count[s-'a']--;\n        }\n\n        return true;\n    }\n}"
         }
       ]
     },
@@ -1491,6 +1516,12 @@
           "path": "0392-is-subsequence/0392-is-subsequence.cpp",
           "sha": "f7c5cc5156c6fc63e8db31e1846cae1672235514",
           "code": "class Solution {\npublic:\n    bool isSubsequence(string s, string t) {\n        int s1 = 0;\n\n        for(int i = 0; i < t.length(); i++){\n            if(s1 < s.length() && s[s1] == t[i]){\n                s1++;\n            }\n        }\n\n        return s1 == s.length();\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0392-is-subsequence/0392-is-subsequence.java",
+          "sha": "52a293019b07f6bc71aefdd0f801b1986a58adce",
+          "code": "class Solution {\n    public boolean isSubsequence(String s, String t) {\n        int p1 = 0;\n        int p2 = 0;\n\n        while(p1 < s.length() && p2 < t.length()){\n            if(s.charAt(p1) == t.charAt(p2)){\n                p1++;\n            }\n\n            p2++;\n        }\n\n        return p1 == s.length();\n    }\n}"
         }
       ]
     },
