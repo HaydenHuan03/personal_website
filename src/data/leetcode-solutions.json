@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-07T07:59:17.205Z",
+  "fetchedAt": "2026-10-08T08:13:25.522Z",
   "problems": [
     {
       "id": 1,
@@ -130,8 +130,8 @@
         {
           "language": "java",
           "path": "0011-container-with-most-water/0011-container-with-most-water.java",
-          "sha": "65bf5bf2b40aa0779bdeed6b994c66b55bd5da55",
-          "code": "class Solution {\n    public int maxArea(int[] height) {\n        int left = 0, right = height.length -1 ;\n        int max_area = 0;\n\n        while(left < right){\n            int h = Math.min(height[left], height[right]);\n            int width = right - left;\n            max_area = Math.max(max_area, h * width);\n\n            if(height[left] < height[right]){\n                left++;\n            }else{\n                right--;\n            }\n        }\n        return max_area;\n    }\n}"
+          "sha": "5802f61d08f38976138eba216796c76241cf9d99",
+          "code": "class Solution {\n    public int maxArea(int[] height) {\n        int left = 0;\n        int right = height.length-1;\n        int max = 0;\n\n        while(left < right){\n            int length = right - left;\n            int area = Math.min(height[left], height[right])*length;\n\n            if(area > max){\n                max = area;\n            }\n\n            if(height[left] < height[right]){\n                left++;\n            }else{\n                right--;\n            }\n        }\n\n        return max;\n    }\n}"
         }
       ]
     },
@@ -851,6 +851,12 @@
           "path": "0141-linked-list-cycle/0141-linked-list-cycle.cpp",
           "sha": "e41c3bf5232148705992c4bafab9ac78eee348a3",
           "code": "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *     int val;\n *     ListNode *next;\n *     ListNode(int x) : val(x), next(NULL) {}\n * };\n */\nclass Solution {\npublic:\n    bool hasCycle(ListNode *head) {\n        ListNode *fast = head;\n        ListNode *slow = head;\n\n        while(fast != NULL && fast->next != NULL){\n            fast = fast->next->next;\n            slow = slow->next;\n\n            if(fast == slow)\n                return true;\n        }\n\n        return false;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0141-linked-list-cycle/0141-linked-list-cycle.java",
+          "sha": "1f88780dcd083e7cd464c51a676ad5f2e22137fc",
+          "code": "/**\n * Definition for singly-linked list.\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        ListNode slow = head;\n        ListNode fast = head;\n\n        while(fast != null && fast.next != null){\n            slow = slow.next;\n            fast = fast.next.next;\n\n            if(slow == fast){\n                return true;\n            }\n        }\n\n        return false;\n    }\n}"
         }
       ]
     },
@@ -911,6 +917,25 @@
           "path": "0146-lru-cache/0146-lru-cache.java",
           "sha": "b3eb9bb342c5d38127821e68a2d3c6b8580fc4b5",
           "code": "import java.util.HashMap;\nimport java.util.Map;\n\nclass Node {\n    int key;\n    int val;\n    Node prev;\n    Node next;\n\n    public Node(int key, int val) {\n        this.key = key;\n        this.val = val;\n    }\n}\n\nclass LRUCache {\n    private final int cap;\n    private final Map<Integer, Node> cache; // key -> node, for fast lookup\n\n    // Dummy nodes at both ends. List looks like:\n    // oldest <-> (least recent) ... (most recent) <-> latest\n    private final Node oldest;\n    private final Node latest;\n\n    public LRUCache(int capacity) {\n        this.cap = capacity;\n        this.cache = new HashMap<>();\n        this.oldest = new Node(0, 0);\n        this.latest = new Node(0, 0);\n        oldest.next = latest;\n        latest.prev = oldest;\n    }\n\n    public int get(int key) {\n        if (!cache.containsKey(key)) {\n            return -1;\n        }\n        Node node = cache.get(key);\n        remove(node);  // move it to the most recent spot\n        insert(node);\n        return node.val;\n    }\n\n    public void put(int key, int value) {\n        // Key exists: update value and mark as most recent\n        if (cache.containsKey(key)) {\n            Node node = cache.get(key);\n            node.val = value;\n            remove(node);\n            insert(node);\n            return;\n        }\n\n        // New key: add it\n        Node newNode = new Node(key, value);\n        cache.put(key, newNode);\n        insert(newNode);\n\n        // Too many items: remove the least recent one\n        if (cache.size() > cap) {\n            Node lru = oldest.next;\n            remove(lru);\n            cache.remove(lru.key);\n        }\n    }\n\n    // Take a node out of the list\n    private void remove(Node node) {\n        node.prev.next = node.next;\n        node.next.prev = node.prev;\n    }\n\n    // Put a node at the most recent spot (just before \"latest\")\n    private void insert(Node node) {\n        Node prev = latest.prev;\n        prev.next = node;\n        node.prev = prev;\n        node.next = latest;\n        latest.prev = node;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 167,
+      "slug": "two-sum-ii-input-array-is-sorted",
+      "title": "Two Sum II - Input Array Is Sorted",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Two Pointers",
+        "Binary Search"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0167-two-sum-ii-input-array-is-sorted/0167-two-sum-ii-input-array-is-sorted.java",
+          "sha": "3fa718541d2ea76753773fed737ffa2d9e277324",
+          "code": "class Solution {\n    public int[] twoSum(int[] numbers, int target) {\n        int[] res = new int [2];\n        int slow = 0;\n        int fast = numbers.length-1;\n\n        while(slow < fast){\n            if(numbers[slow] + numbers[fast] < target){\n                slow++;\n            }else if(numbers[slow] + numbers[fast] > target){\n                fast--;\n            }else{\n                return new int[]{slow+1, fast+1};\n            }\n        }\n\n        return res;\n    }\n}"
         }
       ]
     },
