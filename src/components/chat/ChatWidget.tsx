@@ -1,10 +1,51 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { MessageCircle, Send, X } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { FileText, Github, Mail, MessageCircle, Send, X } from 'lucide-react';
+import InlineMarkup from '@/components/ui/InlineMarkup';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { EMAIL, GITHUB_URL, RESUME_URL } from '@/lib/contact';
 import { streamChat, type ChatMessage } from '@/lib/chatStream';
 
 type Turn = ChatMessage;
 
-const SUGGESTIONS = ['What has Hayden built?', 'Where has Hayden worked?', 'What is his tech stack?'];
+// A button shows under a reply when the reply mentions its topic.
+const ACTIONS = [
+  { label: 'Email', href: `mailto:${EMAIL}`, icon: Mail, match: /\b(e-?mail|contact|reach)/i },
+  { label: 'Resume', href: RESUME_URL, icon: FileText, match: /resume|\bcv\b/i },
+  { label: 'GitHub', href: GITHUB_URL, icon: Github, match: /github/i },
+];
+
+// The model sometimes lists "Email: ..." lines anyway; the buttons cover them.
+const stripContactLines = (text: string) => text.replace(/^\s*(e-?mail|resume|cv|github)\s*:.*$/gim, '').trim();
+
+// Types the reply out a few characters per frame; a bigger backlog types faster so it keeps up with the stream.
+// Children (the action buttons) show once typing is done.
+function TypedReply({ text, onType, children }: { text: string; onType: () => void; children?: ReactNode }) {
+  const reducedMotion = useReducedMotion();
+  // Starts full for replies already on screen, empty for a new one.
+  const [shown, setShown] = useState(text.length);
+
+  useEffect(() => {
+    if (shown === text.length) return;
+    if (reducedMotion || shown > text.length) return setShown(text.length);
+    const id = setTimeout(() => setShown((n) => n + Math.ceil((text.length - n) / 40)), 16);
+    return () => clearTimeout(id);
+  }, [shown, text.length, reducedMotion]);
+
+  useEffect(onType, [shown, onType]);
+
+  // Hide a half-typed bold marker: drop a lone trailing "*" and close an open "**" so it renders bold, not raw.
+  let visible = text.slice(0, shown).replace(/(^|[^*])\*$/, '$1');
+  if (visible.split('**').length % 2 === 0) visible += '**';
+
+  return (
+    <>
+      <InlineMarkup text={visible} />
+      {shown >= text.length && children}
+    </>
+  );
+}
+
+const SUGGESTIONS =['What has Hayden built?', 'Where has Hayden worked?', 'What is his tech stack?'];
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -16,9 +57,12 @@ export default function ChatWidget() {
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  // Braces matter: scrollTo can return a Promise, which React would treat as an effect cleanup.
+  const scrollToEnd = useCallback(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
-  }, [turns]);
+  }, []);
+
+  useEffect(scrollToEnd, [turns, scrollToEnd]);
 
   useEffect(() => {
     if (!open) return;
@@ -113,7 +157,40 @@ export default function ChatWidget() {
                       : 'max-w-[85%] rounded-lg bg-stone-200 dark:bg-stone-800 text-stone-800 dark:text-stone-200 px-3 py-2'
                   }
                 >
-                  <p className="whitespace-pre-wrap leading-relaxed">{t.content || (busy && i === turns.length - 1 ? '…' : '')}</p>
+                  <p className="whitespace-pre-wrap leading-relaxed">
+                    {t.role === 'assistant' ? (
+                      <TypedReply text={stripContactLines(t.content)} onType={scrollToEnd}>
+                        {!(busy && i === turns.length - 1) && (
+                          <span className="mt-2 flex flex-wrap gap-2">
+                            {ACTIONS.filter((a) => a.match.test(t.content)).map(({ label, href, icon: Icon }) => (
+                              <a
+                                key={label}
+                                href={href}
+                                target={href.startsWith('http') ? '_blank' : undefined}
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-stone-400 dark:border-stone-600 text-xs font-medium hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors"
+                              >
+                                <Icon size={14} /> {label}
+                              </a>
+                            ))}
+                          </span>
+                        )}
+                      </TypedReply>
+                    ) : (
+                      t.content
+                    )}
+                    {!t.content && busy && i === turns.length - 1 && (
+                      <span role="status" aria-label="Thinking" className="inline-flex gap-1 py-1">
+                        {[0, 150, 300].map((delay) => (
+                          <span
+                            key={delay}
+                            className="w-1.5 h-1.5 rounded-full bg-stone-500 dark:bg-stone-400 motion-safe:animate-bounce"
+                            style={{ animationDelay: `${delay}ms` }}
+                          />
+                        ))}
+                      </span>
+                    )}
+                  </p>
                 </div>
               </div>
             ))}

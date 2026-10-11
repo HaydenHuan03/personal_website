@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T06:24:25.196Z",
+  "fetchedAt": "2026-10-11T13:54:24.073Z",
   "problems": [
     {
       "id": 1,
@@ -130,8 +130,8 @@
         {
           "language": "java",
           "path": "0011-container-with-most-water/0011-container-with-most-water.java",
-          "sha": "65bf5bf2b40aa0779bdeed6b994c66b55bd5da55",
-          "code": "class Solution {\n    public int maxArea(int[] height) {\n        int left = 0, right = height.length -1 ;\n        int max_area = 0;\n\n        while(left < right){\n            int h = Math.min(height[left], height[right]);\n            int width = right - left;\n            max_area = Math.max(max_area, h * width);\n\n            if(height[left] < height[right]){\n                left++;\n            }else{\n                right--;\n            }\n        }\n        return max_area;\n    }\n}"
+          "sha": "5802f61d08f38976138eba216796c76241cf9d99",
+          "code": "class Solution {\n    public int maxArea(int[] height) {\n        int left = 0;\n        int right = height.length-1;\n        int max = 0;\n\n        while(left < right){\n            int length = right - left;\n            int area = Math.min(height[left], height[right])*length;\n\n            if(area > max){\n                max = area;\n            }\n\n            if(height[left] < height[right]){\n                left++;\n            }else{\n                right--;\n            }\n        }\n\n        return max;\n    }\n}"
         }
       ]
     },
@@ -319,6 +319,42 @@
       ]
     },
     {
+      "id": 26,
+      "slug": "remove-duplicates-from-sorted-array",
+      "title": "Remove Duplicates from Sorted Array",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Two Pointers"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0026-remove-duplicates-from-sorted-array/0026-remove-duplicates-from-sorted-array.java",
+          "sha": "d5a194cbe9770fcbd02a5c035b37fe7d028e2616",
+          "code": "class Solution {\n    public int removeDuplicates(int[] nums) {\n        if(nums.length == 0) return 0;\n        int k = 1;\n\n        for(int i = 1; i < nums.length; i++){\n            if(nums[i] != nums[i-1]){\n                nums[k] = nums[i];\n                k++;\n            }\n        }\n\n        return k;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "slug": "remove-element",
+      "title": "Remove Element",
+      "difficulty": "Easy",
+      "topics": [
+        "Array",
+        "Two Pointers"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0027-remove-element/0027-remove-element.java",
+          "sha": "9d28c126c462b341c6a971336844ea505936d453",
+          "code": "class Solution {\n    public int removeElement(int[] nums, int val) {\n        int next = 0;\n\n        for(int i = 0; i < nums.length; i++){\n            if(nums[i] != val){\n                nums[next] = nums[i];\n                next++;\n            }\n        }\n\n        return next;\n    }\n}"
+        }
+      ]
+    },
+    {
       "id": 28,
       "slug": "find-the-index-of-the-first-occurrence-in-a-string",
       "title": "Find the Index of the First Occurrence in a String",
@@ -423,6 +459,24 @@
       ]
     },
     {
+      "id": 80,
+      "slug": "remove-duplicates-from-sorted-array-ii",
+      "title": "Remove Duplicates from Sorted Array II",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Two Pointers"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0080-remove-duplicates-from-sorted-array-ii/0080-remove-duplicates-from-sorted-array-ii.java",
+          "sha": "0e9014ed8584afdc1140dee7c5b0eb16249e1fc9",
+          "code": "class Solution {\n    public int removeDuplicates(int[] nums) {\n        int k = 2;\n\n        for(int i = 2; i < nums.length; i++){\n            if(nums[i] != nums[k-2]){\n                nums[k] = nums[i];\n                k++;\n            }\n        }\n        \n        return k;\n    }\n}"
+        }
+      ]
+    },
+    {
       "id": 88,
       "slug": "merge-sorted-array",
       "title": "Merge Sorted Array",
@@ -438,6 +492,12 @@
           "path": "0088-merge-sorted-array/0088-merge-sorted-array.cpp",
           "sha": "e5de07ce4c516a34a9e31eabf66331d33ceab6e8",
           "code": "class Solution {\npublic:\n    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {\n        int size = m + n - 1;\n        int midx = m -1;\n        int nidx = n-1;\n\n        while(nidx >= 0){\n            if(midx >= 0 && nums1[midx] > nums2[nidx]){\n                nums1[size] = nums1[midx];\n                midx--;\n            }else{\n                nums1[size] = nums2[nidx];\n                nidx--;\n            }\n            size--;\n        }\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0088-merge-sorted-array/0088-merge-sorted-array.java",
+          "sha": "5d3ccc2f782be6ecc65ebee8dfaf5f6431936d63",
+          "code": "class Solution {\n    public void merge(int[] nums1, int m, int[] nums2, int n) {\n        int pointer1 = m-1;\n        int pointer2 = n-1;\n        int insert = m+n-1;\n\n        while(pointer1 >= 0 && pointer2 >= 0){\n            if(nums1[pointer1] > nums2[pointer2]){\n                nums1[insert] = nums1[pointer1];\n                //move pointer1\n                pointer1--;\n            }else{\n                nums1[insert] = nums2[pointer2];\n                //move pointer2\n                pointer2--;\n            }\n            //move insert pointer\n            insert--;\n        }\n\n        while(pointer2 >= 0){\n            nums1[insert] = nums2[pointer2];\n            pointer2--;\n            insert--;\n        }\n    }\n}"
         }
       ]
     },
@@ -702,8 +762,8 @@
         {
           "language": "java",
           "path": "0121-best-time-to-buy-and-sell-stock/0121-best-time-to-buy-and-sell-stock.java",
-          "sha": "f18a6fb223700f7736ac887f49991225e74807ab",
-          "code": "class Solution {\n    public int maxProfit(int[] prices) {\n        int profit = 0;\n        int buy = prices[0];\n        int n = prices.length;\n\n        for(int i = 1; i < n; i++){\n            if(prices[i] < buy){\n                buy = prices[i];\n            }else if(prices[i] - buy > profit){\n                profit = prices[i] - buy;\n            }\n        }\n\n        return profit;\n    }\n}"
+          "sha": "0b8006d76d313a9ae2e346615070e4d73c624cb2",
+          "code": "class Solution {\n    public int maxProfit(int[] prices) {\n        int buy = prices[0];\n        int profit = 0;\n\n        for(int i = 1; i < prices.length; i++){\n            if(buy > prices[i]){\n                buy = prices[i];\n            }\n\n            profit = Math.max(profit, prices[i]-buy);\n        }\n\n        return profit;\n    }\n}"
         }
       ]
     },
@@ -732,8 +792,8 @@
         {
           "language": "java",
           "path": "0125-valid-palindrome/0125-valid-palindrome.java",
-          "sha": "f01b243c99941a76e5b40330234e575eaab39cee",
-          "code": "class Solution {\n    public boolean isPalindrome(String s) {\n        if(s == null) return true;\n\n        int start = 0, end = s.length()-1;\n        \n        while(start < end){\n            while(start < end && !Character.isLetterOrDigit(s.charAt(start)))\n                start++;\n            \n            while(start < end && !Character.isLetterOrDigit(s.charAt(end)))\n                end--;\n            \n            if(Character.toLowerCase(s.charAt(start)) != Character.toLowerCase(s.charAt(end))){\n                return false;\n            }\n\n            start++;\n            end--;\n        }\n\n        return true;\n    }\n}"
+          "sha": "6a2dd168251fa62afc95a160276f10a1b3b482f5",
+          "code": "class Solution {\n    public boolean isPalindrome(String s) {\n        int start = 0;\n        int end = s.length() - 1;\n\n        while(start<end){\n            while(start < end && !Character.isLetterOrDigit(s.charAt(start))){\n                start++;\n            }\n            while(end > start && !Character.isLetterOrDigit(s.charAt(end))){\n                end--;\n            }\n            if(Character.toLowerCase(s.charAt(start)) != Character.toLowerCase(s.charAt(end))){\n                return false;\n            }\n\n            start++;\n            end--;\n        }\n        return true;\n    }\n}"
         }
       ]
     },
@@ -791,6 +851,12 @@
           "path": "0141-linked-list-cycle/0141-linked-list-cycle.cpp",
           "sha": "e41c3bf5232148705992c4bafab9ac78eee348a3",
           "code": "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *     int val;\n *     ListNode *next;\n *     ListNode(int x) : val(x), next(NULL) {}\n * };\n */\nclass Solution {\npublic:\n    bool hasCycle(ListNode *head) {\n        ListNode *fast = head;\n        ListNode *slow = head;\n\n        while(fast != NULL && fast->next != NULL){\n            fast = fast->next->next;\n            slow = slow->next;\n\n            if(fast == slow)\n                return true;\n        }\n\n        return false;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0141-linked-list-cycle/0141-linked-list-cycle.java",
+          "sha": "1f88780dcd083e7cd464c51a676ad5f2e22137fc",
+          "code": "/**\n * Definition for singly-linked list.\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        ListNode slow = head;\n        ListNode fast = head;\n\n        while(fast != null && fast.next != null){\n            slow = slow.next;\n            fast = fast.next.next;\n\n            if(slow == fast){\n                return true;\n            }\n        }\n\n        return false;\n    }\n}"
         }
       ]
     },
@@ -835,6 +901,45 @@
       ]
     },
     {
+      "id": 146,
+      "slug": "lru-cache",
+      "title": "LRU Cache",
+      "difficulty": "Medium",
+      "topics": [
+        "Hash Table",
+        "Linked List",
+        "Design",
+        "Doubly-Linked List"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0146-lru-cache/0146-lru-cache.java",
+          "sha": "b3eb9bb342c5d38127821e68a2d3c6b8580fc4b5",
+          "code": "import java.util.HashMap;\nimport java.util.Map;\n\nclass Node {\n    int key;\n    int val;\n    Node prev;\n    Node next;\n\n    public Node(int key, int val) {\n        this.key = key;\n        this.val = val;\n    }\n}\n\nclass LRUCache {\n    private final int cap;\n    private final Map<Integer, Node> cache; // key -> node, for fast lookup\n\n    // Dummy nodes at both ends. List looks like:\n    // oldest <-> (least recent) ... (most recent) <-> latest\n    private final Node oldest;\n    private final Node latest;\n\n    public LRUCache(int capacity) {\n        this.cap = capacity;\n        this.cache = new HashMap<>();\n        this.oldest = new Node(0, 0);\n        this.latest = new Node(0, 0);\n        oldest.next = latest;\n        latest.prev = oldest;\n    }\n\n    public int get(int key) {\n        if (!cache.containsKey(key)) {\n            return -1;\n        }\n        Node node = cache.get(key);\n        remove(node);  // move it to the most recent spot\n        insert(node);\n        return node.val;\n    }\n\n    public void put(int key, int value) {\n        // Key exists: update value and mark as most recent\n        if (cache.containsKey(key)) {\n            Node node = cache.get(key);\n            node.val = value;\n            remove(node);\n            insert(node);\n            return;\n        }\n\n        // New key: add it\n        Node newNode = new Node(key, value);\n        cache.put(key, newNode);\n        insert(newNode);\n\n        // Too many items: remove the least recent one\n        if (cache.size() > cap) {\n            Node lru = oldest.next;\n            remove(lru);\n            cache.remove(lru.key);\n        }\n    }\n\n    // Take a node out of the list\n    private void remove(Node node) {\n        node.prev.next = node.next;\n        node.next.prev = node.prev;\n    }\n\n    // Put a node at the most recent spot (just before \"latest\")\n    private void insert(Node node) {\n        Node prev = latest.prev;\n        prev.next = node;\n        node.prev = prev;\n        node.next = latest;\n        latest.prev = node;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 167,
+      "slug": "two-sum-ii-input-array-is-sorted",
+      "title": "Two Sum II - Input Array Is Sorted",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Two Pointers",
+        "Binary Search"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0167-two-sum-ii-input-array-is-sorted/0167-two-sum-ii-input-array-is-sorted.java",
+          "sha": "3fa718541d2ea76753773fed737ffa2d9e277324",
+          "code": "class Solution {\n    public int[] twoSum(int[] numbers, int target) {\n        int[] res = new int [2];\n        int slow = 0;\n        int fast = numbers.length-1;\n\n        while(slow < fast){\n            if(numbers[slow] + numbers[fast] < target){\n                slow++;\n            }else if(numbers[slow] + numbers[fast] > target){\n                fast--;\n            }else{\n                return new int[]{slow+1, fast+1};\n            }\n        }\n\n        return res;\n    }\n}"
+        }
+      ]
+    },
+    {
       "id": 169,
       "slug": "majority-element",
       "title": "Majority Element",
@@ -853,6 +958,31 @@
           "path": "0169-majority-element/0169-majority-element.py",
           "sha": "7b1428295fce57ef804d9f837d479df509ecab59",
           "code": "class Solution:\n    def majorityElement(self, nums: List[int]) -> int:\n        res = None\n        cnt = 0\n\n        for num in nums:\n            if cnt == 0:\n                res = num\n            cnt += 1 if res == num else -1\n        \n        return res"
+        },
+        {
+          "language": "java",
+          "path": "0169-majority-element/0169-majority-element.java",
+          "sha": "0925b5e428b719061593457f40fb81cc3e64f310",
+          "code": "class Solution {\n    public int majorityElement(int[] nums) {\n        int candidate = 0;\n        int count = 0;\n\n        for(int num : nums){\n            if(count == 0){\n                candidate = num;\n            }\n\n            count += (num==candidate)?1:-1;\n        }\n\n        return candidate;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "id": 189,
+      "slug": "rotate-array",
+      "title": "Rotate Array",
+      "difficulty": "Medium",
+      "topics": [
+        "Array",
+        "Math",
+        "Two Pointers"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0189-rotate-array/0189-rotate-array.java",
+          "sha": "99a3799a02ef6813b9a017302346fefbbab6e1c9",
+          "code": "class Solution {\n    public void rotate(int[] nums, int k) {\n        int n = nums.length;\n        k = k % n;\n\n        reverse(nums, 0, n-1);\n        reverse(nums, 0, k-1);\n        reverse(nums, k, n-1);\n    }\n\n    public void reverse(int[] nums, int start, int end){\n        while(start < end){\n            int temp = nums[start];\n            nums[start] = nums[end];\n            nums[end] = temp;\n\n            start++;\n            end--;\n        }\n    }\n}"
         }
       ]
     },
@@ -1340,6 +1470,12 @@
           "path": "0383-ransom-note/0383-ransom-note.cpp",
           "sha": "37d9060a75efc0c7b9bb31f58d86cc2108e49d2b",
           "code": "class Solution {\npublic:\n    bool canConstruct(string ransomNote, string magazine) {\n        unordered_map<char, int> freq;\n\n        for(char c : magazine){\n            freq[c]++;\n        }\n\n        for(char c : ransomNote){\n            if(freq[c] > 0){\n                freq[c]--;\n            }else{\n                return false;\n            }\n        }\n\n        return true;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0383-ransom-note/0383-ransom-note.java",
+          "sha": "e6adebe90688b260443370208c874d479eebd0f9",
+          "code": "class Solution {\n    public boolean canConstruct(String ransomNote, String magazine) {\n        int[] count = new int[26];\n\n        for(char c : magazine.toCharArray()){\n            count[c-'a']++;\n        }\n\n        for(char s : ransomNote.toCharArray()){\n            if(count[s-'a'] == 0){\n                return false;\n            }\n\n            count[s-'a']--;\n        }\n\n        return true;\n    }\n}"
         }
       ]
     },
@@ -1405,6 +1541,12 @@
           "path": "0392-is-subsequence/0392-is-subsequence.cpp",
           "sha": "f7c5cc5156c6fc63e8db31e1846cae1672235514",
           "code": "class Solution {\npublic:\n    bool isSubsequence(string s, string t) {\n        int s1 = 0;\n\n        for(int i = 0; i < t.length(); i++){\n            if(s1 < s.length() && s[s1] == t[i]){\n                s1++;\n            }\n        }\n\n        return s1 == s.length();\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0392-is-subsequence/0392-is-subsequence.java",
+          "sha": "52a293019b07f6bc71aefdd0f801b1986a58adce",
+          "code": "class Solution {\n    public boolean isSubsequence(String s, String t) {\n        int p1 = 0;\n        int p2 = 0;\n\n        while(p1 < s.length() && p2 < t.length()){\n            if(s.charAt(p1) == t.charAt(p2)){\n                p1++;\n            }\n\n            p2++;\n        }\n\n        return p1 == s.length();\n    }\n}"
         }
       ]
     },

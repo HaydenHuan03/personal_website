@@ -2,10 +2,6 @@ import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide';
 import { MorphIcon } from 'morphicons/react';
 
-/**
- * Toggles the `.dark` class on <html> and saves the choice. It reads the real
- * theme after mounting, so the icon animation only plays when the user clicks.
- */
 export default function ThemeToggle() {
   const [dark, setDark] = useState(false);
 

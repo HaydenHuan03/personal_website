@@ -1,8 +1,9 @@
 import { Github, Instagram, ArrowUpRight } from 'lucide-react';
 import { useMagnetic } from '@/hooks/useMagnetic';
+import { EMAIL, GITHUB_URL } from '@/lib/contact';
 
 const SOCIALS = [
-  { href: 'https://github.com/HaydenHuan03', label: 'GitHub', icon: Github, external: true },
+  { href: GITHUB_URL, label: 'GitHub', icon: Github, external: true },
   { href: 'https://www.instagram.com/hayden_1729/', label: 'Instagram', icon: Instagram, external: true },
 ] as const;
 
@@ -35,10 +36,10 @@ export default function Footer() {
             <p className="text-stone-500 text-sm uppercase tracking-wide mb-3">Get in touch</p>
             <a
               {...contactMagnetic}
-              href="mailto:teomeehua@gmail.com"
+              href={`mailto:${EMAIL}`}
               className="magnetic inline-flex items-center gap-3 font-heading font-semibold text-3xl sm:text-4xl text-stone-50 hover:text-accent transition-colors"
             >
-              teomeehua@gmail.com
+              {EMAIL}
               <ArrowUpRight size={28} className="text-accent flex-shrink-0" />
             </a>
           </div>

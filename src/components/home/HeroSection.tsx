@@ -7,6 +7,7 @@ import PixelTransition from '@/components/ui/PixelTransition';
 import DecryptedText from '@/components/ui/DecryptedText';
 import { prefersReducedMotion } from '@/lib/motion';
 import { useMagnetic } from '@/hooks/useMagnetic';
+import { EMAIL, GITHUB_URL, RESUME_URL } from '@/lib/contact';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -101,7 +102,7 @@ export default function HeroSection() {
           <a
             data-hero-btn
             {...contactBtn}
-            href="mailto:teomeehua@gmail.com"
+            href={`mailto:${EMAIL}`}
             className="magnetic flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50"
           >
             <Mail size={16} /> Contact Me
@@ -109,7 +110,7 @@ export default function HeroSection() {
           <a
             data-hero-btn
             {...resumeBtn}
-            href="https://docs.google.com/document/d/1bSoNi0MSzojWipmAgBUMJmb8V38dLV8IbYYKth9xvhk/edit?usp=sharing"
+            href={RESUME_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="magnetic flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50"
@@ -117,7 +118,7 @@ export default function HeroSection() {
             <FileText size={16} /> Resume
           </a>
           <div data-hero-btn className="flex items-center gap-3 ml-2 border-l border-stone-300 dark:border-stone-700 pl-6">
-            <a href="https://github.com/HaydenHuan03" className="text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors">
+            <a href={GITHUB_URL} className="text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors">
               <Github size={20} />
             </a>
             <a
