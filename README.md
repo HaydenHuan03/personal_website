@@ -37,6 +37,7 @@ bun run build        # full pipeline — see below
 bun run preview      # build, then preview the Worker locally
 bun run deploy       # build, then wrangler deploy
 bun run cf-typegen   # regenerate worker-configuration.d.ts from wrangler.jsonc
+bun run ingest       # embed knowledge/*.md + projects into Vectorize (needs CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN); run before deploying content changes. --dry-run previews chunks
 bunx tsc --noEmit    # type-check only
 ```
 

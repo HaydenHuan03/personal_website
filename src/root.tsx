@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Links, Meta, Outlet, Scripts, useLocation, useNavigationType } from 'react-router';
 import type { Route } from './+types/root';
 import { pageMeta, SITE_URL } from './lib/meta';
+import ChatWidget from './components/chat/ChatWidget';
 import globalCss from './styles/global.css?inline';
 import geistWoff2 from './assets/fonts/geist-latin-wght-normal.woff2?url';
 import outfitWoff2 from './assets/fonts/outfit-latin-wght-normal.woff2?url';
@@ -80,6 +81,7 @@ export default function Root() {
       <div className="grain-overlay" aria-hidden="true" />
       <ScrollToHash />
       <Outlet />
+      <ChatWidget />
     </>
   );
 }
