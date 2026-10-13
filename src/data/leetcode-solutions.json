@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-08T08:13:25.522Z",
+  "fetchedAt": "2026-10-13T08:46:36.590Z",
   "problems": [
     {
       "id": 1,
@@ -1199,8 +1199,8 @@
         {
           "language": "java",
           "path": "0238-product-of-array-except-self/0238-product-of-array-except-self.java",
-          "sha": "7ce65a7949786d2458f2848908ae855fc5c1c205",
-          "code": "class Solution {\n    public int[] productExceptSelf(int[] nums) {\n        int n = nums.length;\n        int res[] = new int[n];\n        Arrays.fill(res, 1);\n        int curr = 1;\n\n        //Fill in the res from left first\n        for(int i = 0; i < n; i++){\n            res[i] *= curr;\n            curr *= nums[i];\n        }\n\n        curr = 1;\n\n        //Fill in the res from right then.\n        for(int i = n-1; i >= 0; i--){\n            res[i] *= curr;\n            curr *= nums[i];\n        }\n\n        return res;\n    }\n}"
+          "sha": "5e6a9992fd084c3b812d6aa0c71f38e236168b53",
+          "code": "class Solution {\n    public int[] productExceptSelf(int[] nums) {\n        int curr = 1;\n        int length = nums.length;\n        int[] res = new int[length];\n        Arrays.fill(res,1);\n\n        for(int i = 0; i < length; i++){\n            res[i] *= curr;\n            curr *= nums[i];\n        }\n\n        curr = 1;\n\n        for(int i = length -1; i >= 0 ; i--){\n            res[i] *= curr;\n            curr *= nums[i];\n        }\n\n        return res;\n    }\n}"
         }
       ]
     },
