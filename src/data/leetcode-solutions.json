@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-14T06:56:41.244Z",
+  "fetchedAt": "2026-10-16T06:36:30.857Z",
   "problems": [
     {
       "id": 1,
@@ -294,8 +294,8 @@
         {
           "language": "java",
           "path": "0020-valid-parentheses/0020-valid-parentheses.java",
-          "sha": "1cc92bab93d27051c42fee00c363a8ef3e78d15b",
-          "code": "class Solution {\n    public boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for(char c : s.toCharArray()){\n            if(c == '(' || c == '{' || c == '['){\n                stack.push(c);\n            }else{\n                if(stack.isEmpty()){\n                    return false;\n                }\n                char top = stack.pop();\n                if(c == ')' && top != '('){\n                    return false;\n                }\n                if(c == '}' && top != '{'){\n                    return false;\n                }\n                if(c == ']' && top != '['){\n                    return false;\n                }\n            }\n        }\n\n        return stack.isEmpty();\n    }\n}"
+          "sha": "950a34140f9db770aa41b748b8b6ea155188277a",
+          "code": "class Solution {\n    public boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        Map<Character, Character> mapping = new HashMap<>();\n\n        mapping.put(')','(');\n        mapping.put(']','[');\n        mapping.put('}','{');\n\n        for(char c : s.toCharArray()){\n            if(mapping.containsValue(c)){\n                stack.push(c);\n            }else if(mapping.containsKey(c)){\n                if(stack.isEmpty() || mapping.get(c) != stack.pop()){\n                    return false;\n                }\n            }\n        }\n\n        return stack.isEmpty();\n    }\n}"
         }
       ]
     },
@@ -542,6 +542,23 @@
           "path": "0090-subsets-ii/0090-subsets-ii.cpp",
           "sha": "bb28f383ef6ae9e68121158de9edb35a8733614f",
           "code": "class Solution {\npublic:\n    vector<vector<int>> subsetsWithDup(vector<int>& nums) {\n        vector<vector<int>> result;\n        vector<int> combo;\n\n        sort(nums.begin(), nums.end());\n        backtrack(nums, result, combo, 0);\n\n        return result;\n    }\n\n    void backtrack(vector<int>& nums, vector<vector<int>>& result, vector<int>& combo, int idx){\n        result.push_back(combo);\n\n        for(int i = idx; i < nums.size(); i++){\n            if(i > idx && nums[i] == nums[i-1]) continue;\n\n            combo.push_back(nums[i]);\n            backtrack(nums, result, combo, i+1);\n            combo.pop_back();\n        }\n    }\n};"
+        }
+      ]
+    },
+    {
+      "id": 92,
+      "slug": "reverse-linked-list-ii",
+      "title": "Reverse Linked List II",
+      "difficulty": "Medium",
+      "topics": [
+        "Linked List"
+      ],
+      "solutions": [
+        {
+          "language": "java",
+          "path": "0092-reverse-linked-list-ii/0092-reverse-linked-list-ii.java",
+          "sha": "7623d82dc48a5fccf5c57f54565da59c9bfd4775",
+          "code": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if(head == null || left == right){\n            return head;\n        }\n\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n\n        for(int i = 0; i < left-1; i++){\n            prev = prev.next;\n        }\n\n        ListNode cur = prev.next;\n\n        for(int i = 0; i < right - left; i++){\n            ListNode temp = cur.next;\n            cur.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n\n        return dummy.next;\n        \n    }\n}"
         }
       ]
     },
@@ -1064,6 +1081,12 @@
           "path": "0205-isomorphic-strings/0205-isomorphic-strings.cpp",
           "sha": "ac15e3ec5c4eff37055cbdd80f0ff2e28c7067f6",
           "code": "class Solution {\npublic:\n    bool isIsomorphic(string s, string t) {\n        unordered_map<char, int> charIndexS;\n        unordered_map<char, int> charIndexT;\n\n        for(int i = 0; i < s.length(); i++){\n            if(charIndexS.find(s[i]) == charIndexS.end()){\n                charIndexS[s[i]] = i;\n            }\n\n            if(charIndexT.find(t[i]) == charIndexT.end()){\n                charIndexT[t[i]] = i;\n            }\n\n            if(charIndexS[s[i]] != charIndexT[t[i]]){\n                return false;\n            }\n        }\n\n        return true;\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0205-isomorphic-strings/0205-isomorphic-strings.java",
+          "sha": "79e74b6c31c4b7e99bcc6a36a84fda215b2fae9a",
+          "code": "class Solution {\n    public boolean isIsomorphic(String s, String t) {\n        HashMap<Character, Character> iso = new HashMap<>();\n\n        for(int i = 0; i < s.length(); i++){\n            char sc = s.charAt(i);\n            char tc = t.charAt(i);\n\n            if(iso.containsKey(sc)){\n                if(iso.get(sc) != tc){\n                    return false;\n                }\n            }else if(iso.containsValue(tc)){\n                    return false;\n            }\n            \n            iso.put(sc, tc);\n        }\n        return true;\n    }\n}"
         }
       ]
     },
@@ -1368,6 +1391,12 @@
           "path": "0290-word-pattern/0290-word-pattern.cpp",
           "sha": "821cffa57df700ee9a5fd72211c856b117f78ee0",
           "code": "class Solution {\npublic:\n    bool wordPattern(string pattern, string s) {\n        unordered_map<char, string>charToString;\n        unordered_map<string, char>stringToChar;\n        istringstream ss(s);\n        string word;\n        int i = 0;\n\n        for(;ss>>word; i++){\n            if(i >= pattern.size()) return false;\n\n            char c = pattern[i];\n            if(charToString.count(c) && charToString[c] != word){\n                return false;\n            }\n\n            if(stringToChar.count(word) && stringToChar[word] != c){\n                return false;\n            }\n\n            charToString[c] = word;\n            stringToChar[word] = c;\n        }\n        return i == pattern.size();\n    }\n};"
+        },
+        {
+          "language": "java",
+          "path": "0290-word-pattern/0290-word-pattern.java",
+          "sha": "6e4dff8a64483a30101a57d11a2e348e5a9f820e",
+          "code": "class Solution {\n    public boolean wordPattern(String pattern, String s) {\n        String[] words = s.split(\" \");\n\n        if(pattern.length() != words.length){\n            return false;\n        }\n\n        Map<Character, String> charToWord = new HashMap<>();\n        HashSet<String> seen = new HashSet<>();\n\n        for(int i = 0; i < pattern.length(); i++){\n            char c = pattern.charAt(i);\n            String w = words[i];\n\n            if(charToWord.containsKey(c)){\n                if(!charToWord.get(c).equals(w)){\n                    return false;\n                }\n            }else{\n                if(seen.contains(w)){\n                    return false;\n                }\n                charToWord.put(c, w);\n                seen.add(w);\n            }\n        }\n        return true;\n    }\n}"
         }
       ]
     },
