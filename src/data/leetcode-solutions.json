@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T06:36:30.857Z",
+  "fetchedAt": "2026-10-17T06:25:58.217Z",
   "problems": [
     {
       "id": 1,
@@ -212,8 +212,8 @@
         {
           "language": "java",
           "path": "0015-3sum/0015-3sum.java",
-          "sha": "917a5702a266f001e483220df7ce643a7fb9637a",
-          "code": "class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        List<List<Integer>> result =  new ArrayList<>();\n        Arrays.sort(nums);\n        int n = nums.length;\n\n        for(int i = 0; i < n - 2; i++){\n            if(i > 0 && nums[i] == nums[i-1]){\n                continue;\n            }\n\n            int j = i+1;\n            int k = n-1;\n\n            while(j < k){\n                int sum = nums[i] + nums[j] + nums[k];\n\n                if(sum < 0){\n                    j = j+1;\n                }\n\n                if (sum > 0){\n                    k = k-1;\n                }\n\n                if (sum == 0){\n                    result.add(Arrays.asList(nums[i], nums[j],nums[k]));\n\n                    j++;\n                    k--;\n\n                    while(j < k && nums[j] == nums[j-1]){\n                        j++;\n                    }\n\n                    while(k > j && nums[k] == nums[k+1]){\n                        k--;\n                    }\n                }\n            }\n        }\n        return result;\n    }\n}"
+          "sha": "eb74c93d849915cf01fa95f9c7ecc338208f7362",
+          "code": "class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        List<List<Integer>> result = new ArrayList<>();\n        Arrays.sort(nums);\n\n        for(int i = 0; i < nums.length; i++){\n            if(i > 0 && nums[i] == nums[i-1]){\n                continue;\n            }\n\n            int j = i+1;\n            int k = nums.length-1;\n\n            while(j < k){\n                int total = nums[i] + nums[j] + nums[k];\n\n                if(total > 0){\n                    k--;\n                }else if(total < 0){\n                    j++;\n                }else{\n                    result.add(Arrays.asList(nums[i], nums[j], nums[k]));\n                    j++;\n\n                    while(nums[j] == nums[j-1] && j < k){\n                        j++;\n                    }\n                }\n            }\n        }\n\n        return result;\n    }\n}"
         }
       ]
     },
