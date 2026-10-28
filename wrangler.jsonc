@@ -1,13 +1,39 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "personal-website",
-  "compatibility_date": "2026-09-21",
-  "main": "./workers/app.ts",
-  "workers_dev": false,
-  "routes": [
-    { "pattern": "haydenhuan.com", "custom_domain": true }
-  ],
-  "observability": {
-    "enabled": true
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "personal-website",
+	"compatibility_date": "2026-09-21",
+	"main": "./workers/app.ts",
+	"workers_dev": false,
+	// Preview links (*.workers.dev) for uploaded versions; production stays on haydenhuan.com.
+	"preview_urls": true,
+	"routes": [
+		{
+			"pattern": "haydenhuan.com",
+			"custom_domain": true
+		}
+	],
+	"ai": {
+		"binding": "AI",
+		"remote": true
+	},
+	// Daily chat counter. Created by wrangler on the first upload.
+	"kv_namespaces": [
+		{
+			"binding": "CHAT_KV",
+			"id": "75bac9f748fc4ea083cb0c2a7f406dbe"
+		}
+	],
+	"ratelimits": [
+		{
+			"name": "CHAT_LIMITER",
+			"namespace_id": "1001",
+			"simple": {
+				"limit": 10,
+				"period": 60
+			}
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
 }

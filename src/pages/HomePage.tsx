@@ -4,6 +4,7 @@ import LeetCodeSection from '@/components/home/LeetCodeSection';
 import ProjectsSection from '@/components/home/ProjectsSection';
 import JourneySection from '@/components/home/JourneySection';
 import Footer from '@/components/layout/Footer';
+import ChatWidget from '@/components/chat/ChatWidget';
 
 export default function HomePage() {
   return (
@@ -16,6 +17,7 @@ export default function HomePage() {
         <JourneySection />
       </main>
       <Footer />
+      <ChatWidget />
     </>
   );
 }

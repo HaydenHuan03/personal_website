@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import type { DescriptionMap, Difficulty, Problem, Solution, SolutionsSnapshot } from '../src/types/leetcode';
 import { sanitizeDescription } from './lib/description';
 import { groupBlobs, sortSolutions, type ProblemFiles } from './lib/solutions';
@@ -5,8 +6,8 @@ import { DIFFICULTIES } from '../src/lib/leetcode';
 
 const REPO = 'HaydenHuan03/Leetcode';
 const BRANCH = 'main';
-const OUT = new URL('../src/data/leetcode-solutions.json', import.meta.url).pathname;
-const DESC_OUT = new URL('../src/data/leetcode-descriptions.json', import.meta.url).pathname;
+const OUT = fileURLToPath(new URL('../src/data/leetcode-solutions.json', import.meta.url));
+const DESC_OUT = fileURLToPath(new URL('../src/data/leetcode-descriptions.json', import.meta.url));
 const CONCURRENCY = 8;
 const TIMEOUT_MS = 10_000;
 

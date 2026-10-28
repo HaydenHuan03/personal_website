@@ -1,7 +1,8 @@
+import { fileURLToPath } from 'node:url';
 import type { LeetCodeStats } from '../src/types/leetcode';
 
 const USERNAME = 'teomeehua';
-const OUT = new URL('../src/data/leetcode.json', import.meta.url).pathname;
+const OUT = fileURLToPath(new URL('../src/data/leetcode.json', import.meta.url));
 
 async function fetchStats(): Promise<LeetCodeStats | null> {
   try {
