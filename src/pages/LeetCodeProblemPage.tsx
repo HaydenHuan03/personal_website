@@ -1,4 +1,4 @@
-import { data, Link, useParams } from 'react-router';
+import { data, Link } from 'react-router';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BackLink from '@/components/layout/BackLink';
@@ -12,24 +12,24 @@ import type { Route } from './+types/LeetCodeProblemPage';
 const PROBLEMS = (snapshotJson as unknown as SolutionsSnapshot).problems;
 const DESCRIPTIONS = descriptionsJson as DescriptionMap;
 
+// Runs on the server, so the browser only downloads this one problem.
 // Unknown slugs still render the not-found view below, but with a 404 status.
 export function loader({ params }: Route.LoaderArgs) {
-  return PROBLEMS.some((p) => p.slug === params.slug) ? null : data(null, { status: 404 });
+  const problem = PROBLEMS.find((p) => p.slug === params.slug);
+  if (!problem) return data(null, { status: 404 });
+  return { problem, descriptionHtml: DESCRIPTIONS[problem.slug] ?? null };
 }
 
 // Unknown slugs keep the site meta from root.
-export const meta: Route.MetaFunction = ({ params, matches }) => {
-  const problem = PROBLEMS.find((p) => p.slug === params.slug);
+export const meta: Route.MetaFunction = ({ loaderData, matches }) => {
+  const problem = loaderData?.problem;
   return problem
     ? pageMeta(`${problem.title} - Hayden Huan`, `LeetCode ${problem.id}. ${problem.title} solution.`)
     : matches[0].meta;
 };
 
-export default function LeetCodeProblemPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const problem = PROBLEMS.find((p) => p.slug === slug);
-
-  if (!problem) {
+export default function LeetCodeProblemPage({ loaderData }: Route.ComponentProps) {
+  if (!loaderData) {
     return (
       <>
         <Navbar />
@@ -49,7 +49,7 @@ export default function LeetCodeProblemPage() {
       <Navbar />
       <BackLink to="/leetcode">All Solutions</BackLink>
       <main id="main-content" className="max-w-[90rem] mx-auto px-6 md:px-12 pb-24">
-        <ProblemDetail problem={problem} descriptionHtml={DESCRIPTIONS[problem.slug] ?? null} />
+        <ProblemDetail problem={loaderData.problem} descriptionHtml={loaderData.descriptionHtml} />
       </main>
       <Footer />
     </>

@@ -4,13 +4,11 @@ import { ArrowLeft } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import WorldMap, { WORLD_MAP } from '@/components/gallery/globe/WorldMap';
-import LandmarkMarker from '@/components/gallery/landmark/LandmarkMarker';
 import CountryHeading from '@/components/gallery/CountryHeading';
 import CountryCanvas, { preloadCountryScene } from '@/components/gallery/country/CountryCanvas';
 import GlobeCanvas from '@/components/gallery/globe/GlobeCanvas';
 import PhotoStream, { preloadPhotos } from '@/components/gallery/PhotoStream';
 import { useStageHandover } from '@/components/gallery/useStageHandover';
-import { preloadLandmark } from '@/components/gallery/landmark/LandmarkCanvas';
 import { CLIMB_MS, CROSSFADE_MS, DIVE_MS, READY_CAP_MS } from '@/components/gallery/transition';
 import { useHoverCapable } from '@/hooks/useHoverCapable';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -161,8 +159,7 @@ export default function GalleryPage() {
 
   useEffect(() => {
     if (!hovered) return;
-    preloadLandmark(hovered.landmark.model);
-    preloadCountryScene();
+    preloadCountryScene(hovered.landmark.model);
     // The reduced-motion grid uses different sizes, so it loads its own.
     if (!reducedMotion) preloadPhotos(hovered);
   }, [hovered, reducedMotion]);
@@ -226,9 +223,6 @@ export default function GalleryPage() {
                     onHover={setHoveredId}
                     onSelect={select}
                   />
-                  {hovered && hoverCapable && (
-                    <LandmarkMarker key={hovered.id} country={hovered} />
-                  )}
                 </div>
               }
             />

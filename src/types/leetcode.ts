@@ -17,6 +17,9 @@ export interface Problem {
   solutions: Solution[];
 }
 
+/** What the problem list needs, without the solution code. */
+export type ProblemSummary = Omit<Problem, 'solutions'>;
+
 export interface SolutionsSnapshot {
   fetchedAt: string;
   problems: Problem[];

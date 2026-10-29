@@ -4,7 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FilterBar from '@/components/leetcode/FilterBar';
 import ProblemRow from '@/components/leetcode/ProblemRow';
-import type { SolutionsSnapshot } from '@/types/leetcode';
+import type { ProblemSummary, SolutionsSnapshot } from '@/types/leetcode';
 import {
   EMPTY_FILTERS,
   groupByPrimaryTopic,
@@ -18,23 +18,28 @@ import { pageMeta } from '@/lib/meta';
 import snapshotJson from '@/data/leetcode-solutions.json';
 import type { Route } from './+types/LeetCodePage';
 
-const snapshot = snapshotJson as unknown as SolutionsSnapshot;
-const PROBLEMS = snapshot.problems;
-const TOPICS = topicCounts(PROBLEMS);
-
 const BUTTON =
   'inline-flex items-center gap-2 px-5 py-2.5 border border-stone-300 dark:border-stone-700 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors font-medium text-sm text-stone-900 dark:text-stone-50';
 
-export const meta: Route.MetaFunction = () =>
+// Runs on the server, so the solution code never reaches the browser.
+export function loader() {
+  const problems: ProblemSummary[] = (snapshotJson as unknown as SolutionsSnapshot).problems.map(
+    ({ solutions: _, ...summary }) => summary
+  );
+  return { problems, topics: topicCounts(problems) };
+}
+
+export const meta: Route.MetaFunction = ({ loaderData }) =>
   pageMeta(
     'LeetCode Solutions - Hayden Huan',
-    `${PROBLEMS.length} LeetCode solutions`
+    `${loaderData?.problems.length ?? 0} LeetCode solutions`
   );
 
-export default function LeetCodePage() {
+export default function LeetCodePage({ loaderData }: Route.ComponentProps) {
+  const { problems, topics } = loaderData;
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
 
-  const visible = useMemo(() => PROBLEMS.filter((p) => matchesFilters(p, filters)), [filters]);
+  const visible = useMemo(() => problems.filter((p) => matchesFilters(p, filters)), [problems, filters]);
   const groups = useMemo(() => groupByPrimaryTopic(visible), [visible]);
 
   return (
@@ -55,7 +60,7 @@ export default function LeetCodePage() {
           </div>
         </header>
 
-        {PROBLEMS.length === 0 ? (
+        {problems.length === 0 ? (
           <p className="text-stone-500 dark:text-stone-400">
             Solutions are temporarily unavailable. Browse them directly on{' '}
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-stone-900 dark:hover:text-stone-50">
@@ -68,8 +73,8 @@ export default function LeetCodePage() {
             <FilterBar
               filters={filters}
               onChange={setFilters}
-              topics={TOPICS}
-              total={PROBLEMS.length}
+              topics={topics}
+              total={problems.length}
               visible={visible.length}
             />
 

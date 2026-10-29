@@ -26,16 +26,19 @@ function parseMessages(body: unknown): ChatMessage[] | null {
   return last?.role === 'user' && last.content.trim() ? messages : null;
 }
 
-/** Counts this chat against today's cap. KV is eventually consistent, so the cap can overshoot slightly. */
-async function underDailyCap(env: Env) {
+/**
+ * Counts this chat against today's cap. KV is eventually consistent, so the cap can overshoot slightly.
+ * The write finishes in the background, so the answer doesn't wait on it.
+ */
+async function underDailyCap(env: Env, ctx: ExecutionContext) {
   const key = `chats:${new Date().toISOString().slice(0, 10)}`;
   const used = Number((await env.CHAT_KV.get(key)) ?? 0);
   if (used >= DAILY_CAP) return false;
-  await env.CHAT_KV.put(key, String(used + 1), { expirationTtl: 60 * 60 * 48 });
+  ctx.waitUntil(env.CHAT_KV.put(key, String(used + 1), { expirationTtl: 60 * 60 * 48 }));
   return true;
 }
 
-export async function handleChat(request: Request, env: Env): Promise<Response> {
+export async function handleChat(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
   const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
@@ -45,7 +48,7 @@ export async function handleChat(request: Request, env: Env): Promise<Response> 
   const messages = parseMessages(await request.json().catch(() => null));
   if (!messages) return json({ error: 'Send a non-empty question.' }, 400);
 
-  if (!(await underDailyCap(env))) return json({ error: 'The chat is resting for today.', resting: true }, 503);
+  if (!(await underDailyCap(env, ctx))) return json({ error: 'The chat is resting for today.', resting: true }, 503);
 
   try {
     const answer = (await env.AI.run(CHAT_MODEL, {

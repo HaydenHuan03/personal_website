@@ -1,4 +1,4 @@
-import type { Difficulty, Language, Problem } from '@/types/leetcode';
+import type { Difficulty, Language, ProblemSummary } from '@/types/leetcode';
 
 export const LANGUAGE_LABELS: Record<Language, string> = {
   cpp: 'C++',
@@ -31,7 +31,7 @@ export function hasActiveFilters(f: Filters): boolean {
   return f.query.trim() !== '' || f.difficulties.size > 0 || f.topics.size > 0;
 }
 
-export function matchesFilters(p: Problem, f: Filters): boolean {
+export function matchesFilters(p: ProblemSummary, f: Filters): boolean {
   const q = f.query.trim().replace(/^#/, '').toLowerCase();
   if (q && !String(p.id).includes(q) && !p.title.toLowerCase().includes(q)) return false;
   if (f.difficulties.size > 0 && (p.difficulty === null || !f.difficulties.has(p.difficulty))) return false;
@@ -48,7 +48,7 @@ function byCountDescThenName(a: TopicCount, b: TopicCount): number {
   return b.count - a.count || a.name.localeCompare(b.name);
 }
 
-export function topicCounts(problems: Problem[]): TopicCount[] {
+export function topicCounts(problems: ProblemSummary[]): TopicCount[] {
   const counts = new Map<string, number>();
   for (const p of problems) {
     for (const t of p.topics) counts.set(t, (counts.get(t) ?? 0) + 1);
@@ -58,11 +58,11 @@ export function topicCounts(problems: Problem[]): TopicCount[] {
 
 export interface TopicGroup {
   topic: string;
-  problems: Problem[];
+  problems: ProblemSummary[];
 }
 
-export function groupByPrimaryTopic(problems: Problem[]): TopicGroup[] {
-  const groups = new Map<string, Problem[]>();
+export function groupByPrimaryTopic(problems: ProblemSummary[]): TopicGroup[] {
+  const groups = new Map<string, ProblemSummary[]>();
   for (const p of problems) {
     const key = p.topics[0] ?? UNCATEGORISED;
     const list = groups.get(key);

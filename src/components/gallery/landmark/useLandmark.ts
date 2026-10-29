@@ -7,9 +7,8 @@ import { buildLandmarkMaterial, profileLandmark } from './landmarkMaterial';
 const DRACO_PATH = '/draco/';
 
 /**
- * Loads the landmark, makes a copy and colours it. Used by the hover preview
- * and the country scene. `box` is measured before any scaling, so each caller
- * can size the model its own way.
+ * Loads the landmark, makes a copy and colours it, for the country scene.
+ * `box` is measured before any scaling, so the caller can size the model.
  */
 export function useLandmark(model: string) {
   const { scene } = useGLTF(model, DRACO_PATH);

@@ -7,9 +7,9 @@ const requestHandler = createRequestHandler(
 );
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     if (new URL(request.url).pathname === '/api/chat') {
-      return handleChat(request, env);
+      return handleChat(request, env, ctx);
     }
     return requestHandler(request);
   },

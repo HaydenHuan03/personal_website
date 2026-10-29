@@ -56,6 +56,8 @@ export default function CountryCanvas({
   );
 }
 
-export function preloadCountryScene() {
+/** Starts downloading the scene's code and its landmark model. */
+export function preloadCountryScene(model: string) {
   void import('./CountryScene');
+  void import('@/components/gallery/landmark/useLandmark').then((m) => m.preloadLandmark(model));
 }

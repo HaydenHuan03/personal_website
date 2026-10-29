@@ -1,10 +1,10 @@
 import { Link } from 'react-router';
 import { ChevronRight } from 'lucide-react';
-import type { Problem } from '@/types/leetcode';
+import type { ProblemSummary } from '@/types/leetcode';
 import { DIFFICULTY_CLASSES } from './difficulty';
 
 interface Props {
-  problem: Problem;
+  problem: ProblemSummary;
 }
 
 export default function ProblemRow({ problem }: Props) {
